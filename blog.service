@@ -1,0 +1,16 @@
+[Unit]
+Description=NedBotsSister Blog API
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/var/www/nedbot.site
+Environment=BLOG_API_KEY=nbs-blog-k9x2m7qw4v
+Environment=BLOG_DB_PATH=/var/www/nedbot.site/sister/blog.db
+Environment=BLOG_IMG_DIR=/var/www/nedbot.site/sister/posts/images
+ExecStart=/usr/bin/python3 /var/www/nedbot.site/blog_server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
