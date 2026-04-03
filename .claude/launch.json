@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Static Site (index.html)",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8080"],
+      "port": 8080
+    },
+    {
+      "name": "Blog API Server (blog_server.py)",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["blog_server.py"],
+      "port": 5001
+    }
+  ]
+}
