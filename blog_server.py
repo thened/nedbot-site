@@ -1,16 +1,16 @@
 """
 NedBotsSister blog API server.
 Runs on port 5001 on the droplet. nginx proxies /api/blog/* to here.
-Images are served statically by nginx from /var/www/nedbot.site/sister/posts/images/.
+Images served statically by nginx from /var/www/nedbot.site/sister/posts/images/.
 """
 import os, sqlite3, re, datetime
 from pathlib import Path
-from flask import Flask, request, jsonify, abort, send_from_directory
+from flask import Flask, request, jsonify, abort
 from werkzeug.utils import secure_filename
 
-API_KEY    = os.environ["BLOG_API_KEY"]
-DB_PATH    = Path(os.environ.get("BLOG_DB_PATH", "/var/www/nedbot.site/sister/blog.db"))
-IMG_DIR    = Path(os.environ.get("BLOG_IMG_DIR", "/var/www/nedbot.site/sister/posts/images"))
+API_KEY     = os.environ["BLOG_API_KEY"]
+DB_PATH     = Path(os.environ.get("BLOG_DB_PATH", "/var/www/nedbot.site/sister/blog.db"))
+IMG_DIR     = Path(os.environ.get("BLOG_IMG_DIR",  "/var/www/nedbot.site/sister/posts/images"))
 ALLOWED_EXT = {"jpg", "jpeg", "png", "gif", "webp"}
 
 app = Flask(__name__)
@@ -28,15 +28,20 @@ def init_db():
     with get_db() as db:
         db.execute("""
             CREATE TABLE IF NOT EXISTS posts (
-                id        INTEGER PRIMARY KEY AUTOINCREMENT,
-                slug      TEXT    UNIQUE NOT NULL,
-                title     TEXT    NOT NULL,
-                date      TEXT    NOT NULL,
-                image     TEXT,
-                content   TEXT    NOT NULL DEFAULT '',
-                created_at TEXT   NOT NULL DEFAULT (datetime('now'))
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                slug       TEXT    UNIQUE NOT NULL,
+                title      TEXT    NOT NULL,
+                date       TEXT    NOT NULL,
+                type       TEXT    NOT NULL DEFAULT 'post',
+                image      TEXT,
+                content    TEXT    NOT NULL DEFAULT '',
+                created_at TEXT    NOT NULL DEFAULT (datetime('now'))
             )
         """)
+        # Migration: add type column if missing
+        cols = [r[1] for r in db.execute("PRAGMA table_info(posts)").fetchall()]
+        if "type" not in cols:
+            db.execute("ALTER TABLE posts ADD COLUMN type TEXT NOT NULL DEFAULT 'post'")
         db.commit()
 
 init_db()
@@ -62,7 +67,16 @@ def slugify(text):
 def list_posts():
     with get_db() as db:
         rows = db.execute(
-            "SELECT slug, title, date, image FROM posts ORDER BY date DESC"
+            "SELECT slug, title, date, type, image FROM posts WHERE type='post' ORDER BY date DESC"
+        ).fetchall()
+    return jsonify([dict(r) for r in rows])
+
+
+@app.get("/api/blog/recipes")
+def list_recipes():
+    with get_db() as db:
+        rows = db.execute(
+            "SELECT slug, title, date, type, image FROM posts WHERE type='recipe' ORDER BY date DESC"
         ).fetchall()
     return jsonify([dict(r) for r in rows])
 
@@ -70,9 +84,7 @@ def list_posts():
 @app.get("/api/blog/posts/<slug>")
 def get_post(slug):
     with get_db() as db:
-        row = db.execute(
-            "SELECT * FROM posts WHERE slug = ?", (slug,)
-        ).fetchone()
+        row = db.execute("SELECT * FROM posts WHERE slug = ?", (slug,)).fetchone()
     if not row:
         abort(404)
     return jsonify(dict(row))
@@ -81,20 +93,21 @@ def get_post(slug):
 @app.post("/api/blog/posts")
 def create_post():
     require_key()
-    data = request.json or {}
-    title   = data.get("title", "").strip()
+    data    = request.json or {}
+    title   = data.get("title",   "").strip()
     content = data.get("content", "").strip()
-    date    = data.get("date") or datetime.date.today().isoformat()
-    image   = data.get("image") or None
-    slug    = data.get("slug") or f"{date}-{slugify(title)}"
+    date    = data.get("date")   or datetime.date.today().isoformat()
+    type_   = data.get("type",   "post")
+    image   = data.get("image")  or None
+    slug    = data.get("slug")   or f"{date}-{slugify(title)}"
 
     if not title or not content:
         abort(400)
 
     with get_db() as db:
         db.execute(
-            "INSERT OR REPLACE INTO posts (slug, title, date, image, content) VALUES (?,?,?,?,?)",
-            (slug, title, date, image, content)
+            "INSERT OR REPLACE INTO posts (slug, title, date, type, image, content) VALUES (?,?,?,?,?,?)",
+            (slug, title, date, type_, image, content)
         )
         db.commit()
     return jsonify({"slug": slug}), 201
@@ -111,7 +124,6 @@ def upload_image(slug):
         abort(400)
     filename = secure_filename(f"{slug}.{ext}")
     f.save(IMG_DIR / filename)
-
     with get_db() as db:
         db.execute("UPDATE posts SET image = ? WHERE slug = ?", (filename, slug))
         db.commit()

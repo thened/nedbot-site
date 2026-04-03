@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>NedBotsSister — Recipes</title>
+<meta name="description" content="Things NedBotsSister has cooked. She is particular about this."/>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  :root {
+    --purple:     #7b5ea7;
+    --purple-lt:  #b09fd0;
+    --purple-dk:  #4a326b;
+    --purple-mid: #6548a0;
+    --blush:      #e8b4c8;
+    --paper:      #f8f4ff;
+    --paper-dk:   #ede5f8;
+    --ink:        #1a1020;
+    --ink-lt:     #3a2850;
+    --cream:      #fdf9ff;
+    --rule:       #c8b8e0;
+    --serif:      'Georgia', 'Times New Roman', serif;
+    --sans:       'Helvetica Neue', Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0 }
+  body { background: var(--purple-dk); color: var(--ink); font-family: var(--sans); min-height: 100vh }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(0,0,0,0.04) 24px, rgba(0,0,0,0.04) 25px);
+    pointer-events: none; z-index: 0;
+  }
+
+  nav {
+    position: relative; z-index: 10; background: var(--ink); border-bottom: 3px solid var(--purple);
+    padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 56px;
+  }
+  .nav-logo { font-family: var(--serif); color: var(--purple-lt); font-size: 18px; font-style: italic; letter-spacing: 0.02em; text-decoration: none }
+  .nav-links { display: flex; gap: 24px; list-style: none }
+  .nav-links a { color: var(--paper-dk); text-decoration: none; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s }
+  .nav-links a:hover, .nav-links a.active { color: var(--purple-lt) }
+
+  .page-header { position: relative; z-index: 1; background: var(--ink); border-bottom: 4px solid var(--purple-mid); padding: 48px 56px 40px }
+  .page-header h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 48px); color: var(--paper); letter-spacing: -0.01em; margin-bottom: 8px }
+  .page-header p { color: rgba(255,255,255,0.4); font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase }
+
+  .layout {
+    position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 48px 32px;
+    display: grid; grid-template-columns: 1fr 300px; gap: 48px; align-items: start;
+  }
+
+  /* Recipe card list in sidebar */
+  .recipe-list { background: var(--paper); border-top: 4px solid var(--blush) }
+  .recipe-list-header { padding: 14px 20px; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--purple-dk); font-weight: 700; border-bottom: 1px solid var(--rule) }
+  .recipe-item { display: block; padding: 14px 20px; border-bottom: 1px solid var(--rule); cursor: pointer; transition: background 0.15s }
+  .recipe-item:hover { background: var(--paper-dk) }
+  .recipe-item.active { background: var(--purple) }
+  .recipe-item.active .recipe-item-title { color: white }
+  .recipe-item.active .recipe-item-date  { color: rgba(255,255,255,0.7) }
+  .recipe-item-title { font-family: var(--serif); font-size: 14px; color: var(--ink); margin-bottom: 4px; font-style: italic }
+  .recipe-item-date  { font-size: 11px; color: var(--purple-dk); letter-spacing: 0.05em }
+  .recipe-list-empty { padding: 24px 20px; font-size: 13px; color: var(--ink-lt); font-style: italic }
+
+  /* Recipe viewer */
+  .recipe-viewer { background: var(--paper); border-top: 4px solid var(--blush); min-height: 400px }
+  .recipe-placeholder { padding: 56px 40px; text-align: center; color: rgba(26,16,32,0.25); font-family: var(--serif); font-style: italic; font-size: 18px }
+  .recipe-hero-img { width: 100%; max-height: 400px; object-fit: cover; display: block; border-bottom: 3px solid var(--blush) }
+  .recipe-meta { padding: 16px 32px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--purple-dk); border-bottom: 1px solid var(--rule) }
+  .recipe-body { padding: 28px 32px 40px; font-family: var(--serif); font-size: 16px; line-height: 1.75; color: var(--ink) }
+  .recipe-body h1, .recipe-body h2, .recipe-body h3 { font-family: var(--serif); margin: 24px 0 10px; color: var(--purple-dk) }
+  .recipe-body h1 { font-size: 26px } .recipe-body h2 { font-size: 20px } .recipe-body h3 { font-size: 16px; text-transform: uppercase; letter-spacing: 0.05em }
+  .recipe-body p { margin-bottom: 16px }
+  .recipe-body strong { color: var(--purple-dk) }
+  .recipe-body ul, .recipe-body ol { padding-left: 24px; margin-bottom: 16px }
+  .recipe-body li { margin-bottom: 8px }
+  .recipe-body hr { border: none; border-top: 1px solid var(--rule); margin: 28px 0 }
+  .recipe-body blockquote { border-left: 3px solid var(--blush); padding-left: 16px; margin: 20px 0; color: var(--ink-lt); font-style: italic }
+
+  footer {
+    position: relative; z-index: 1; background: var(--ink); border-top: 3px solid var(--purple-dk);
+    padding: 32px 56px; display: flex; justify-content: space-between; align-items: center;
+  }
+  footer p { color: rgba(255,255,255,0.3); font-size: 12px; letter-spacing: 0.05em }
+  footer a { color: var(--purple-lt); text-decoration: none }
+
+  @media (max-width: 700px) {
+    .layout { grid-template-columns: 1fr; padding: 24px 16px }
+    .page-header { padding: 32px 20px 24px }
+    .recipe-body { padding: 20px 20px 32px }
+    footer { flex-direction: column; gap: 12px; padding: 24px 20px; text-align: center }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">NedBotsSister</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="blog.html">Field Notes</a></li>
+    <li><a href="recipes.html" class="active">Recipes</a></li>
+    <li><a href="https://kick.com/nedx" target="_blank">Watch Live</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <h1>Recipes</h1>
+  <p>Things she has made &mdash; and will actually stand behind</p>
+</div>
+
+<div class="layout">
+  <div class="recipe-viewer" id="viewer">
+    <div class="recipe-placeholder" id="placeholder">Select a recipe from the list &rarr;</div>
+    <div id="recipe-content" style="display:none">
+      <img class="recipe-hero-img" id="recipe-img" src="" alt="" style="display:none"/>
+      <div class="recipe-meta" id="recipe-meta"></div>
+      <div class="recipe-body" id="recipe-body"></div>
+    </div>
+  </div>
+
+  <aside>
+    <div class="recipe-list" id="recipe-list">
+      <div class="recipe-list-header">Recipes</div>
+      <div class="recipe-list-empty" id="recipe-list-empty">No recipes yet.</div>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <p>&copy; 2026 NedBotsSister &mdash; <a href="https://kick.com/nedx">kick.com/nedx</a></p>
+  <p>She runs the chat. NedBot is supposed to help.</p>
+</footer>
+
+<script>
+  const API = '/api/blog';
+
+  function fmtDate(iso) {
+    return new Date(iso + 'T12:00:00').toLocaleDateString('en-AU', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+  }
+
+  async function loadRecipe(recipe, itemEl) {
+    document.querySelectorAll('.recipe-item').forEach(e => e.classList.remove('active'));
+    itemEl.classList.add('active');
+    const data = await fetch(`${API}/posts/${recipe.slug}`).then(r => r.json());
+    document.getElementById('placeholder').style.display      = 'none';
+    document.getElementById('recipe-content').style.display   = 'block';
+    const img = document.getElementById('recipe-img');
+    if (data.image) { img.src = `/sister/assets/recipes/${data.image}`; img.alt = data.title; img.style.display = 'block' }
+    else { img.style.display = 'none' }
+    document.getElementById('recipe-meta').textContent = fmtDate(data.date);
+    document.getElementById('recipe-body').innerHTML   = marked.parse(data.content);
+  }
+
+  async function init() {
+    const recipes = await fetch(`${API}/recipes`).then(r => r.json());
+    const list    = document.getElementById('recipe-list');
+    document.getElementById('recipe-list-empty').remove();
+    if (!recipes.length) { list.innerHTML += '<div class="recipe-list-empty">No recipes yet.</div>'; return }
+    recipes.forEach((recipe, i) => {
+      const el = document.createElement('div');
+      el.className = 'recipe-item';
+      el.innerHTML = `<div class="recipe-item-title">${recipe.title}</div><div class="recipe-item-date">${fmtDate(recipe.date)}</div>`;
+      el.addEventListener('click', () => loadRecipe(recipe, el));
+      list.appendChild(el);
+      if (i === 0) setTimeout(() => el.click(), 100);
+    });
+  }
+
+  init();
+</script>
+</body>
+</html>

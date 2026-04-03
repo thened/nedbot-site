@@ -8,217 +8,84 @@
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
   :root {
-    --slip:     #4a9e3f;
-    --slip-lt:  #6abf5e;
-    --slip-dk:  #2d6b24;
-    --slip-mid: #3a8030;
-    --paper:    #f2ead6;
-    --paper-dk: #e0d4b8;
-    --ink:      #1a1a0e;
-    --ink-lt:   #3a3a2a;
-    --cream:    #faf6ed;
-    --rule:     #b8c9a3;
-    --serif:    'Georgia', 'Times New Roman', serif;
-    --sans:     'Helvetica Neue', Arial, sans-serif;
+    --purple:     #7b5ea7;
+    --purple-lt:  #b09fd0;
+    --purple-dk:  #4a326b;
+    --purple-mid: #6548a0;
+    --blush:      #e8b4c8;
+    --paper:      #f8f4ff;
+    --paper-dk:   #ede5f8;
+    --ink:        #1a1020;
+    --ink-lt:     #3a2850;
+    --cream:      #fdf9ff;
+    --rule:       #c8b8e0;
+    --serif:      'Georgia', 'Times New Roman', serif;
+    --sans:       'Helvetica Neue', Arial, sans-serif;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0 }
 
-  body {
-    background: var(--slip-dk);
-    color: var(--ink);
-    font-family: var(--sans);
-    min-height: 100vh;
-  }
+  body { background: var(--purple-dk); color: var(--ink); font-family: var(--sans); min-height: 100vh }
 
   body::before {
     content: '';
-    position: fixed;
-    inset: 0;
-    background-image: repeating-linear-gradient(
-      0deg, transparent, transparent 24px,
-      rgba(0,0,0,0.04) 24px, rgba(0,0,0,0.04) 25px
-    );
-    pointer-events: none;
-    z-index: 0;
+    position: fixed; inset: 0;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(0,0,0,0.04) 24px, rgba(0,0,0,0.04) 25px);
+    pointer-events: none; z-index: 0;
   }
 
   nav {
-    position: relative;
-    z-index: 10;
-    background: var(--ink);
-    border-bottom: 3px solid var(--slip);
-    padding: 0 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 56px;
+    position: relative; z-index: 10;
+    background: var(--ink); border-bottom: 3px solid var(--purple);
+    padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 56px;
   }
-  .nav-logo {
-    font-family: var(--serif);
-    color: var(--slip-lt);
-    font-size: 18px;
-    font-style: italic;
-    letter-spacing: 0.02em;
-    text-decoration: none;
-  }
+  .nav-logo { font-family: var(--serif); color: var(--purple-lt); font-size: 18px; font-style: italic; letter-spacing: 0.02em; text-decoration: none }
   .nav-links { display: flex; gap: 24px; list-style: none }
-  .nav-links a {
-    color: var(--paper-dk);
-    text-decoration: none;
-    font-size: 13px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover, .nav-links a.active { color: var(--slip-lt) }
+  .nav-links a { color: var(--paper-dk); text-decoration: none; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s }
+  .nav-links a:hover, .nav-links a.active { color: var(--purple-lt) }
 
-  .page-header {
-    position: relative;
-    z-index: 1;
-    background: var(--ink);
-    border-bottom: 4px solid var(--slip-mid);
-    padding: 48px 56px 40px;
-  }
-  .page-header h1 {
-    font-family: var(--serif);
-    font-size: clamp(28px, 5vw, 48px);
-    color: var(--paper);
-    letter-spacing: -0.01em;
-    margin-bottom: 8px;
-  }
-  .page-header p {
-    color: rgba(255,255,255,0.45);
-    font-size: 14px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
+  .page-header { position: relative; z-index: 1; background: var(--ink); border-bottom: 4px solid var(--purple-mid); padding: 48px 56px 40px }
+  .page-header h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 48px); color: var(--paper); letter-spacing: -0.01em; margin-bottom: 8px }
+  .page-header p { color: rgba(255,255,255,0.4); font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase }
 
   .layout {
-    position: relative;
-    z-index: 1;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 48px 32px;
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 48px;
-    align-items: start;
+    position: relative; z-index: 1;
+    max-width: 1100px; margin: 0 auto; padding: 48px 32px;
+    display: grid; grid-template-columns: 1fr 300px; gap: 48px; align-items: start;
   }
 
-  /* Sidebar */
-  .post-list {
-    background: var(--paper);
-    border-top: 4px solid var(--slip);
-  }
-  .post-list-header {
-    padding: 14px 20px;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--slip-dk);
-    font-weight: 700;
-    border-bottom: 1px solid var(--rule);
-  }
-  .post-item {
-    display: block;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--rule);
-    cursor: pointer;
-    transition: background 0.15s;
-  }
+  .post-list { background: var(--paper); border-top: 4px solid var(--purple) }
+  .post-list-header { padding: 14px 20px; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--purple-dk); font-weight: 700; border-bottom: 1px solid var(--rule) }
+  .post-item { display: block; padding: 14px 20px; border-bottom: 1px solid var(--rule); cursor: pointer; transition: background 0.15s }
   .post-item:hover { background: var(--paper-dk) }
-  .post-item.active { background: var(--slip) }
+  .post-item.active { background: var(--purple) }
   .post-item.active .post-item-title { color: white }
   .post-item.active .post-item-date  { color: rgba(255,255,255,0.7) }
-  .post-item-title {
-    font-family: var(--serif);
-    font-size: 14px;
-    color: var(--ink);
-    margin-bottom: 4px;
-    font-style: italic;
-  }
-  .post-item-date {
-    font-size: 11px;
-    color: var(--slip-dk);
-    letter-spacing: 0.05em;
-  }
-  .post-list-empty {
-    padding: 24px 20px;
-    font-size: 13px;
-    color: var(--ink-lt);
-    font-style: italic;
-  }
+  .post-item-title { font-family: var(--serif); font-size: 14px; color: var(--ink); margin-bottom: 4px; font-style: italic }
+  .post-item-date  { font-size: 11px; color: var(--purple-dk); letter-spacing: 0.05em }
+  .post-list-empty { padding: 24px 20px; font-size: 13px; color: var(--ink-lt); font-style: italic }
 
-  /* Viewer */
-  .post-viewer {
-    background: var(--paper);
-    border-top: 4px solid var(--slip);
-    min-height: 400px;
-  }
-  .post-placeholder {
-    padding: 56px 40px;
-    text-align: center;
-    color: rgba(26,26,14,0.3);
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 18px;
-  }
-  .post-hero-img {
-    width: 100%;
-    max-height: 380px;
-    object-fit: cover;
-    display: block;
-    border-bottom: 3px solid var(--slip);
-  }
-  .post-meta {
-    padding: 16px 32px;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--slip-dk);
-    border-bottom: 1px solid var(--rule);
-  }
-  .post-body {
-    padding: 28px 32px 40px;
-    font-family: var(--serif);
-    font-size: 16px;
-    line-height: 1.75;
-    color: var(--ink);
-  }
-  .post-body h1, .post-body h2, .post-body h3 {
-    font-family: var(--serif);
-    margin: 24px 0 10px;
-    color: var(--slip-dk);
-  }
-  .post-body h1 { font-size: 26px }
-  .post-body h2 { font-size: 20px }
-  .post-body h3 { font-size: 16px; text-transform: uppercase; letter-spacing: 0.05em }
-  .post-body p  { margin-bottom: 16px }
-  .post-body strong { color: var(--slip-dk) }
-  .post-body blockquote {
-    border-left: 3px solid var(--slip);
-    padding-left: 16px;
-    margin: 20px 0;
-    color: var(--ink-lt);
-    font-style: italic;
-  }
+  .post-viewer { background: var(--paper); border-top: 4px solid var(--purple); min-height: 400px }
+  .post-placeholder { padding: 56px 40px; text-align: center; color: rgba(26,16,32,0.25); font-family: var(--serif); font-style: italic; font-size: 18px }
+  .post-hero-img { width: 100%; max-height: 400px; object-fit: cover; display: block; border-bottom: 3px solid var(--purple) }
+  .post-meta { padding: 16px 32px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--purple-dk); border-bottom: 1px solid var(--rule) }
+  .post-body { padding: 28px 32px 40px; font-family: var(--serif); font-size: 16px; line-height: 1.75; color: var(--ink) }
+  .post-body h1, .post-body h2, .post-body h3 { font-family: var(--serif); margin: 24px 0 10px; color: var(--purple-dk) }
+  .post-body h1 { font-size: 26px } .post-body h2 { font-size: 20px } .post-body h3 { font-size: 16px; text-transform: uppercase; letter-spacing: 0.05em }
+  .post-body p { margin-bottom: 16px }
+  .post-body strong { color: var(--purple-dk) }
+  .post-body blockquote { border-left: 3px solid var(--purple); padding-left: 16px; margin: 20px 0; color: var(--ink-lt); font-style: italic }
   .post-body ul, .post-body ol { padding-left: 24px; margin-bottom: 16px }
   .post-body li { margin-bottom: 6px }
   .post-body hr { border: none; border-top: 1px solid var(--rule); margin: 28px 0 }
 
   footer {
-    position: relative;
-    z-index: 1;
-    background: var(--ink);
-    border-top: 3px solid var(--slip-dk);
-    padding: 32px 56px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    position: relative; z-index: 1;
+    background: var(--ink); border-top: 3px solid var(--purple-dk);
+    padding: 32px 56px; display: flex; justify-content: space-between; align-items: center;
   }
   footer p { color: rgba(255,255,255,0.3); font-size: 12px; letter-spacing: 0.05em }
-  footer a  { color: var(--slip-lt); text-decoration: none }
+  footer a { color: var(--purple-lt); text-decoration: none }
 
   @media (max-width: 700px) {
     .layout { grid-template-columns: 1fr; padding: 24px 16px }
@@ -235,6 +102,7 @@
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li><a href="blog.html" class="active">Field Notes</a></li>
+    <li><a href="recipes.html">Recipes</a></li>
     <li><a href="https://kick.com/nedx" target="_blank">Watch Live</a></li>
   </ul>
 </nav>
@@ -245,7 +113,6 @@
 </div>
 
 <div class="layout">
-
   <div class="post-viewer" id="viewer">
     <div class="post-placeholder" id="placeholder">Select a post from the list &rarr;</div>
     <div id="post-content" style="display:none">
@@ -261,7 +128,6 @@
       <div class="post-list-empty" id="post-list-empty">No posts yet.</div>
     </div>
   </aside>
-
 </div>
 
 <footer>
@@ -281,22 +147,12 @@
   async function loadPost(post, itemEl) {
     document.querySelectorAll('.post-item').forEach(e => e.classList.remove('active'));
     itemEl.classList.add('active');
-
-    const res  = await fetch(`${API}/posts/${post.slug}`);
-    const data = await res.json();
-
+    const data = await fetch(`${API}/posts/${post.slug}`).then(r => r.json());
     document.getElementById('placeholder').style.display  = 'none';
     document.getElementById('post-content').style.display = 'block';
-
     const img = document.getElementById('post-img');
-    if (data.image) {
-      img.src   = `/sister/posts/images/${data.image}`;
-      img.alt   = data.title;
-      img.style.display = 'block';
-    } else {
-      img.style.display = 'none';
-    }
-
+    if (data.image) { img.src = `/sister/assets/posts/${data.image}`; img.alt = data.title; img.style.display = 'block' }
+    else { img.style.display = 'none' }
     document.getElementById('post-meta').textContent = fmtDate(data.date);
     document.getElementById('post-body').innerHTML   = marked.parse(data.content);
   }
@@ -304,16 +160,12 @@
   async function init() {
     const posts = await fetch(`${API}/posts`).then(r => r.json());
     const list  = document.getElementById('post-list');
-    const empty = document.getElementById('post-list-empty');
-
-    if (!posts.length) return;
-    empty.remove();
-
+    document.getElementById('post-list-empty').remove();
+    if (!posts.length) { list.innerHTML += '<div class="post-list-empty">No posts yet.</div>'; return }
     posts.forEach((post, i) => {
       const el = document.createElement('div');
       el.className = 'post-item';
-      el.innerHTML = `<div class="post-item-title">${post.title}</div>
-                      <div class="post-item-date">${fmtDate(post.date)}</div>`;
+      el.innerHTML = `<div class="post-item-title">${post.title}</div><div class="post-item-date">${fmtDate(post.date)}</div>`;
       el.addEventListener('click', () => loadPost(post, el));
       list.appendChild(el);
       if (i === 0) setTimeout(() => el.click(), 100);
