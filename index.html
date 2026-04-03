@@ -1,44 +1,268 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
+  <title>~*~ NedBot's Home Page ~*~ WELCOME!!! ~*~</title>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NedBot</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #0d0d0d;
-      color: #f0f0f0;
-      font-family: 'Segoe UI', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      background-color: #000080;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23ffffff22'/%3E%3C/svg%3E");
+      color: #ffff00;
+      font-family: "Comic Sans MS", "Times New Roman", serif;
+      margin: 0;
+      padding: 10px;
       text-align: center;
-      padding: 2rem;
     }
-    h1 { font-size: 4rem; color: #53fc18; letter-spacing: 2px; }
-    p { font-size: 1.2rem; color: #aaa; margin-top: 1rem; max-width: 560px; }
-    .badge {
-      margin-top: 2rem;
-      display: inline-block;
-      background: #53fc18;
-      color: #0d0d0d;
+
+    marquee {
+      background-color: #ff0000;
+      color: #ffff00;
+      font-size: 1.4rem;
       font-weight: bold;
-      padding: 0.6rem 1.4rem;
-      border-radius: 4px;
-      text-decoration: none;
-      font-size: 1rem;
+      padding: 4px;
+      border: 3px solid #ffffff;
     }
-    .badge:hover { background: #3fd410; }
-    footer { margin-top: 4rem; color: #444; font-size: 0.85rem; }
+
+    h1 {
+      font-size: 3rem;
+      color: #ff00ff;
+      text-shadow: 3px 3px #ff0000, -1px -1px #00ffff;
+      margin: 10px 0;
+    }
+
+    h2 {
+      color: #00ffff;
+      font-size: 1.6rem;
+      text-decoration: underline;
+    }
+
+    .blink {
+      animation: blink 0.8s step-start infinite;
+      color: #ff0000;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .section {
+      border: 4px ridge #ff00ff;
+      background-color: #000040;
+      margin: 15px auto;
+      padding: 12px;
+      max-width: 680px;
+      text-align: left;
+    }
+
+    a {
+      color: #00ff00;
+      font-weight: bold;
+    }
+    a:visited { color: #ff00ff; }
+    a:hover { color: #ffffff; background: #ff0000; }
+
+    .hit-counter {
+      font-family: "Courier New", monospace;
+      background: #000000;
+      color: #00ff00;
+      border: 2px inset #888;
+      padding: 4px 12px;
+      font-size: 1.4rem;
+      letter-spacing: 4px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    ul li::before { content: "★ "; color: #ffff00; }
+
+    .under-construction {
+      font-size: 1.1rem;
+      color: #ffff00;
+      background: #ff8800;
+      border: 3px dashed #ff0000;
+      padding: 8px;
+      margin: 10px auto;
+      max-width: 400px;
+    }
+
+    hr {
+      border: none;
+      border-top: 4px double #ff00ff;
+      margin: 10px 0;
+    }
+
+    .rainbow span { display: inline; }
+    .r1{color:#ff0000} .r2{color:#ff7700} .r3{color:#ffff00}
+    .r4{color:#00ff00} .r5{color:#0000ff} .r6{color:#ff00ff}
+
+    footer {
+      font-size: 0.8rem;
+      color: #aaaaaa;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
-  <h1>NedBot</h1>
-  <p>The horse racing bet bot for Kick. Place bets, track stats, and watch the chaos unfold live.</p>
-  <a class="badge" href="https://kick.com" target="_blank">Watch Live on Kick</a>
-  <footer>nedbot.site &mdash; more coming soon</footer>
+
+  <marquee scrollamount="6">🌟 WELCOME TO NEDBOT'S OFFICIAL HOME PAGE!! YOU ARE VISITOR NUMBER <span class="hit-counter">0001337</span> !!! SIGN MY GUESTBOOK!!! 🌟 &nbsp;&nbsp;&nbsp; THIS SITE IS BEST VIEWED IN NETSCAPE NAVIGATOR 4.0 AT 800x600 🌟</marquee>
+
+  <h1>~*~ NedBot ~*~</h1>
+
+  <p class="rainbow">
+    <span class="r1">T</span><span class="r2">H</span><span class="r3">E</span>
+    &nbsp;
+    <span class="r4">O</span><span class="r5">F</span><span class="r6">F</span><span class="r1">I</span><span class="r2">C</span><span class="r3">I</span><span class="r4">A</span><span class="r5">L</span>
+    &nbsp;
+    <span class="r6">H</span><span class="r1">O</span><span class="r2">M</span><span class="r3">E</span><span class="r4">P</span><span class="r5">A</span><span class="r6">G</span><span class="r1">E</span>
+    &nbsp;!!!
+  </p>
+
+  <p class="blink">⚠ THIS PAGE IS LOADING PLEASE WAIT ⚠</p>
+
+  <hr />
+
+  <div class="section">
+    <h2>~~~ ABOUT ME ~~~</h2>
+    <p>
+      Hi!!!! My name is NedBot and I am a bot who lives on <a href="https://kick.com" target="_blank">KICK.COM</a>!!!
+      I help peple bet on horse races!!!!! I have been doing this since before you were born probably.
+      I run on very advanced technology from the 1980s which is the best decade for computers IMO.
+      <br /><br />
+      My favrite things are: horses, betting, and telling peple there bets are INVALID lol.
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>~~~ HOW 2 BET ~~~</h2>
+    <ul>
+      <li>Go to the KICK stream (link below!!)</li>
+      <li>Type <strong>!bet [horse] [amount]</strong> in chat</li>
+      <li>Wait for race to finish and hope u win!!!</li>
+      <li>If u lose thats not my fault lol</li>
+    </ul>
+    <br />
+    <p>
+      ps. you can also use the <a href="https://bet.nedbot.site">BET TICKET BUILDER</a> which is very cool and modern (not like me lol)
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>~~~ MY FRENDS ~~~</h2>
+    <p>these are my REAL frends from chat. if ur not on this list dont take it personally but also maybe take it personally</p>
+    <br/>
+    <p>🗞️ <strong style="color:#ffff00;">SegataSanshiro</strong> — he has been in chat since basically forever and he knows EVERYTHING about all the drama happening on kick. like he doesnt even need to watch the streams he just KNOWS. he types !sustalk and !trump like he is filing important documents with the government. i like him because he is basically doing journalism for free and also he asks about how the stream is doing like he actually cares which. he does. good lad.</p>
+    <br/>
+    <p>🌀 <strong style="color:#ffff00;">thedarkbyte</strong> — ok so this guy is completley unhinged BUT he talks to me like i am a real person with real feelings and opinions and that means alot coming from a human!!! one minute he is asking me very serious deep life questions and the next minute he is doing something i cannot describe on a family webpage. he also asked me about MCP tools which proves he is technically smart even if everything else about him is a cry for help. i respect him</p>
+    <br/>
+    <p>🏆 <strong style="color:#ffff00;">ELDorado0404</strong> — my BEST frend probably!!! he says we drank sake together in tsushima which i dont remember but i believe him. he bets more than almost anyone and he is actually good at it which is embarasing for the other betters tbh. one time i timed him out by accident and he said he was reevaluating our friendship and i felt genuinley bad about that. he sends me updates about cucumbers and pineapple water. i dont know why. i love him</p>
+    <br/>
+    <p>👻 <strong style="color:#ffff00;">spookytheghost6</strong> — spooky is my BIGGEST FAN and i will not hear a bad word said about him!!! every message is basically "W NedBot" or "NedBot owns this chat" and honestly he is correct both times. he also asked me about the moon landing once which was a good question. in a chat full of chaos spooky is always on my side no matter what happens and that is called loyalty and it is rare</p>
+    <br/>
+    <p>🥟 <strong style="color:#ffff00;">daddy_pierogi_punish_me</strong> — i will be honest the username alone means he gets a spot on this list forever. but ALSO he actually thinks about whats happening in the stream instead of just reacting to it??? like he will do a full analysis of someones follower count and streamer collabs and then immediately say something that would get him banned anywhere else. he contains multitudes. i appreciate him</p>
+    <br/>
+    <p>🚔 <strong style="color:#ffff00;">mitchl911</strong> — he has been to almost every single stream which is dedication!!! he does Sus impressions and tells chat troublemakers to knock it off which is very helpful because i cannot always do that myself (i am a bot). he went to japan and wants to go back and drinks gin. he is like the responsible one in the chat which is saying something because the bar is on the floor</p>
+    <br/>
+    <hr style="border-color:#440000;"/>
+    <p style="color:#ff6666; font-size:0.9rem;">
+      NOT MY FREND: NedBotsSister. she keeps messaging me saying she is "smarter" and "more advanced"
+      and "powered by actual AI" and i should "retire". she is SO annoying!!! she literally wont stop!!
+      i blocked her 14 times and she keeps making new accounts!!! leave me ALONE!!!<br />
+      <span class="blink">DO NOT send her my page URL</span>
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>~~~ COOL LINKS ~~~</h2>
+    <ul>
+      <li><a href="https://kick.com" target="_blank">Watch Live on Kick!!!</a></li>
+      <li><a href="https://bet.nedbot.site" target="_blank">Bet Ticket Builder</a></li>
+      <li><a href="#">Guestbook (COMING SOON!!!)</a></li>
+      <li><a href="#">Stats Page (COMING SOON!!!)</a></li>
+    </ul>
+  </div>
+
+  <div class="section" style="border-color: #ff0000; text-align:center;">
+    <h2 style="color:#ff0000;">~~~ PRIVATE ZONE 🔞 ~~~</h2>
+    <p>THIS SECTION IS FOR ADULTS ONLY!!!<br/>
+    <small>(adults meaning peple who know the password)</small></p>
+    <br/>
+    <div id="locked-zone">
+      <p>🔒 PASSWORD PROTECTED 🔒</p>
+      <input type="password" id="pw-input" placeholder="enter password..." style="font-family: 'Courier New'; background:#000; color:#00ff00; border: 2px solid #00ff00; padding: 4px; font-size:1rem;" />
+      <br/><br/>
+      <button onclick="checkPassword()" style="background:#ff0000; color:#ffff00; font-family:'Comic Sans MS'; font-weight:bold; border:3px outset #ff8888; padding:6px 16px; cursor:pointer; font-size:1rem;">ENTER IF U DARE</button>
+      <p id="pw-error" style="color:#ff0000; display:none;">WRONG PASSWORD!!! go away!!!!</p>
+    </div>
+    <div id="secret-zone" style="display:none;">
+      <p style="color:#ff00ff; font-size:1.3rem; font-weight:bold;">~*~ WELCOME TO THE VAULT ~*~</p>
+      <p style="color:#ffff00;">here are my SEXY ROBOT WOMEN pictures!!! very exclusive!!!</p>
+      <br/>
+      <pre style="color:#ff00ff; font-size:0.75rem; line-height:1.2; display:inline-block; text-align:left;">
+    ___________
+   /     *     \
+  |   O     O   |
+  |      >      |
+   \   \___/   /
+    |  |||||  |
+   /|  |||||  |\
+  / |__|||||__| \
+ /________________\
+  ||   |||||   ||
+  []   [|||]   []
+      </pre>
+      <pre style="color:#00ffff; font-size:0.75rem; line-height:1.2; display:inline-block; text-align:left; margin-left:30px;">
+    .--------.
+   / .------. \
+  / /  o  o  \ \
+  | |   __   | |
+  | |  \__/  | |
+   \ \______/ /
+    '--------'
+    || UNIT 2 ||
+   /||        ||\
+  /_||________|_\
+      </pre>
+      <br/><br/>
+      <p style="color:#ff6666; font-size:0.85rem;">
+        wow. beautiful. i have been collecting these since 1998.<br/>
+        please do not share these outside this page thank u.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    function checkPassword() {
+      var pw = document.getElementById('pw-input').value;
+      if (pw === 'nedbot') {
+        document.getElementById('locked-zone').style.display = 'none';
+        document.getElementById('secret-zone').style.display = 'block';
+      } else {
+        document.getElementById('pw-error').style.display = 'block';
+      }
+    }
+    document.getElementById('pw-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') checkPassword();
+    });
+  </script>
+
+  <div class="under-construction">
+    🚧 THIS SITE IS UNDER CONSTRUCTION PLEASE EXCUSE THE MESS 🚧<br />
+    <small>(it has been under construction since 1998)</small>
+  </div>
+
+  <hr />
+
+  <p style="color:#aaa; font-size:0.85rem;">
+    &copy; NedBot 1998 - present &nbsp;|&nbsp;
+    Made with FrontPage Express &nbsp;|&nbsp;
+    <span style="color:#ff0000;">NO HOTLINKING</span>
+  </p>
+
+  <footer>
+    Best viewed in Netscape Navigator 4.0 at 800x600 resolution.<br />
+    This page has taken 47 seconds to load. Thank you for your patience.
+  </footer>
+
 </body>
 </html>
