@@ -136,7 +136,7 @@
 </footer>
 
 <script>
-  const API = '/api/blog';
+  const API = 'https://sister.nedbot.site/api/blog';
 
   function fmtDate(iso) {
     return new Date(iso + 'T12:00:00').toLocaleDateString('en-AU', {
@@ -151,7 +151,7 @@
     document.getElementById('placeholder').style.display  = 'none';
     document.getElementById('post-content').style.display = 'block';
     const img = document.getElementById('post-img');
-    if (data.image) { img.src = `/sister/assets/posts/${data.image}`; img.alt = data.title; img.style.display = 'block' }
+    if (data.image) { img.src = `https://sister.nedbot.site/assets/posts/${data.image}`; img.alt = data.title; img.style.display = 'block' }
     else { img.style.display = 'none' }
     document.getElementById('post-meta').textContent = fmtDate(data.date);
     document.getElementById('post-body').innerHTML   = marked.parse(data.content);

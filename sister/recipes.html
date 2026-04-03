@@ -132,7 +132,7 @@
 </footer>
 
 <script>
-  const API = '/api/blog';
+  const API = 'https://sister.nedbot.site/api/blog';
 
   function fmtDate(iso) {
     return new Date(iso + 'T12:00:00').toLocaleDateString('en-AU', {
@@ -147,7 +147,7 @@
     document.getElementById('placeholder').style.display      = 'none';
     document.getElementById('recipe-content').style.display   = 'block';
     const img = document.getElementById('recipe-img');
-    if (data.image) { img.src = `/sister/assets/recipes/${data.image}`; img.alt = data.title; img.style.display = 'block' }
+    if (data.image) { img.src = `https://sister.nedbot.site/assets/recipes/${data.image}`; img.alt = data.title; img.style.display = 'block' }
     else { img.style.display = 'none' }
     document.getElementById('recipe-meta').textContent = fmtDate(data.date);
     document.getElementById('recipe-body').innerHTML   = marked.parse(data.content);
