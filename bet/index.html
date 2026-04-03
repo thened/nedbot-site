@@ -1,0 +1,559 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bet Ticket Builder · nedbot.site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f141c; --card: #161d29; --card2: #1b2433;
+  --border: #243044; --border2: #2e3d54;
+  --blue: #4a90d9; --blue-dim: rgba(74,144,217,.18);
+  --green: #28c264; --green-dim: rgba(40,194,100,.15);
+  --amber: #e8a820; --amber-dim: rgba(232,168,32,.18);
+  --red: #e05050;
+  --text: #d8e6f4; --muted: #5a7898; --white: #fff;
+  --active-dark: #150f00;
+  --mono: 'IBM Plex Mono', monospace;
+  --head: 'Barlow Condensed', sans-serif;
+  --r: 10px; --touch: 44px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0 }
+html, body { background: var(--bg); color: var(--text); font-family: var(--mono); }
+body { padding: 10px; min-height: 100vh }
+.app { max-width: 1480px; margin: auto }
+
+/* Header */
+.topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px; margin-bottom: 10px;
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--r);
+  gap: 10px; flex-wrap: wrap;
+}
+.title { font-family: var(--head); font-size: 24px; font-weight: 900; letter-spacing: .02em; color: var(--text) }
+.title span { color: var(--amber) }
+.subtitle { font-size: 11px; color: var(--muted); margin-top: 2px }
+.badge {
+  font-size: 11px; font-weight: 700;
+  background: var(--card2); border: 1px solid var(--border2);
+  color: var(--muted); border-radius: 6px; padding: 5px 12px;
+}
+
+/* Auto-banner */
+.auto-banner {
+  display: none; align-items: center; gap: 8px;
+  padding: 8px 14px; margin-bottom: 10px;
+  background: var(--green-dim); border: 1px solid rgba(40,194,100,.3);
+  border-radius: var(--r); font-size: 12px; font-weight: 700; color: var(--green);
+}
+.auto-banner.show { display: flex }
+
+/* Layout */
+.content { display: grid; grid-template-columns: minmax(0,1.5fr) 320px; gap: 10px; align-items: start; }
+
+/* Cards */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 12px }
+.card-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px }
+
+/* Row layout */
+.row2-3 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px; margin-bottom: 10px }
+.row1 { margin-bottom: 10px }
+
+/* Buttons */
+button { font: inherit; cursor: pointer; border: none; outline: none; transition: background .1s, border-color .1s, color .1s; min-height: var(--touch); }
+button:active { opacity: .8 }
+
+/* Track */
+.track-btn {
+  padding: 7px 4px; border-radius: 7px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  background: var(--card2); border: 1px solid var(--border); color: var(--muted);
+}
+.track-btn:hover:not(.active) { border-color: var(--border2); color: var(--text) }
+.track-btn.active { background: var(--blue-dim); border-color: var(--blue); color: var(--blue) }
+
+/* Race */
+.race-btn {
+  min-height: var(--touch); border-radius: 7px;
+  font-family: var(--head); font-size: 20px; font-weight: 900;
+  background: var(--card2); border: 1px solid var(--border); color: var(--muted);
+}
+.race-btn:hover:not(.active) { border-color: var(--border2); color: var(--text) }
+.race-btn.active { background: var(--amber); border-color: var(--amber); color: var(--active-dark) }
+
+/* Bet type */
+.type-btn {
+  padding: 10px 5px; border-radius: 8px;
+  font-family: var(--head); font-size: 15px; font-weight: 900; letter-spacing: .02em;
+  background: var(--card2); border: 1px solid var(--border); color: var(--muted);
+}
+.type-btn:hover:not(.active) { border-color: var(--border2); color: var(--text) }
+.type-btn.active { background: var(--green-dim); border-color: var(--green); color: var(--green) }
+.type-btn .key { font-size: 10px; font-family: var(--mono); display: block; margin-top: 2px; opacity: .7 }
+
+/* Horse numbers */
+.num-btn {
+  min-height: 44px; border-radius: 7px;
+  font-family: var(--head); font-size: 18px; font-weight: 900;
+  background: var(--card2); border: 1px solid var(--border); color: var(--muted); padding: 0;
+}
+.num-btn:hover:not(.active):not(.taken):not([disabled]) { border-color: var(--border2); color: var(--text) }
+.num-btn.active { background: var(--amber); border-color: var(--amber); color: var(--active-dark) }
+.num-btn.taken { background: rgba(224,80,80,.1); border-color: rgba(224,80,80,.35); color: var(--red) }
+.num-btn[disabled] { opacity: .2; cursor: not-allowed }
+
+/* Amounts */
+.quick-btn {
+  padding: 8px 4px; border-radius: 7px;
+  font-size: 13px; font-weight: 700;
+  background: var(--card2); border: 1px solid var(--border); color: var(--muted);
+}
+.quick-btn.active { background: var(--blue-dim); border-color: var(--blue); color: var(--blue) }
+.quick-btn:hover:not(.active) { border-color: var(--border2); color: var(--text) }
+
+.add-btn {
+  padding: 8px 4px; border-radius: 7px;
+  font-size: 13px; font-weight: 700;
+  background: transparent; border: 1px solid var(--border); color: var(--muted);
+}
+.add-btn:hover { border-color: var(--green); color: var(--green) }
+
+/* Leg panels */
+.legs-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px }
+.leg-panel { border: 1px solid var(--border); border-radius: var(--r); padding: 10px; background: var(--card) }
+.leg-panel.disabled { opacity: .25 }
+.leg-panel.active-leg { border-color: var(--amber) }
+.leg-title {
+  font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+}
+.leg-badge {
+  font-size: 11px; background: var(--amber); color: var(--active-dark);
+  border-radius: 4px; padding: 1px 6px; font-weight: 700;
+}
+.horses-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 4px }
+
+/* Amount section */
+.amount-section { margin-top: 10px }
+.amount-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 7px; margin-bottom: 7px }
+.add-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-top: 7px }
+.amount-input {
+  width: 100%; background: var(--card2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 14px;
+  font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--text);
+  outline: none; margin-top: 10px;
+}
+.amount-input:focus { border-color: var(--blue) }
+.amount-input.over-limit { border-color: var(--red); color: var(--red) }
+
+/* Sidebar */
+.sidebar { display: grid; gap: 10px; align-content: start; position: sticky; top: 10px }
+.summary-big { font-family: var(--head); font-size: 32px; font-weight: 900; color: var(--text); line-height: 1.1 }
+.summary-sub { font-size: 12px; color: var(--muted); margin-top: 4px }
+
+.preview-box {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px; margin-bottom: 8px;
+}
+.preview-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px }
+.preview-ticket { font-family: var(--head); font-size: 17px; font-weight: 700; color: var(--text); line-height: 1.3 }
+.preview-command { font-size: 15px; font-weight: 700; color: var(--blue); min-height: 44px; word-break: break-all; line-height: 1.45 }
+
+.copy-btn {
+  width: 100%; padding: 14px; border-radius: var(--r);
+  font-family: var(--head); font-size: 22px; font-weight: 900; letter-spacing: .05em;
+  background: var(--amber); color: var(--active-dark); border: none;
+}
+.copy-btn:hover:not([disabled]) { background: #f0b824 }
+.copy-btn[disabled] { opacity: .3; cursor: not-allowed }
+.copy-btn.copied { background: var(--green); color: #0a1f0f }
+
+.status { min-height: 20px; margin-top: 7px; font-size: 12px; font-weight: 700 }
+.status.error { color: var(--red) }
+.status.ok { color: var(--green) }
+
+.examples-block {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px;
+  font-size: 12px; font-weight: 600; display: grid; gap: 4px; color: var(--blue);
+}
+.examples-block .comment { color: var(--muted); font-size: 11px }
+.warning-note {
+  padding: 8px 12px; border-radius: 7px; border-left: 3px solid var(--amber);
+  background: var(--amber-dim); font-size: 12px; color: #e8c060; font-weight: 600; margin-top: 8px;
+}
+
+/* Grid helpers */
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 7px }
+.g6 { display: grid; grid-template-columns: repeat(6,1fr); gap: 5px }
+
+/* Mobile sticky bar */
+.sticky-copy {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  padding: 10px 12px; background: var(--bg); border-top: 1px solid var(--border);
+  gap: 10px; align-items: center;
+}
+.sticky-copy-text { flex: 1; font-size: 12px; font-weight: 700; color: var(--blue); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.sticky-copy-btn {
+  padding: 10px 18px; border-radius: 8px;
+  font-family: var(--head); font-size: 18px; font-weight: 900;
+  background: var(--amber); color: var(--active-dark); border: none; flex-shrink: 0;
+}
+.sticky-copy-btn.copied { background: var(--green); color: #0a1f0f }
+.sticky-copy-btn[disabled] { opacity: .3; cursor: not-allowed }
+
+/* Responsive */
+@media(max-width:1100px) {
+  .content { grid-template-columns: 1fr }
+  .sidebar { position: static; grid-template-columns: 1fr 1fr }
+  .sidebar > .card:last-child { grid-column: 1 / -1 }
+}
+@media(max-width:820px) {
+  .row2-3 { grid-template-columns: 1fr }
+  .legs-grid { grid-template-columns: 1fr 1fr }
+}
+@media(max-width:600px) {
+  body { padding: 8px; padding-bottom: 80px }
+  .title { font-size: 20px }
+  .sidebar { grid-template-columns: 1fr }
+  .sidebar > .card:last-child { grid-column: auto }
+  #trackGridWrap > div { grid-template-columns: repeat(3,1fr) !important }
+  .g4 { grid-template-columns: repeat(2,1fr) }
+  .legs-grid { grid-template-columns: 1fr }
+  .horses-grid { gap: 3px }
+  .num-btn { font-size: 16px; min-height: 40px }
+  .amount-input { font-size: 19px }
+  .sticky-copy { display: flex }
+}
+@media(max-width:380px) {
+  .num-btn { font-size: 14px; min-height: 36px }
+  .race-btn { font-size: 16px }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div>
+      <div class="title">Bet <span>Ticket</span> Builder</div>
+      <div class="subtitle">Build a !bet command · NAR &amp; Banei tracks · All 8 bet types</div>
+    </div>
+    <div class="badge">max ¥1000</div>
+  </div>
+
+  <div class="auto-banner" id="autoBanner">
+    <span>✓</span><span id="autoBannerText"></span>
+  </div>
+
+  <div class="content">
+    <section>
+      <div class="row2-3">
+        <div class="card">
+          <div class="card-label">Track</div>
+          <div id="trackGridWrap"></div>
+        </div>
+        <div class="card">
+          <div class="card-label">Race</div>
+          <div class="g6" id="raceGrid"></div>
+        </div>
+      </div>
+      <div class="row1">
+        <div class="card">
+          <div class="card-label">Bet Type</div>
+          <div class="g4" id="betTypeGrid"></div>
+        </div>
+      </div>
+      <div class="legs-grid" id="legsGrid">
+        <div class="leg-panel" id="legPanel0">
+          <div class="leg-title">Selection 1 <span class="leg-badge" id="legBadge0"></span></div>
+          <div class="horses-grid" id="horseGrid0"></div>
+        </div>
+        <div class="leg-panel" id="legPanel1">
+          <div class="leg-title">Selection 2 <span class="leg-badge" id="legBadge1"></span></div>
+          <div class="horses-grid" id="horseGrid1"></div>
+        </div>
+        <div class="leg-panel" id="legPanel2">
+          <div class="leg-title">Selection 3 <span class="leg-badge" id="legBadge2"></span></div>
+          <div class="horses-grid" id="horseGrid2"></div>
+        </div>
+      </div>
+      <div class="card amount-section">
+        <div class="card-label">Amount (max ¥1000)</div>
+        <div class="amount-row" id="quickAmtGrid"></div>
+        <input type="number" id="amtInput" class="amount-input" min="100" max="1000" step="100" value="100">
+        <div class="add-row" id="addAmtGrid"></div>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <div class="card">
+        <div class="card-label">Race</div>
+        <div class="summary-big" id="summaryTitle">—</div>
+        <div class="summary-sub" id="summarySub">Select track and race</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Preview</div>
+        <div class="preview-box">
+          <div class="preview-label">Ticket</div>
+          <div class="preview-ticket" id="ticketPreview">Not complete yet</div>
+        </div>
+        <div class="preview-box">
+          <div class="preview-label">Paste in Kick chat</div>
+          <div class="preview-command" id="commandPreview">Your !bet command will appear here</div>
+        </div>
+        <button class="copy-btn" id="copyBtn" disabled>Copy Command</button>
+        <div class="status" id="statusLine"></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Command Format</div>
+        <div class="examples-block">
+          <div class="comment"># !bet track race type picks amount</div>
+          <div>!bet nagoya 1 win 3 500</div>
+          <div>!bet kawasaki 5 quinella 3-8 200</div>
+          <div>!bet funabashi 3 qp 3-8 100</div>
+          <div>!bet oi 7 exacta 3-8 200</div>
+          <div>!bet morioka 2 trifecta 3-8-5 100</div>
+          <div>!bet obihiro 4 win 2 300</div>
+        </div>
+        <div class="warning-note">⚠️ <strong>qp</strong> = quinella place (≥2 of 3 picks must place)</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="sticky-copy" id="stickyCopy">
+  <div class="sticky-copy-text" id="stickyCopyText">Select track, race &amp; picks</div>
+  <button class="sticky-copy-btn" id="stickyCopyBtn" disabled>Copy</button>
+</div>
+
+<script>
+const MAX_BET = 1000;
+const TRACKS = [
+  'monbetsu','morioka','mizusawa','urawa','funabashi','oi',
+  'kawasaki','kanazawa','kasamatsu','nagoya','sonoda','himeji',
+  'kochi','saga','obihiro'
+];
+const BET_TYPES = [
+  { key:'win',      label:'Win',      legs:1, ordered:false },
+  { key:'place',    label:'Place',    legs:1, ordered:false },
+  { key:'quinella', label:'Quinella', legs:2, ordered:false },
+  { key:'qp',       label:'Q.Place',  legs:2, ordered:false, hint:'quinella_place' },
+  { key:'exacta',   label:'Exacta',   legs:2, ordered:true  },
+  { key:'wide',     label:'Wide',     legs:2, ordered:false },
+  { key:'trio',     label:'Trio',     legs:3, ordered:false },
+  { key:'trifecta', label:'Trifecta', legs:3, ordered:true  },
+];
+
+const state = { track:'nagoya', race:1, betType:'win', picks:['','',''], amount:100, copied:false };
+
+function applyURLParams() {
+  const p = new URLSearchParams(window.location.search);
+  const t = (p.get('t') || '').toLowerCase().trim();
+  const r = parseInt(p.get('r'), 10);
+  const applied = [];
+  if (t && TRACKS.includes(t)) { state.track = t; applied.push('Track: ' + t.toUpperCase()); }
+  if (!isNaN(r) && r >= 1 && r <= 12) { state.race = r; applied.push('Race: R' + r); }
+  if (applied.length) {
+    document.getElementById('autoBannerText').textContent =
+      'Auto-selected → ' + applied.join(' · ') + ' — pick your bet type, horses & amount.';
+    document.getElementById('autoBanner').classList.add('show');
+    setTimeout(() => document.getElementById('autoBanner').classList.remove('show'), 6000);
+  }
+}
+
+function getBetCfg() { return BET_TYPES.find(b => b.key === state.betType) || BET_TYPES[0]; }
+
+function validate() {
+  const cfg = getBetCfg();
+  const picks = state.picks.slice(0, cfg.legs).filter(Boolean);
+  if (!state.track) return 'Select a track.';
+  if (picks.length !== cfg.legs) return `Select ${cfg.legs} horse${cfg.legs > 1 ? 's' : ''}.`;
+  if (new Set(picks).size !== picks.length) return 'Duplicate horse numbers not allowed.';
+  const amt = Number(state.amount);
+  if (!Number.isFinite(amt) || amt < 100) return 'Min ¥100.';
+  if (amt % 100 !== 0) return 'Must be in ¥100 increments.';
+  if (amt > MAX_BET) return `Max bet is ¥${MAX_BET}.`;
+  return '';
+}
+
+function buildCommand() {
+  const cfg = getBetCfg();
+  const picks = state.picks.slice(0, cfg.legs).map(Number);
+  const finalPicks = cfg.ordered ? picks : [...picks].sort((a,b) => a-b);
+  return `!bet ${state.track} ${state.race} ${cfg.key} ${finalPicks.join('-')} ${state.amount}`;
+}
+
+function buildTicket() {
+  const cfg = getBetCfg();
+  const picks = state.picks.slice(0, cfg.legs).filter(Boolean);
+  const selStr = picks.length === cfg.legs
+    ? (cfg.ordered ? picks : [...picks].sort((a,b)=>a-b)).join('-')
+    : picks.join('-') || '?';
+  return `${state.track.toUpperCase()} R${state.race} · ${cfg.label.toUpperCase()} #${selStr} · ¥${state.amount}`;
+}
+
+function renderTracks() {
+  const wrap = document.getElementById('trackGridWrap');
+  const grid = document.createElement('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:repeat(5,1fr);gap:5px';
+  TRACKS.forEach(t => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'track-btn' + (t === state.track ? ' active' : '');
+    btn.textContent = t;
+    btn.addEventListener('click', () => { state.track = t; state.copied = false; renderTracks(); renderSummary(); renderPreview(); });
+    grid.appendChild(btn);
+  });
+  wrap.innerHTML = ''; wrap.appendChild(grid);
+}
+
+function renderRace() {
+  const el = document.getElementById('raceGrid'); el.innerHTML = '';
+  for (let n = 1; n <= 12; n++) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'race-btn' + (n === state.race ? ' active' : '');
+    btn.textContent = String(n);
+    btn.addEventListener('click', () => { state.race = n; state.copied = false; renderRace(); renderSummary(); renderPreview(); });
+    el.appendChild(btn);
+  }
+}
+
+function renderBetTypes() {
+  const el = document.getElementById('betTypeGrid'); el.innerHTML = '';
+  BET_TYPES.forEach(type => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'type-btn' + (type.key === state.betType ? ' active' : '');
+    btn.innerHTML = type.label + (type.hint ? `<span class="key">${type.hint}</span>` : `<span class="key">${type.key}</span>`);
+    btn.addEventListener('click', () => { state.betType = type.key; state.picks = ['','','']; state.copied = false; render(); });
+    el.appendChild(btn);
+  });
+}
+
+function renderHorseGrid(containerId, legIndex) {
+  const el = document.getElementById(containerId); if (!el) return;
+  el.innerHTML = '';
+  const cfg = getBetCfg();
+  const enabled = legIndex < cfg.legs;
+  const thisVal = state.picks[legIndex];
+  const taken = new Set(state.picks.filter((v,i) => i !== legIndex && v).map(Number));
+  for (let h = 1; h <= 18; h++) {
+    const val = String(h);
+    const active = thisVal === val;
+    const isTaken = !active && taken.has(h);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'num-btn' + (active ? ' active' : '') + (isTaken ? ' taken' : '');
+    btn.textContent = String(h);
+    btn.disabled = !enabled;
+    btn.addEventListener('click', () => {
+      if (!enabled) return;
+      state.picks[legIndex] = state.picks[legIndex] === val ? '' : val;
+      state.copied = false; renderLegs(); renderPreview();
+    });
+    el.appendChild(btn);
+  }
+}
+
+function renderLegs() {
+  const cfg = getBetCfg();
+  for (let i = 0; i < 3; i++) {
+    const panel = document.getElementById('legPanel' + i);
+    const badge = document.getElementById('legBadge' + i);
+    const active = i < cfg.legs;
+    panel.classList.toggle('disabled', !active);
+    panel.classList.toggle('active-leg', active && !!state.picks[i]);
+    badge.textContent = state.picks[i] ? '#' + state.picks[i] : '';
+    renderHorseGrid('horseGrid' + i, i);
+  }
+}
+
+function renderAmounts() {
+  const quickEl = document.getElementById('quickAmtGrid');
+  const addEl = document.getElementById('addAmtGrid');
+  quickEl.innerHTML = ''; addEl.innerHTML = '';
+  [100,300,500,1000].forEach(v => {
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'quick-btn' + (Number(state.amount) === v ? ' active' : '');
+    btn.textContent = '¥' + v;
+    btn.addEventListener('click', () => { state.amount = v; state.copied = false; renderAmounts(); renderPreview(); });
+    quickEl.appendChild(btn);
+  });
+  [100,500,1000].forEach(v => {
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'add-btn'; btn.textContent = '+' + v;
+    btn.addEventListener('click', () => {
+      const next = Math.min(MAX_BET, Math.max(100, Number(state.amount || 0) + v));
+      state.amount = next; state.copied = false;
+      document.getElementById('amtInput').value = String(next);
+      renderAmounts(); renderPreview();
+    });
+    addEl.appendChild(btn);
+  });
+  const inp = document.getElementById('amtInput');
+  inp.value = String(state.amount);
+  inp.classList.toggle('over-limit', Number(state.amount) > MAX_BET);
+}
+
+function renderSummary() {
+  document.getElementById('summaryTitle').textContent = state.track.toUpperCase() + ' R' + state.race;
+  document.getElementById('summarySub').textContent = 'NAR · ' + getBetCfg().label;
+}
+
+function renderPreview() {
+  const err = validate();
+  const ticketEl = document.getElementById('ticketPreview');
+  const commandEl = document.getElementById('commandPreview');
+  const copyBtn = document.getElementById('copyBtn');
+  const statusEl = document.getElementById('statusLine');
+  const stickyText = document.getElementById('stickyCopyText');
+  const stickyBtn = document.getElementById('stickyCopyBtn');
+  if (err) {
+    ticketEl.textContent = buildTicket();
+    commandEl.textContent = 'Your !bet command will appear here';
+    copyBtn.disabled = true; copyBtn.className = 'copy-btn'; copyBtn.textContent = 'Copy Command';
+    statusEl.className = 'status error'; statusEl.textContent = err;
+    stickyText.textContent = err; stickyBtn.disabled = true;
+    stickyBtn.className = 'sticky-copy-btn'; stickyBtn.textContent = 'Copy';
+    return;
+  }
+  const cmd = buildCommand();
+  ticketEl.textContent = buildTicket();
+  commandEl.textContent = cmd;
+  copyBtn.disabled = false;
+  copyBtn.className = 'copy-btn' + (state.copied ? ' copied' : '');
+  copyBtn.textContent = state.copied ? 'Copied! Paste in chat.' : 'Copy Command';
+  statusEl.className = 'status ok';
+  statusEl.textContent = state.copied ? '✓ Copied — paste into Kick chat.' : 'Ready.';
+  stickyText.textContent = cmd; stickyBtn.disabled = false;
+  stickyBtn.className = 'sticky-copy-btn' + (state.copied ? ' copied' : '');
+  stickyBtn.textContent = state.copied ? 'Copied!' : 'Copy';
+}
+
+async function doCopy() {
+  const cmd = document.getElementById('commandPreview').textContent;
+  if (!cmd || !cmd.startsWith('!bet')) return;
+  try {
+    await navigator.clipboard.writeText(cmd);
+    state.copied = true; renderPreview();
+  } catch {
+    document.getElementById('statusLine').className = 'status error';
+    document.getElementById('statusLine').textContent = 'Copy failed — check browser permissions.';
+  }
+}
+
+function render() { renderTracks(); renderRace(); renderBetTypes(); renderLegs(); renderAmounts(); renderSummary(); renderPreview(); }
+
+document.getElementById('amtInput').addEventListener('input', e => {
+  const v = Number(e.target.value || 0); state.amount = v; state.copied = false;
+  e.target.classList.toggle('over-limit', v > MAX_BET);
+  renderAmounts(); renderPreview();
+});
+document.getElementById('copyBtn').addEventListener('click', doCopy);
+document.getElementById('stickyCopyBtn').addEventListener('click', doCopy);
+
+applyURLParams();
+render();
+</script>
+</body></html>
