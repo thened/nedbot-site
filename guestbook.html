@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NedBot's Guestbook -- Sign It!!!</title>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      background-color: #000080;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23ffffff22'/%3E%3C/svg%3E");
+      color: #ffff00;
+      font-family: "Comic Sans MS", "Times New Roman", serif;
+      margin: 0;
+      padding: 10px;
+      text-align: center;
+    }
+
+    marquee {
+      background-color: #ff0000;
+      color: #ffff00;
+      font-size: 1.4rem;
+      font-weight: bold;
+      padding: 4px;
+      border: 3px solid #ffffff;
+    }
+
+    h1 { font-size: 2.5rem; color: #ff00ff; text-shadow: 3px 3px #ff0000, -1px -1px #00ffff; margin: 10px 0; }
+    h2 { color: #00ffff; font-size: 1.4rem; text-decoration: underline; }
+
+    a { color: #00ff00; font-weight: bold; }
+    a:visited { color: #ff00ff; }
+    a:hover { color: #ffffff; background: #ff0000; }
+
+    hr { border: none; border-top: 4px double #ff00ff; margin: 10px 0; }
+
+    .section {
+      border: 4px ridge #ff00ff;
+      background-color: #000040;
+      margin: 15px auto;
+      padding: 12px;
+      max-width: 680px;
+      text-align: left;
+    }
+
+    .entry {
+      border: 2px inset #888;
+      background: #000060;
+      margin: 10px 0;
+      padding: 8px;
+    }
+
+    .entry-header {
+      color: #00ffff;
+      font-weight: bold;
+      font-size: 1rem;
+      border-bottom: 1px dashed #444;
+      margin-bottom: 6px;
+      padding-bottom: 4px;
+    }
+
+    .entry-msg { color: #ffff00; font-size: 0.95rem; }
+
+    .entry-meta { color: #888; font-size: 0.75rem; margin-top: 4px; }
+
+    input[type="text"], textarea {
+      background: #000;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      font-family: "Courier New", monospace;
+      font-size: 0.95rem;
+      padding: 4px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    textarea { height: 80px; resize: vertical; }
+
+    button {
+      background: #ff0000;
+      color: #ffff00;
+      font-family: "Comic Sans MS", serif;
+      font-weight: bold;
+      border: 3px outset #ff8888;
+      padding: 6px 18px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 8px;
+    }
+
+    button:hover { background: #cc0000; }
+
+    .db-stats {
+      font-family: "Courier New", monospace;
+      font-size: 0.8rem;
+      color: #444;
+      margin-top: 20px;
+    }
+
+    .powered {
+      color: #222;
+      font-size: 0.72rem;
+      margin-top: 4px;
+    }
+
+    footer { font-size: 0.8rem; color: #aaaaaa; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <marquee scrollamount="5">📖 NEDBOT'S GUESTBOOK 📖 &nbsp;&nbsp; sign it or ur not my frend!!! &nbsp;&nbsp; 📖 NEDBOT'S GUESTBOOK 📖</marquee>
+
+  <h1>~*~ NedBot's Guestbook ~*~</h1>
+  <p style="color:#aaa;">user.nedbot.site &mdash; guestbook</p>
+  <p><a href="index.html">&larr; back to portal</a></p>
+
+  <hr />
+
+  <div class="section">
+    <h2>~~~ SIGN THE GUESTBOOK ~~~</h2>
+    <p style="color:#ff6666; font-weight:bold;">WARNING: database is nearly full (1000/1000 entries). u might not be able to sign!!!</p>
+    <form action="/guestbook/post" method="POST">
+      <label>Your Name:<br/>
+        <input type="text" name="name" maxlength="50" placeholder="e.g. xX_CoolDude_Xx" />
+      </label>
+      <br/><br/>
+      <label>Your Message:<br/>
+        <textarea name="message" maxlength="500" placeholder="say something nice!!!"></textarea>
+      </label>
+      <br/>
+      <button type="submit">✉ SIGN IT!!!</button>
+    </form>
+  </div>
+
+  <div class="section">
+    <h2>~~~ PREVIOUS ENTRIES ~~~</h2>
+
+    <div class="entry">
+      <div class="entry-header">xX_Shadow_Xx &mdash; <span style="color:#888">December 14, 1998</span></div>
+      <div class="entry-msg">cool page ned!!! i bet on the wrong horse again lol. ur bot hates me</div>
+      <div class="entry-meta">Location: the internet | Favourite Horse: Thunderbolt</div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">BILL_FROM_OHIO &mdash; <span style="color:#888">March 2, 1999</span></div>
+      <div class="entry-msg">HELLO I AM BILL FROM OHIO. I FOUND THIS PAGE ON ALTAVISTA. VERY NICE. WHAT IS A RACEBOT</div>
+      <div class="entry-meta">Location: Ohio | Homepage: under construction</div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">RacetrackRita &mdash; <span style="color:#888">June 19, 1999</span></div>
+      <div class="entry-msg">i have been betting on real horses for 30 years and this is NOT how betting works. but i like the website colours</div>
+      <div class="entry-meta">Location: Cheltenham | Favourite Colour: #ff00ff apparently</div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">CyberPunk2000 &mdash; <span style="color:#888">September 7, 1999</span></div>
+      <div class="entry-msg">ur page took 3 minutes to load on my 56k modem. worth it tho. the blinking text is peak design</div>
+      <div class="entry-meta">Location: somewhere with bad internet</div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">HorseLord_Supreme &mdash; <span style="color:#888">January 1, 2000</span></div>
+      <div class="entry-msg">ITS THE YEAR 2000 AND THE COMPUTERS DIDNT EXPLODE!!! also i won 3 races last week. nedbot is my hero</div>
+      <div class="entry-meta">Location: THE FUTURE (2000)</div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">Webmaster_Dave &mdash; <span style="color:#888">February 22, 2000</span></div>
+      <div class="entry-msg">have u considered adding a counter?? i know a good one from hitwebcounter.com. also ur background tile is sick</div>
+      <div class="entry-meta">Location: making websites in his bedroom</div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">anonymous_coward &mdash; <span style="color:#888">April 4, 2000</span></div>
+      <div class="entry-msg">who made this. why. i have so many questions</div>
+      <div class="entry-meta">Location: unknown</div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">GalaxyBrain99 &mdash; <span style="color:#888">July 11, 2000</span></div>
+      <div class="entry-msg">i told all my frends about nedbot and they said "whats a nedbot" and i said "exactly"</div>
+      <div class="entry-meta">Location: ahead of his time</div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">Turbo_Margaret &mdash; <span style="color:#888">October 31, 2000</span></div>
+      <div class="entry-msg">happy halloween nedbot!! i bet on a horse called "ghost" today. he lost. fitting.</div>
+      <div class="entry-meta">Location: haunted racecourse</div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">InternetExplorer_Fan &mdash; <span style="color:#888">December 25, 2000</span></div>
+      <div class="entry-msg">merry christmas!!! this page looks broken in IE5 btw. just so u know</div>
+      <div class="entry-meta">Location: definitely not using Netscape</div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">DialUp_Donna &mdash; <span style="color:#888">March 8, 2001</span></div>
+      <div class="entry-msg">had to wait for everyone to get off the phone to load this page. it was worth it i think</div>
+      <div class="entry-meta">Location: waiting for the modem to connect</div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">TrueBeliever_X &mdash; <span style="color:#888">August 14, 2001</span></div>
+      <div class="entry-msg">nedbot will still be running in 20 years. mark my words. this technology is timeless</div>
+      <div class="entry-meta">Location: correct, as it turns out</div>
+    </div>
+
+  </div>
+
+  <div class="db-stats">
+    [ Database: guestbook.db | Entries: 1000/1000 | Status: FULL ]
+  </div>
+  <div class="powered">Powered by GuestScript/1.0 (Perl 5.003, CGI.pm 2.74)</div>
+
+  <hr />
+
+  <footer>
+    Best viewed in Netscape Navigator 4.0 at 800x600 resolution.<br/>
+    &copy; NedBot 1998 &mdash; <a href="index.html">back to main page</a>
+  </footer>
+
+</body>
+</html>

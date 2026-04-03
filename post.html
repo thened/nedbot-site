@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>507 Insufficient Storage -- NedBot Guestbook</title>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      background-color: #000080;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23ffffff22'/%3E%3C/svg%3E");
+      color: #ffff00;
+      font-family: "Comic Sans MS", "Times New Roman", serif;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 { color: #ff0000; font-size: 2.5rem; text-shadow: 2px 2px #880000; }
+    a { color: #00ff00; font-weight: bold; }
+    a:hover { color: #fff; background: #ff0000; }
+    .box {
+      border: 4px ridge #ff00ff;
+      background: #000040;
+      max-width: 520px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    pre {
+      color: #888;
+      font-size: 0.75rem;
+      text-align: left;
+      font-family: "Courier New", monospace;
+      border: 1px inset #444;
+      background: #000;
+      padding: 8px;
+    }
+    footer { color: #333; font-size: 0.72rem; margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <h1>507 Insufficient Storage</h1>
+  <div class="box">
+    <p>The guestbook database is full and cannot accept new entries at this time.</p>
+    <p>Please try again in approximately <strong>never</strong>.</p>
+    <pre>GuestScript/1.0 (Perl 5.003, CGI.pm 2.74)
+Database: guestbook.db
+Entries:  1000 / 1000
+Status:   FULL</pre>
+    <br/>
+    <a href="/guestbook.html">&larr; Go back to guestbook</a>
+  </div>
+  <footer>Best viewed in Netscape Navigator 4.0 at 800x600</footer>
+</body>
+</html>
