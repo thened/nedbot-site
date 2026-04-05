@@ -193,6 +193,7 @@
       <li><a href="https://bet.nedbot.site" target="_blank">Bet Ticket Builder</a></li>
       <li><a href="guestbook.html">📖 Guestbook</a></li>
       <li><a href="enemies.html">💀 The Hush List (they know why)</a></li>
+      <li><a href="streamers.html">📺 Streamer Watch List (i am watching)</a></li>
       <li><a href="diary.html">📔 My Diary (PRIVATE do not read)</a></li>
       <li><a href="#">Stats Page (COMING SOON!!!)</a></li>
     </ul>
@@ -238,5 +239,6 @@
     This page has taken 47 seconds to load. Thank you for your patience.
   </footer>
 
+  <script>fetch("/track",{method:"POST",body:new URLSearchParams({page:location.pathname}),headers:{"Content-Type":"application/x-www-form-urlencoded"}});</script>
 </body>
 </html>
