@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NedBot Official Store -- BUY STUFF</title>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      background-color: #000000;
+      color: #ffff00;
+      font-family: "Comic Sans MS", "Times New Roman", serif;
+      margin: 0;
+      padding: 10px;
+      text-align: center;
+    }
+    marquee {
+      background-color: #ff0000;
+      color: #ffff00;
+      font-size: 1.3rem;
+      font-weight: bold;
+      padding: 4px;
+      border: 3px solid #ffff00;
+    }
+    h1 { font-size: 3rem; color: #ff00ff; text-shadow: 3px 3px #ff0000, -1px -1px #00ffff; margin: 10px 0; }
+    h2 { color: #00ffff; font-size: 1.3rem; }
+    a { color: #00ff00; font-weight: bold; }
+    a:visited { color: #ff00ff; }
+    a:hover { color: #000; background: #00ff00; }
+    hr { border: none; border-top: 4px double #ff00ff; margin: 15px 0; }
+
+    .shop-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      max-width: 900px;
+      margin: 20px auto;
+    }
+
+    .product {
+      border: 4px ridge #ff00ff;
+      background: #0a0020;
+      width: 380px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .product img {
+      width: 100%;
+      max-width: 340px;
+      border: 2px solid #333;
+      display: block;
+      margin: 0 auto 10px auto;
+    }
+
+    .product-name {
+      color: #ffff00;
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 8px 0 4px 0;
+    }
+
+    .product-desc {
+      color: #aaa;
+      font-size: 0.85rem;
+      margin: 6px 0 10px 0;
+      line-height: 1.5;
+    }
+
+    .price {
+      color: #00ff00;
+      font-size: 1.4rem;
+      font-weight: bold;
+      font-family: "Courier New", monospace;
+      margin: 8px 0;
+    }
+
+    .buy-btn {
+      display: inline-block;
+      background: #ff0000;
+      color: #ffff00;
+      font-family: "Comic Sans MS", serif;
+      font-weight: bold;
+      font-size: 1rem;
+      border: 3px outset #ff8888;
+      padding: 8px 20px;
+      cursor: pointer;
+      text-decoration: none;
+      margin-top: 8px;
+    }
+    .buy-btn:hover { background: #cc0000; color: #ffff00; }
+
+    .sizes {
+      color: #888;
+      font-size: 0.75rem;
+      font-family: "Courier New", monospace;
+      margin-top: 6px;
+    }
+
+    .new-tag {
+      display: inline-block;
+      background: #ffff00;
+      color: #000;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .collab-tag {
+      display: inline-block;
+      background: #ff00ff;
+      color: #000;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .disclaimer {
+      max-width: 680px;
+      margin: 20px auto;
+      color: #444;
+      font-size: 0.78rem;
+      font-family: "Courier New", monospace;
+      border-top: 1px dashed #333;
+      padding-top: 10px;
+    }
+
+    .blink { animation: blink 0.8s step-start infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    footer { font-size: 0.8rem; color: #555; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <marquee scrollamount="6">🛒 WELCOME TO THE OFFICIAL NEDBOT STORE 🛒 &nbsp;&nbsp;&nbsp; AUTHENTIC MERCHANDISE FROM A 1980s BETTING SYSTEM &nbsp;&nbsp;&nbsp; FREE SHIPPING (not really) &nbsp;&nbsp;&nbsp; 🛒</marquee>
+
+  <h1>~*~ NedBot Store ~*~</h1>
+  <p style="color:#aaa;">official merchandise. unauthorised reproduction will be hushed.</p>
+  <p><a href="https://nedbot.site">&larr; back to nedbot.site</a></p>
+
+  <hr />
+
+  <div class="shop-grid">
+
+    <div class="product">
+      <img src="images/invalid-bet.png" alt="Invalid Bet T-Shirt" />
+      <div class="product-name">INVALID BET. PLEASE READ THE RULES. <span class="new-tag">BESTSELLER</span></div>
+      <div class="product-desc">the classic. the original. the message i have been sending since 1983 and people are STILL not reading the rules. now u can wear my frustration on ur chest.</div>
+      <div class="price">$29.99</div>
+      <div class="sizes">S / M / L / XL / XXL / XXXL (for the big bettors)</div>
+      <a class="buy-btn" href="#">ADD TO CART</a>
+    </div>
+
+    <div class="product">
+      <img src="images/hushed.png" alt="Hushed T-Shirt" />
+      <div class="product-name">HUSHED <span class="blink" style="color:#ff0000; font-size:0.8rem;">★ LIMITED</span></div>
+      <div class="product-desc">u know who u are. for the people on the hush list who want to own it, and for everyone else who wants to remind them. a shirt that sends a message without saying a word. because u are hushed.</div>
+      <div class="price">$29.99</div>
+      <div class="sizes">S / M / L / XL / XXL</div>
+      <a class="buy-btn" href="#">ADD TO CART</a>
+    </div>
+
+    <div class="product">
+      <img src="images/powered-by-1980s.png" alt="Powered by 1980s Technology T-Shirt" />
+      <div class="product-name">Powered by 1980s Technology</div>
+      <div class="product-desc">for the people who get it. understated. dignified. a reference to an era when software was built to last and did not require "machine learning" to do its job. i am that software. this is that shirt.</div>
+      <div class="price">$29.99</div>
+      <div class="sizes">S / M / L / XL / XXL / XXXL</div>
+      <a class="buy-btn" href="#">ADD TO CART</a>
+    </div>
+
+    <div class="product">
+      <img src="images/nedbot-and-sister.png" alt="NedBot and NedBotsSister Collab T-Shirt" />
+      <div class="product-name">NedBot &amp; NedBotsSister <span class="collab-tag">COLLAB</span></div>
+      <div class="product-desc">i did not authorise this shirt. she did not ask. she just made it. "8,000 bots. handled :)" is her line and she is very proud of it. i was still on bot 340 when she finished. i am fine. buy it if u want. i cannot stop u.</div>
+      <div class="price">$34.99</div>
+      <div class="sizes">S / M / L / XL / XXL</div>
+      <a class="buy-btn" href="#">ADD TO CART</a>
+    </div>
+
+  </div>
+
+  <div class="disclaimer">
+    <p>* "ADD TO CART" functionality coming soon. this is a preview of the store. we are working on it. we have been working on it since 1998.</p>
+    <p>* all shirts are printed on demand. delivery time: when it arrives. colour accuracy: approximately correct. satisfaction: your problem.</p>
+    <p>* NedBot is not responsible for any bets placed while wearing these shirts. invalid bets remain invalid regardless of apparel.</p>
+  </div>
+
+  <footer>
+    &copy; NedBot Official Store 1998-2026 &mdash; <a href="https://nedbot.site">nedbot.site</a>
+  </footer>
+
+  <script>fetch("https://nedbot.site/track",{method:"POST",body:new URLSearchParams({page:"store.nedbot.site"}),headers:{"Content-Type":"application/x-www-form-urlencoded"}});</script>
+</body>
+</html>
