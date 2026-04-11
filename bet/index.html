@@ -69,9 +69,10 @@ button:active { opacity: .8 }
   font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
   background: var(--card2); border: 1px solid var(--border); color: var(--muted);
 }
-.track-btn:hover:not(.active) { border-color: var(--border2); color: var(--text) }
+.track-btn:hover:not(.active):not([disabled]) { border-color: var(--border2); color: var(--text) }
 .track-btn.active { background: var(--blue-dim); border-color: var(--blue); color: var(--blue) }
-.track-btn[disabled] { opacity: .25; cursor: not-allowed }
+.track-btn.today:not(.active) { border-color: var(--border2); color: var(--text) }
+.track-btn[disabled] { opacity: .18; cursor: not-allowed }
 
 /* Race */
 .race-btn {
@@ -83,6 +84,8 @@ button:active { opacity: .8 }
 .race-btn:hover:not(.active) { border-color: var(--border2); color: var(--text) }
 .race-btn.active { background: var(--amber); border-color: var(--amber); color: var(--active-dark) }
 .race-time { font-family: var(--mono); font-size: 9px; font-weight: 700; opacity: .65; margin-top: 2px }
+.race-btn.past { opacity: .28 }
+.race-btn.past.active { opacity: 1 }
 
 /* Bet type */
 .type-btn {
@@ -382,6 +385,15 @@ function getRaceInfo(track, raceNum) {
 function getFieldSize(track, raceNum) {
   const r = getRaceInfo(track, raceNum); return r ? r.field_size : 18;
 }
+function getJSTMinutes() {
+  const jst = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  return jst.getUTCHours() * 60 + jst.getUTCMinutes();
+}
+function isRacePast(postTime) {
+  if (!postTime) return false;
+  const [h, m] = postTime.split(':').map(Number);
+  return (h * 60 + m) < getJSTMinutes();
+}
 
 function applyURLParams() {
   const p = new URLSearchParams(window.location.search);
@@ -437,9 +449,10 @@ function renderTracks() {
   TRACKS.forEach(t => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'track-btn' + (t === state.track ? ' active' : '');
+    const isToday = available.has(t);
+    btn.className = 'track-btn' + (t === state.track ? ' active' : '') + (isToday ? ' today' : '');
     btn.textContent = t;
-    btn.disabled = !available.has(t);
+    btn.disabled = !isToday;
     btn.addEventListener('click', () => {
       state.track = t;
       state.copied = false;
@@ -460,7 +473,8 @@ function renderRace() {
       const n = race.race_number;
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'race-btn' + (n === state.race ? ' active' : '');
+      const past = isRacePast(race.post_time);
+      btn.className = 'race-btn' + (n === state.race ? ' active' : '') + (past ? ' past' : '');
       btn.innerHTML = String(n) + (race.post_time ? `<span class="race-time">${race.post_time}</span>` : '');
       btn.addEventListener('click', () => { state.race = n; state.picks = ['','','']; state.copied = false; renderRace(); renderSummary(); renderPreview(); });
       el.appendChild(btn);
