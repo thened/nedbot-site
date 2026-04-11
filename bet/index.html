@@ -71,15 +71,18 @@ button:active { opacity: .8 }
 }
 .track-btn:hover:not(.active) { border-color: var(--border2); color: var(--text) }
 .track-btn.active { background: var(--blue-dim); border-color: var(--blue); color: var(--blue) }
+.track-btn[disabled] { opacity: .25; cursor: not-allowed }
 
 /* Race */
 .race-btn {
   min-height: var(--touch); border-radius: 7px;
   font-family: var(--head); font-size: 20px; font-weight: 900;
   background: var(--card2); border: 1px solid var(--border); color: var(--muted);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; padding: 4px 2px;
 }
 .race-btn:hover:not(.active) { border-color: var(--border2); color: var(--text) }
 .race-btn.active { background: var(--amber); border-color: var(--amber); color: var(--active-dark) }
+.race-time { font-family: var(--mono); font-size: 9px; font-weight: 700; opacity: .65; margin-top: 2px }
 
 /* Bet type */
 .type-btn {
@@ -150,6 +153,7 @@ button:active { opacity: .8 }
 .sidebar { display: grid; gap: 10px; align-content: start; position: sticky; top: 10px }
 .summary-big { font-family: var(--head); font-size: 32px; font-weight: 900; color: var(--text); line-height: 1.1 }
 .summary-sub { font-size: 12px; color: var(--muted); margin-top: 4px }
+.race-detail { font-size: 11px; color: var(--muted); margin-top: 3px }
 
 .preview-box {
   background: var(--card2); border: 1px solid var(--border);
@@ -290,6 +294,7 @@ button:active { opacity: .8 }
         <div class="card-label">Race</div>
         <div class="summary-big" id="summaryTitle">—</div>
         <div class="summary-sub" id="summarySub">Select track and race</div>
+        <div class="race-detail" id="raceDetail"></div>
       </div>
       <div class="card">
         <div class="card-label">Preview</div>
@@ -345,6 +350,38 @@ const BET_TYPES = [
 ];
 
 const state = { track:'nagoya', race:1, betType:'win', picks:['','',''], amount:100, copied:false };
+let schedule = [];
+
+async function loadSchedule() {
+  try {
+    const data = await fetch('https://agent.nedbot.site/ai/races').then(r => r.json());
+    schedule = data.filter(r => TRACKS.includes(r.track_name_en.toLowerCase()));
+    if (schedule.length) {
+      const available = getAvailableTracks();
+      if (!available.includes(state.track)) {
+        state.track = available[0];
+        state.race = getTrackRaces(state.track)[0].race_number;
+        state.picks = ['','',''];
+      }
+    }
+  } catch(e) {}
+  render();
+}
+function getAvailableTracks() {
+  if (!schedule.length) return TRACKS;
+  const set = new Set(schedule.map(r => r.track_name_en.toLowerCase()));
+  return TRACKS.filter(t => set.has(t));
+}
+function getTrackRaces(track) {
+  if (!schedule.length) return null;
+  return schedule.filter(r => r.track_name_en.toLowerCase() === track).sort((a,b) => a.race_number - b.race_number);
+}
+function getRaceInfo(track, raceNum) {
+  return schedule.find(r => r.track_name_en.toLowerCase() === track && r.race_number === raceNum) || null;
+}
+function getFieldSize(track, raceNum) {
+  const r = getRaceInfo(track, raceNum); return r ? r.field_size : 18;
+}
 
 function applyURLParams() {
   const p = new URLSearchParams(window.location.search);
@@ -396,12 +433,20 @@ function renderTracks() {
   const wrap = document.getElementById('trackGridWrap');
   const grid = document.createElement('div');
   grid.style.cssText = 'display:grid;grid-template-columns:repeat(5,1fr);gap:5px';
+  const available = new Set(getAvailableTracks());
   TRACKS.forEach(t => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'track-btn' + (t === state.track ? ' active' : '');
     btn.textContent = t;
-    btn.addEventListener('click', () => { state.track = t; state.copied = false; renderTracks(); renderSummary(); renderPreview(); });
+    btn.disabled = !available.has(t);
+    btn.addEventListener('click', () => {
+      state.track = t;
+      state.copied = false;
+      const races = getTrackRaces(t);
+      if (races) { state.race = races[0].race_number; state.picks = ['','','']; }
+      renderTracks(); renderSummary(); renderPreview();
+    });
     grid.appendChild(btn);
   });
   wrap.innerHTML = ''; wrap.appendChild(grid);
@@ -409,13 +454,26 @@ function renderTracks() {
 
 function renderRace() {
   const el = document.getElementById('raceGrid'); el.innerHTML = '';
-  for (let n = 1; n <= 12; n++) {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'race-btn' + (n === state.race ? ' active' : '');
-    btn.textContent = String(n);
-    btn.addEventListener('click', () => { state.race = n; state.copied = false; renderRace(); renderSummary(); renderPreview(); });
-    el.appendChild(btn);
+  const races = getTrackRaces(state.track);
+  if (races) {
+    races.forEach(race => {
+      const n = race.race_number;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'race-btn' + (n === state.race ? ' active' : '');
+      btn.innerHTML = String(n) + (race.post_time ? `<span class="race-time">${race.post_time}</span>` : '');
+      btn.addEventListener('click', () => { state.race = n; state.picks = ['','','']; state.copied = false; renderRace(); renderSummary(); renderPreview(); });
+      el.appendChild(btn);
+    });
+  } else {
+    for (let n = 1; n <= 12; n++) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'race-btn' + (n === state.race ? ' active' : '');
+      btn.textContent = String(n);
+      btn.addEventListener('click', () => { state.race = n; state.picks = ['','','']; state.copied = false; renderRace(); renderSummary(); renderPreview(); });
+      el.appendChild(btn);
+    }
   }
 }
 
@@ -438,7 +496,8 @@ function renderHorseGrid(containerId, legIndex) {
   const enabled = legIndex < cfg.legs;
   const thisVal = state.picks[legIndex];
   const taken = new Set(state.picks.filter((v,i) => i !== legIndex && v).map(Number));
-  for (let h = 1; h <= 18; h++) {
+  const fieldSize = getFieldSize(state.track, state.race);
+  for (let h = 1; h <= fieldSize; h++) {
     const val = String(h);
     const active = thisVal === val;
     const isTaken = !active && taken.has(h);
@@ -499,6 +558,12 @@ function renderAmounts() {
 function renderSummary() {
   document.getElementById('summaryTitle').textContent = state.track.toUpperCase() + ' R' + state.race;
   document.getElementById('summarySub').textContent = 'NAR · ' + getBetCfg().label;
+  const info = getRaceInfo(state.track, state.race);
+  const detailEl = document.getElementById('raceDetail');
+  if (info) {
+    const surface = info.surface === '芝' ? 'Turf' : info.surface === 'ダ' ? 'Dirt' : info.surface;
+    detailEl.textContent = [info.post_time, info.distance_m ? info.distance_m+'m' : null, surface, info.field_size ? info.field_size+' runners' : null].filter(Boolean).join(' · ');
+  } else { detailEl.textContent = ''; }
 }
 
 function renderPreview() {
@@ -553,7 +618,6 @@ document.getElementById('amtInput').addEventListener('input', e => {
 document.getElementById('copyBtn').addEventListener('click', doCopy);
 document.getElementById('stickyCopyBtn').addEventListener('click', doCopy);
 
-applyURLParams();
-render();
+applyURLParams(); loadSchedule();
 </script>
 </body></html>
