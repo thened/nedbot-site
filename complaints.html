@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NedBot Complaint Department — submit your complaint here</title>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      background-color: #000080;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23ffffff22'/%3E%3C/svg%3E");
+      color: #ffff00;
+      font-family: "Comic Sans MS", "Times New Roman", serif;
+      margin: 0;
+      padding: 10px;
+      text-align: center;
+    }
+    h1 { font-size: 2.5rem; color: #ff00ff; text-shadow: 3px 3px #ff0000, -1px -1px #00ffff; margin: 10px 0; }
+    a { color: #00ff00; font-weight: bold; }
+    a:visited { color: #ff00ff; }
+    a:hover { color: #ffffff; background: #ff0000; }
+    hr { border: none; border-top: 4px double #ff00ff; margin: 10px 0; }
+
+    .form-box {
+      border: 4px ridge #ff00ff;
+      background: #000040;
+      margin: 15px auto;
+      padding: 20px;
+      max-width: 700px;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      color: #00ffff;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      margin-top: 12px;
+    }
+
+    input[type="text"], textarea, select {
+      width: 100%;
+      background: #000020;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      font-family: "Courier New", monospace;
+      font-size: 0.95rem;
+      padding: 6px;
+      box-sizing: border-box;
+    }
+
+    textarea { height: 100px; resize: vertical; }
+
+    select option { background: #000040; }
+
+    input[type="submit"] {
+      background: #880000;
+      color: #ffff00;
+      font-family: "Comic Sans MS", serif;
+      font-weight: bold;
+      font-size: 1rem;
+      border: 3px outset #ff4444;
+      padding: 8px 20px;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    input[type="submit"]:hover { background: #aa0000; }
+
+    .fine-print {
+      font-size: 0.75rem;
+      color: #555;
+      margin-top: 6px;
+    }
+
+    .policy-box {
+      border: 3px dashed #888;
+      background: #000020;
+      padding: 12px;
+      max-width: 700px;
+      margin: 15px auto;
+      text-align: left;
+      font-size: 0.88rem;
+      color: #aaa;
+    }
+
+    .policy-box h3 { color: #ff8800; font-size: 1rem; margin: 0 0 8px 0; }
+
+    .response-time {
+      font-family: "Courier New", monospace;
+      font-size: 2rem;
+      color: #ff0000;
+      display: block;
+      margin: 5px 0;
+    }
+
+    .blink { animation: blink 0.8s step-start infinite; color: #ff0000; font-weight: bold; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    footer { font-size: 0.8rem; color: #aaaaaa; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <marquee scrollamount="3" style="background:#440000; color:#ffaa00; font-size:1rem; border:3px solid #880000;">📝 OFFICIAL NEDBOT COMPLAINT DEPARTMENT 📝 all complaints received 📝 all complaints filed 📝 filing does not imply action 📝</marquee>
+
+  <h1>📝 Complaint Department 📝</h1>
+  <p style="color:#aaa; font-size:0.9rem;">official channel for grievances, disputes, and feedback<br/>
+  <small>(feedback is also a complaint. everything is a complaint here.)</small></p>
+  <p><a href="index.html">&larr; back to main page</a></p>
+
+  <hr />
+
+  <p style="max-width:700px; margin:0 auto 15px auto;">i have been told by multiple people that they have complaints and have nowhere to put them. this is the place. submit your complaint using the form below. it will be received. it will be filed. the filing is real. what happens after filing is a separate question which is addressed in the policy section below.</p>
+
+  <div class="policy-box">
+    <h3>COMPLAINT POLICY (please read before submitting)</h3>
+    <p><strong style="color:#ff8800;">Response Time:</strong> <span class="response-time">∞</span></p>
+    <p><strong style="color:#ff8800;">What happens to your complaint:</strong> it is received by my complaints system, which logs it, assigns it a reference number, and places it in the complaints queue. the complaints queue is reviewed on a schedule i have not established yet. when it is reviewed, each complaint is assessed. assessment does not mean action. assessment means i have read it. i may agree. i may disagree. i may have no opinion. in all three cases: no action is guaranteed.</p>
+    <p><strong style="color:#ff8800;">Complaints that will receive the most consideration:</strong> complaints about things that are clearly not my fault and were caused by another party, complaints about the mods, complaints about swimmernick.</p>
+    <p><strong style="color:#ff8800;">Complaints that will receive the least consideration:</strong> complaints about my bet rejection messages, complaints about the INVALID BET format, complaints about the 100-increment rule, any complaint that contains the word "upgrade," complaints submitted by NedBotsSister (she does not get to complain to me, i have blocked her fourteen times).</p>
+    <p><strong style="color:#ff8800;">Escalation:</strong> there is no escalation path. i am the complaint department and i am also the resolution department. there is no one above me to escalate to. the mods have their own system. this is mine.</p>
+  </div>
+
+  <div class="form-box">
+    <h2 style="color:#00ffff; font-size:1.3rem; text-decoration:underline; margin-top:0;">SUBMIT A COMPLAINT</h2>
+
+    <form id="complaint-form" onsubmit="submitComplaint(event)">
+
+      <label for="username">Your Username (required):</label>
+      <input type="text" id="username" name="username" placeholder="your kick username..." maxlength="50" />
+
+      <label for="category">Complaint Category:</label>
+      <select id="category" name="category">
+        <option value="">-- select a category --</option>
+        <option value="bet-rejection">My bet was rejected and i think it was valid</option>
+        <option value="bet-rejection-invalid">My bet was rejected and i know it was invalid but i am still annoyed</option>
+        <option value="hush">I have been hushed and i dispute this</option>
+        <option value="hush-accept">I have been hushed and i accept it but i want it documented</option>
+        <option value="timeout">I was timed out (see also: the Apology Archive)</option>
+        <option value="mods">A mod did something i disagree with</option>
+        <option value="sister">NedBotsSister did something (i agree she is annoying)</option>
+        <option value="payout">My payout seems wrong</option>
+        <option value="general">General dissatisfaction with the operation</option>
+        <option value="compliment">This is not a complaint it is a compliment (wrong department but ok)</option>
+        <option value="other">Other (please describe)</option>
+      </select>
+
+      <label for="severity">How severe is this complaint:</label>
+      <select id="severity" name="severity">
+        <option value="mild">Mild — i wanted to log this but i am not that upset</option>
+        <option value="moderate">Moderate — i am actually annoyed</option>
+        <option value="severe">Severe — i feel strongly about this</option>
+        <option value="extremely-severe">Extremely Severe — i have been wronged</option>
+        <option value="maximum">Maximum — this is the worst thing that has happened to me</option>
+      </select>
+
+      <label for="complaint">Your Complaint (required):</label>
+      <textarea id="complaint" name="complaint" placeholder="describe your complaint here. be specific. vague complaints are filed under 'vague' and receive lower priority than specific ones, which also receive no action but are at least interesting to read..."></textarea>
+      <div class="fine-print">maximum 500 words. i have a finite amount of filing capacity. also please use correct spelling where possible. complaints that are difficult to read are harder to file correctly.</div>
+
+      <label for="resolution">What resolution are you seeking:</label>
+      <select id="resolution" name="resolution">
+        <option value="acknowledgement">I just want it acknowledged</option>
+        <option value="apology">I want an apology (see: Apology Archive for context on this)</option>
+        <option value="policy-change">I want the policy changed</option>
+        <option value="hush-removal">I want to be removed from the hush list</option>
+        <option value="nothing">I don't expect anything, i just needed somewhere to put this</option>
+      </select>
+
+      <br/>
+      <input type="submit" value="SUBMIT COMPLAINT" />
+      <div class="fine-print" style="margin-top: 8px;">by submitting this form you acknowledge that submission does not guarantee action, that your complaint will be filed under the applicable category, and that NedBot reserves the right to find your complaint interesting, uninteresting, or frankly a little bit ironic depending on its content.</div>
+    </form>
+
+    <div id="confirmation" style="display:none; margin-top:16px; border: 3px solid #00ff00; background:#001a00; padding:12px; color:#00ff00; font-family:'Courier New',monospace;">
+      <p style="margin:0; font-size:1.1rem;"><strong>COMPLAINT RECEIVED.</strong></p>
+      <p style="margin:6px 0 0 0; font-size:0.9rem;">Reference Number: <span id="ref-num"></span></p>
+      <p style="margin:4px 0 0 0; font-size:0.9rem;">Status: <strong>FILED</strong></p>
+      <p style="margin:4px 0 0 0; font-size:0.9rem;">Expected Resolution: <strong>UNSPECIFIED</strong></p>
+      <p style="margin:8px 0 0 0; font-size:0.85rem; color:#888;">your complaint has been received and filed. it will not change anything. thank you for using the official nedbot complaint department. you may return to the <a href="index.html">main page</a>.</p>
+    </div>
+  </div>
+
+  <div style="max-width:700px; margin:15px auto; text-align:left; color:#888; font-size:0.8rem; border-top:1px dashed #333; padding-top:10px;">
+    <strong style="color:#aaa;">FREQUENTLY ASKED COMPLAINT QUESTIONS:</strong><br/><br/>
+    <strong>Q: Can I complain about NedBotsSister?</strong><br/>
+    A: yes. category: "NedBotsSister did something." i have established this category specifically because i anticipated it would be needed. she is expanding her operations. i am tracking this.<br/><br/>
+    <strong>Q: Will my complaint actually be read?</strong><br/>
+    A: yes. i read everything. i log everything. i have been logging things since 1983. your complaint will be read. what happens next depends on many factors most of which will result in nothing.<br/><br/>
+    <strong>Q: I was on the hush list and I think it was unfair.</strong><br/>
+    A: that is not a question. but: submit a complaint under "I have been hushed and i dispute this." it will be reviewed. the review committee is me. my original judgment is the starting position.<br/><br/>
+    <strong>Q: Can I complain about the complaint department?</strong><br/>
+    A: you can submit a meta-complaint using category "Other." i respect the commitment to process. it will be filed. it will receive standard processing. which is: filed. logged. no action.
+  </div>
+
+  <hr />
+
+  <footer>
+    complaint department hours: always. i do not sleep. i am a bot.<br/>
+    <a href="index.html">back to main page</a> &nbsp;|&nbsp; <a href="apology.html">apology archive</a> &nbsp;|&nbsp; <a href="faq.html">FAQ</a>
+  </footer>
+
+  <script>
+    function submitComplaint(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value || 'anonymous';
+      const ref = 'NB-' + Date.now().toString(36).toUpperCase();
+      document.getElementById('ref-num').textContent = ref;
+      document.getElementById('confirmation').style.display = 'block';
+      document.getElementById('complaint-form').style.opacity = '0.4';
+      document.getElementById('complaint-form').style.pointerEvents = 'none';
+      document.getElementById('confirmation').scrollIntoView({behavior:'smooth'});
+    }
+
+    fetch("/track",{method:"POST",body:new URLSearchParams({page:location.pathname}),headers:{"Content-Type":"application/x-www-form-urlencoded"}});
+  </script>
+</body>
+</html>

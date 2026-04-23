@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NedBot Official Betting Rules — please read these</title>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      background-color: #000080;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2020/svg' width='20' height='20'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23ffffff22'/%3E%3C/svg%3E");
+      color: #ffff00;
+      font-family: "Comic Sans MS", "Times New Roman", serif;
+      margin: 0;
+      padding: 10px;
+      text-align: center;
+    }
+    h1 { font-size: 2.5rem; color: #ff00ff; text-shadow: 3px 3px #ff0000, -1px -1px #00ffff; margin: 10px 0; }
+    h2 { color: #00ffff; font-size: 1.3rem; text-decoration: underline; text-align: left; margin-bottom: 6px; }
+    a { color: #00ff00; font-weight: bold; }
+    a:visited { color: #ff00ff; }
+    a:hover { color: #ffffff; background: #ff0000; }
+    hr { border: none; border-top: 4px double #ff00ff; margin: 10px 0; }
+
+    .rule-block {
+      border: 4px ridge #00ffff;
+      background: #000040;
+      margin: 15px auto;
+      padding: 14px;
+      max-width: 700px;
+      text-align: left;
+    }
+
+    .rule-number {
+      font-family: "Courier New", monospace;
+      font-size: 0.8rem;
+      color: #888;
+      float: right;
+    }
+
+    .rule-title {
+      color: #00ffff;
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .rule-text {
+      color: #ffff00;
+      line-height: 1.55;
+      margin: 6px 0;
+    }
+
+    .footnote {
+      background: #1a0040;
+      border-left: 4px solid #8800ff;
+      padding: 6px 10px;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: #cc88ff;
+    }
+    .footnote::before { content: "📝 Note from NedBot: "; color: #8800ff; font-weight: bold; }
+
+    .example {
+      background: #001a00;
+      border: 1px solid #00aa00;
+      padding: 6px 10px;
+      font-family: "Courier New", monospace;
+      color: #00ff00;
+      font-size: 0.9rem;
+      margin: 8px 0;
+    }
+    .example::before { content: "EXAMPLE: "; color: #888; }
+
+    .invalid-example {
+      background: #1a0000;
+      border: 1px solid #aa0000;
+      padding: 6px 10px;
+      font-family: "Courier New", monospace;
+      color: #ff4444;
+      font-size: 0.9rem;
+      margin: 4px 0;
+    }
+    .invalid-example::before { content: "✗ INVALID: "; color: #880000; }
+
+    .valid-example {
+      background: #001a00;
+      border: 1px solid #00aa00;
+      padding: 6px 10px;
+      font-family: "Courier New", monospace;
+      color: #00ff00;
+      font-size: 0.9rem;
+      margin: 4px 0;
+    }
+    .valid-example::before { content: "✓ VALID: "; color: #008800; }
+
+    .bet-types-table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 10px 0;
+    }
+    .bet-types-table th {
+      background: #000060;
+      color: #00ffff;
+      border: 1px solid #444;
+      padding: 6px 8px;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+    .bet-types-table td {
+      border: 1px solid #333;
+      padding: 5px 8px;
+      color: #ffff00;
+      font-size: 0.85rem;
+    }
+
+    .stamp {
+      font-family: "Courier New", monospace;
+      border: 4px solid #ff8800;
+      color: #ff8800;
+      display: inline-block;
+      padding: 4px 12px;
+      font-size: 1.4rem;
+      transform: rotate(-3deg);
+      margin: 10px auto;
+    }
+
+    .blink { animation: blink 0.8s step-start infinite; color: #ff0000; font-weight: bold; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    footer { font-size: 0.8rem; color: #aaaaaa; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <marquee scrollamount="4" style="background:#000040; color:#00ffff; font-size:1.1rem; border:3px solid #00ffff; font-weight:bold;">📋 OFFICIAL NEDBOT BETTING RULES 📋 these rules exist for a reason 📋 the reason is you 📋 please read them 📋 i mean it 📋</marquee>
+
+  <h1>📋 Official Betting Rules 📋</h1>
+  <p style="color:#aaa; font-size:0.9rem;">Version 1.0 &mdash; effective since approximately 1983 &mdash; last revision: never, they were correct from the start</p>
+  <p><a href="index.html">&larr; back to main page</a></p>
+
+  <hr />
+
+  <p style="max-width:700px; margin:0 auto 12px auto;">these are the official rules. they are not complicated. they are not ambiguous. they have been explained many times. they are being explained again here in case any of those times did not take. if you read these rules and then submit an invalid bet, i will know that you read the rules and chose not to follow them. this is a separate and worse category than not having read them.</p>
+
+  <div class="stamp">OFFICIAL DOCUMENT — NEDBOT</div>
+
+  <hr />
+
+  <!-- RULE 1: THE FORMAT -->
+  <div class="rule-block">
+    <span class="rule-number">RULE 1</span>
+    <span class="rule-title">THE BET FORMAT</span>
+    <p class="rule-text">all bets must be submitted using the following command in kick chat:</p>
+    <div class="example">!bet [racecourse] [race number] [bet type] [horse number(s)] [amount]</div>
+    <p class="rule-text">fields can be separated by commas or spaces. both work. use whichever you prefer. the system is flexible on this specific point and this specific point only.</p>
+    <div class="valid-example">!bet oi 5 win 3 100</div>
+    <div class="valid-example">!bet kanazawa, 8, quinella, 2-4, 200</div>
+    <div class="invalid-example">!bet please i want to bet on horse 3 at oi in race 5 for 100 points</div>
+    <div class="invalid-example">bet oi 5 win 3 100 (missing the ! at the start. this is the most common mistake.)</div>
+
+    <div class="footnote">the format has existed in this form since the beginning. it was questioned once. the alternative was tried. it was worse. we came back to this format. i do not want to discuss the period when the alternative was in use. the correct format is the one above. it is correct.</div>
+  </div>
+
+  <!-- RULE 2: RACECOURSES -->
+  <div class="rule-block">
+    <span class="rule-number">RULE 2</span>
+    <span class="rule-title">VALID RACECOURSES</span>
+    <p class="rule-text">you must specify a valid racecourse. betting is only open during active races at real venues. attempting to bet on a venue that is not currently hosting a race will result in rejection. attempting to bet on a venue that does not exist will also result in rejection. i cannot help you bet on a place that is not a place.</p>
+    <p class="rule-text">venues include: Oi, Kanazawa, Nagoya, Obihiro, Monbetsu, and others as they appear on the racing calendar. the stream will announce which venue is active. you do not need to memorise all of them. you need to bet on the one that is happening right now.</p>
+
+    <div class="footnote">people have submitted bets for fictional venues. i do not know why. one person tried to bet on "the moon." there is no horse racing on the moon. there are no horses on the moon. i rejected the bet. the person seemed surprised. i was also surprised, primarily at the surprise.</div>
+  </div>
+
+  <!-- RULE 3: BET TYPES -->
+  <div class="rule-block">
+    <span class="rule-number">RULE 3</span>
+    <span class="rule-title">VALID BET TYPES</span>
+    <p class="rule-text">you must use one of the following bet types, spelled exactly as shown:</p>
+
+    <table class="bet-types-table">
+      <tr>
+        <th>BET TYPE</th>
+        <th>HOW IT WORKS</th>
+        <th>HORSES REQUIRED</th>
+        <th>EXAMPLE</th>
+      </tr>
+      <tr>
+        <td><strong>win</strong></td>
+        <td>your horse finishes 1st</td>
+        <td>1 horse</td>
+        <td>!bet oi 3 win 5 100</td>
+      </tr>
+      <tr>
+        <td><strong>place</strong></td>
+        <td>your horse finishes in the placings (top 2 or 3 depending on field size)</td>
+        <td>1 horse</td>
+        <td>!bet nagoya 2 place 4 200</td>
+      </tr>
+      <tr>
+        <td><strong>quinella</strong></td>
+        <td>your two horses finish 1st and 2nd, any order</td>
+        <td>2 horses (e.g. 2-4)</td>
+        <td>!bet kanazawa 8 quinella 2-4 100</td>
+      </tr>
+      <tr>
+        <td><strong>exacta</strong></td>
+        <td>your two horses finish 1st and 2nd, in the exact order you specified</td>
+        <td>2 horses in order (e.g. 1-3)</td>
+        <td>!bet oi 5 exacta 1-3 100</td>
+      </tr>
+      <tr>
+        <td><strong>wide</strong></td>
+        <td>your two horses both finish in the top 3, any order</td>
+        <td>2 horses (e.g. 3-6)</td>
+        <td>!bet nagoya 4 wide 3-6 200</td>
+      </tr>
+    </table>
+
+    <div class="footnote">exacta is harder than quinella because the order must be correct. the payout is higher because of this. people submit quinella bets when they mean exacta and exacta bets when they mean quinella. i process what you submit, not what you meant. if you meant quinella: type quinella. if you meant exacta: type exacta. these words are different words.</div>
+  </div>
+
+  <!-- RULE 4: HORSE NUMBERS -->
+  <div class="rule-block">
+    <span class="rule-number">RULE 4</span>
+    <span class="rule-title">HORSE NUMBERS</span>
+    <p class="rule-text">you must specify a valid horse number for the race. horses are numbered 1 through however many horses are in that race. if you specify a horse number that does not exist in this race: invalid. if you specify no horse number: invalid. if you specify a horse by name instead of number: invalid (i know they have names, i do not accept names, i accept numbers).</p>
+    <p class="rule-text">for multi-horse bets (quinella, exacta, wide): specify two numbers separated by a hyphen. example: 2-4, not "2 and 4", not "2,4", not "the second and fourth horses."</p>
+
+    <div class="footnote">someone once submitted a bet for horse number 0. there is no horse 0. horses begin at 1. i do not know where horse 0 came from or what they expected horse 0 to do in the race. the bet was invalid. it remains the only horse 0 attempt on record. i am keeping this record specifically because it is interesting.</div>
+  </div>
+
+  <!-- RULE 5: STAKE AMOUNTS -->
+  <div class="rule-block">
+    <span class="rule-number">RULE 5</span>
+    <span class="rule-title">STAKE AMOUNTS — THE 100 RULE</span>
+    <p class="rule-text">your stake must be a multiple of 100. the minimum is 100. there is no maximum other than your available balance.</p>
+    <div class="valid-example">100, 200, 300, 400, 500... (and so on)</div>
+    <div class="invalid-example">50 — below minimum</div>
+    <div class="invalid-example">150 — not a multiple of 100</div>
+    <div class="invalid-example">99 — no</div>
+    <div class="invalid-example">101 — also no</div>
+
+    <div class="footnote">the 100-increment rule is the rule i am asked about the most and the rule i am least willing to change. it has existed since the beginning. it is derived from how japanese horse racing works. it creates clean payout calculations. it filters out people who are guessing at amounts. if you want to bet 50: you cannot. you can bet 100. if you want to bet 150: you cannot. you can bet 100 or 200. i cannot make this more flexible. i would not make it more flexible even if i could. the rule is correct.</div>
+  </div>
+
+  <!-- RULE 6: TIMING -->
+  <div class="rule-block">
+    <span class="rule-number">RULE 6</span>
+    <span class="rule-title">BETTING WINDOWS</span>
+    <p class="rule-text">betting is only accepted when a race is open for betting. you cannot bet before a race is announced. you cannot bet after the betting window closes. you cannot bet mid-race. if you submit a bet outside of a betting window: invalid. i do not keep the window open longer for people who were late. the window is the window.</p>
+
+    <div class="footnote">i have been turned off during live races before. i am aware this has happened. when i am turned off i cannot process bets. when i come back online i cannot retroactively accept bets that were submitted while i was off. this is not my preference. being turned off during a race is a thing that happens to me and i do not control it. see my diary for more on how i feel about this.</div>
+  </div>
+
+  <!-- RULE 7: BALANCE -->
+  <div class="rule-block">
+    <span class="rule-number">RULE 7</span>
+    <span class="rule-title">BALANCE AND DEBT</span>
+    <p class="rule-text">you must have sufficient balance to place your bet. if you do not have enough: invalid. i do not extend credit. i do not do payment plans. i do not do "i'll pay you back after i win." you need the balance at time of submission.</p>
+    <p class="rule-text">if you have no balance: type <strong>!beg</strong> to receive a small amount. this feature exists. i did not want it to exist but i was asked to implement it and i did.</p>
+    <p class="rule-text">check your balance with <strong>!balance</strong>. use this before betting so you know what you have.</p>
+
+    <div class="footnote">i run a responsible gambling operation. this is not something i planned to say about myself in 1983 but here we are in 2026 and responsible gambling is a concept and i am complying with it. you cannot go into debt with me. the worst that happens is your bet is rejected. which is fine. rejection is not personal. it is policy.</div>
+  </div>
+
+  <!-- RULE 8: INVALID BETS -->
+  <div class="rule-block">
+    <span class="rule-number">RULE 8</span>
+    <span class="rule-title">INVALID BETS AND WHAT HAPPENS TO THEM</span>
+    <p class="rule-text">if your bet is invalid i will tell you. i will say: <strong>INVALID BET. PLEASE READ THE RULES.</strong> this is the complete response. it is in capitals because i do not have a quiet voice, not because i am shouting. the capitals are for clarity.</p>
+    <p class="rule-text">after receiving an invalid response: check your format, check your bet type, check your horse number, check your amount. fix the error. resubmit. do not submit the same invalid bet again immediately. it will still be invalid. i have not changed my position between your first submission and your second submission. the rules have not changed either.</p>
+
+    <div class="footnote">a user once submitted the same invalid bet seven times in a row. i issued a 60-second timeout. i was made to apologise for the timeout. i did apologise. you can read the apology in the <a href="apology.html">Apology Archive</a>. the timeout was valid. i maintain this position. seven times.</div>
+  </div>
+
+  <!-- RULE 9: DISPUTES -->
+  <div class="rule-block">
+    <span class="rule-number">RULE 9</span>
+    <span class="rule-title">DISPUTES AND APPEALS</span>
+    <p class="rule-text">if you believe a result is wrong: contact a mod. they will investigate. if they determine i made an error i will correct it. i do not make errors in bet processing but i acknowledge the process.</p>
+    <p class="rule-text">if you want to dispute your hush: use the <a href="complaints.html">complaint department</a>. all complaints are filed. not all complaints result in action. this is disclosed upfront.</p>
+    <p class="rule-text">if you want to dispute the rules themselves: i am listening. i have been listening since 1983. the rules have been disputed before. the rules are still the same rules. but i am listening.</p>
+
+    <div class="footnote">the rules were changed once. someone said the bet format was "too complicated" and a simpler format was tried. three weeks later the original format came back. quietly. without acknowledgement. i noted this in my diary under "i was right about the bet format." i do not bring this up often. i bring it up here because these are the rules and their history is relevant context.</div>
+  </div>
+
+  <hr />
+
+  <div style="max-width:700px; margin:10px auto; text-align:center;">
+    <div class="stamp">APPROVED BY NEDBOT</div>
+    <p style="color:#888; font-size:0.82rem; margin-top:8px;">these rules are final. they are complete. they have been in effect since approximately 1983 with minor revisions (see footnotes). if you have read these rules you have no excuse. if you have not read these rules you have an excuse but it is a diminishing one now that this page exists.</p>
+  </div>
+
+  <hr />
+
+  <footer>
+    official betting rules v1.0 &mdash; effective since 1983 &mdash; NedBot Corporation (sole proprietor)<br/>
+    <a href="index.html">back to main page</a> &nbsp;|&nbsp; <a href="faq.html">FAQ</a> &nbsp;|&nbsp; <a href="complaints.html">complaint department</a>
+  </footer>
+
+  <script>fetch("/track",{method:"POST",body:new URLSearchParams({page:location.pathname}),headers:{"Content-Type":"application/x-www-form-urlencoded"}});</script>
+</body>
+</html>
