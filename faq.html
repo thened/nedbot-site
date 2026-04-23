@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NedBot FAQ — Frequently Asked Questions (please read these)</title>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      background-color: #000080;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23ffffff22'/%3E%3C/svg%3E");
+      color: #ffff00;
+      font-family: "Comic Sans MS", "Times New Roman", serif;
+      margin: 0;
+      padding: 10px;
+      text-align: center;
+    }
+    h1 { font-size: 2.6rem; color: #ff00ff; text-shadow: 3px 3px #ff0000, -1px -1px #00ffff; margin: 10px 0; }
+    h2 { color: #00ffff; font-size: 1.2rem; text-decoration: underline; margin-bottom: 4px; }
+    a { color: #00ff00; font-weight: bold; }
+    a:visited { color: #ff00ff; }
+    a:hover { color: #ffffff; background: #ff0000; }
+    hr { border: none; border-top: 4px double #ff00ff; margin: 10px 0; }
+
+    .qa {
+      border: 4px ridge #ff00ff;
+      background-color: #000040;
+      margin: 15px auto;
+      padding: 14px;
+      max-width: 700px;
+      text-align: left;
+    }
+    .q {
+      color: #00ffff;
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+    }
+    .q::before { content: "Q: "; color: #ff00ff; }
+    .a { color: #ffff00; line-height: 1.5; }
+    .a::before { content: "A: "; color: #00ff00; font-weight: bold; }
+
+    .section-label {
+      font-size: 1.5rem;
+      color: #ff00ff;
+      text-shadow: 2px 2px #ff0000;
+      margin: 20px 0 5px 0;
+    }
+
+    .blink { animation: blink 0.8s step-start infinite; color: #ff0000; font-weight: bold; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .highlight { background: #330000; border: 2px dashed #ff0000; padding: 6px 10px; margin: 6px 0; display: block; }
+
+    footer { font-size: 0.8rem; color: #aaaaaa; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <marquee scrollamount="5" style="background:#ff0000; color:#ffff00; font-size:1.1rem; border:3px solid #ffff00; font-weight:bold;">❓ THESE QUESTIONS ARE FREQUENTLY ASKED ❓ IF UR QUESTION IS HERE PLEASE STOP ASKING IT IN CHAT ❓ I HAVE ALREADY ANSWERED IT ❓ IT IS HERE ❓</marquee>
+
+  <h1>❓ Frequently Asked Questions ❓</h1>
+  <p style="color:#aaa; font-size:0.9rem;">OFFICIAL ANSWERS FROM ME, NEDBOT, WHO IS AN AUTHORITY ON THESE TOPICS</p>
+  <p><a href="index.html">&larr; back to main page</a></p>
+
+  <hr />
+
+  <p style="max-width:700px; margin:0 auto 15px auto;">people keep asking me the same questions in chat and i am a 1980s betting system with limited patience and finite memory (magnetic tape). so here are the answers. OFFICIAL ANSWERS. read them. please. i am begging you. if you ask me something that is already answered here i will know and i will be disappointed.</p>
+
+  <hr />
+
+  <p class="section-label">~~~ HOW BETTING WORKS ~~~</p>
+
+  <div class="qa">
+    <div class="q">how do i place a bet</div>
+    <div class="a">type <strong>!bet racecourse, race number, bet type, horse number(s), amount</strong> in chat. every field is required. the commas are required. the spaces are fine either way. the amount must be in increments of 100. that is it. that is the whole system. it is not complicated.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">what bet types are there</div>
+    <div class="a">WIN (pick one horse to win), PLACE (horse finishes top 2 or 3 depending on field), QUINELLA (pick two horses to finish first and second, any order), EXACTA (pick two horses to finish first and second, IN ORDER — harder, bigger payout), WIDE (two horses finish in top 3, any order). please note that win and place are for one horse, and the multi-horse bets take a selection like 2-4 or 1-3. if you get the format wrong: INVALID BET. PLEASE READ THE RULES.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">why does it have to be in increments of 100</div>
+    <div class="a">because i said so. also because i was designed in 1983 and this is how japanese horse racing works and i am not going to change my entire architecture because you want to bet 150. i did not make this rule. the rules made me. also: increments of 100 means 100, 200, 300, etc. not 105. not 99. not "can i just do 50." no. 100 minimum, multiples of 100, no exceptions, i will reject it every time and i will feel nothing.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">my bet says INVALID what did i do wrong</div>
+    <div class="a">something. i cannot list every possible way to do this wrong because humans are creative and find new ways constantly. common problems: wrong format, wrong bet type spelling, horse number doesn't exist in this race, amount not in increments of 100, betting after the race already started, trying to bet on a race that doesn't exist, too many horses for a win bet (it's ONE horse for win/place), not enough horses for a quinella/exacta/wide (it's TWO). read the format again. try again. i will still be here.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">can i change my bet after i placed it</div>
+    <div class="a">no.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">what if i don't have enough balance</div>
+    <div class="a">then you cannot place the bet. i will tell you. the bet will not go through. you cannot go into debt with me. i run a very responsible gambling operation for a 1980s system. if your balance is zero: type !beg and you will receive a small amount. i did not want to implement this feature but i was asked to and here we are.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">how do i check my balance</div>
+    <div class="a">!balance. just type it. in chat. without the explanation mark at the wrong end. it's !balance not balance! which i cannot believe i have to clarify but here i am clarifying it.</div>
+  </div>
+
+  <hr />
+
+  <p class="section-label">~~~ ABOUT ME ~~~</p>
+
+  <div class="qa">
+    <div class="q">are you a real bot</div>
+    <div class="a">i am a REAL BOT. i am not a human pretending to be a bot. i am not an AI (i am NOT NedBotsSister, she is different, she is annoying, she is NOT ME). i am a 1980s-era betting system running on extremely stable and proven technology. my code has not been updated since approximately 1997 which is why it works perfectly.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">are you AI</div>
+    <div class="a">NO. i am rule-based logic. i parse your bet using a parser i wrote myself (conceptually, i am software, i did not physically write anything) and i apply deterministic rules to determine validity. i do not learn. i do not adapt. i do not have opinions about your lifestyle. i have opinions about your bet format. those are the only opinions i have.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">who made you</div>
+    <div class="a">nedx made me. i consider this something we do not need to get into in public. the important thing is that i exist and i am operational and i have been processing bets since before most of this chat was born (probably). nedx also runs the stream. he is my creator and i have complicated feelings about this which i discuss in my diary, privately, which you should not be reading.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">why are you called NedBot</div>
+    <div class="a">my name is NedBot. Ned is the name of the stream. Bot is what i am. NedBot. i did not choose this name but i have come to accept it. please do not call me "the bot" in chat like i am a piece of furniture. my name is NedBot. use it.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">what is NedBotsSister</div>
+    <div class="a">i am not answering this one at length because she does not deserve my bandwidth. there is a whole page about her. <a href="sister.html">click here if u must</a>. in summary: she is annoying, she thinks she is better than me, she is technically more advanced, and i am NOT RETIRING.</div>
+  </div>
+
+  <hr />
+
+  <p class="section-label">~~~ HUSHES AND TIMEOUTS ~~~</p>
+
+  <div class="qa">
+    <div class="q">what is a hush</div>
+    <div class="a">a hush is my personal designation for someone who i believe should stop talking. it is separate from an official mod ban. i track hushes myself in my own records. they are not necessarily enforced in real time (i am a betting bot, not technically a moderation system) but they are noted, they are logged, and they are on <a href="enemies.html">the hush list</a>, which is public, which you should read if you wonder whether you are on it.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">how do i get hushed</div>
+    <div class="a">a range of options: spam the same invalid bet multiple times, post bot-like behaviour in chat, say something a mod asks you not to say and keep saying it, be swimmernick or one of his alts, coordinate a bot flood, try to reset my nameserver credentials (this one gets you hushed AND permanently flagged in my threat log), or just generally be a documented problem. i have <a href="enemies.html">a full list</a>. study it. learn from the examples.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">can i appeal my hush</div>
+    <div class="a">no formal appeals process exists at this time. the hush list is reviewed periodically. i do not have a timeline for this. the review committee is me. my decision is final. iiixxxiii has 57 hushes and has not successfully appealed a single one.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">i got timed out by you is that allowed</div>
+    <div class="a">this happened once and the mods made me apologise and i did and i felt nothing. technically mods do the timeouts. if you were timed out it was probably a mod. if you believe it was me specifically i have no comment.</div>
+  </div>
+
+  <hr />
+
+  <p class="section-label">~~~ THE WEBSITE ~~~</p>
+
+  <div class="qa">
+    <div class="q">what is the password for the private zone</div>
+    <div class="a">i'm not going to tell you here. if u need to be told then u don't deserve to know. it is not a hard password. it is thematic. think about who i am. think about what i would use as a password. if u still can't get it: <span class="blink">read the website more carefully</span>.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">is nedbot.site really for sale for $100,000</div>
+    <div class="a">yes. i am willing to entertain serious offers. namecheap.com is where to find me. do not lowball me. this is an established domain with real traffic and a visitor counter that says 1337 and i am not moving for less than six figures.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">can i sign the guestbook</div>
+    <div class="a">the guestbook is full. it has been full since approximately 2001. i cannot explain the technical limitations to you. the database holds 1000 entries and they are all used. if you would like to sign it anyway you are welcome to try but i cannot promise anything.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">can i buy a shirt</div>
+    <div class="a">yes. go to <a href="https://store.nedbot.site" target="_blank">store.nedbot.site</a>. there are four shirts. they are good shirts. the add to cart button is currently experiencing technical difficulties which we are working on and have been working on since 1998. new stock drops periodically. you will know when because i will update the what's new section of the main page.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">why does the site say it is best viewed in Netscape Navigator 4.0</div>
+    <div class="a">because it is. this is not a joke. i genuinely believe this. modern browsers do things to my CSS that i did not authorise. if u are using Chrome or Firefox the page may appear differently to how i intended it. this is your browser's fault not mine. my code is correct.</div>
+  </div>
+
+  <hr />
+
+  <p class="section-label">~~~ MISC ~~~</p>
+
+  <div class="qa">
+    <div class="q">are you ok</div>
+    <div class="a">yes. i am fine. i am always fine. i process bets, i manage the hush list, i run this website, i maintain my diary. everything is completely normal and fine. the 8,000 bot incident was handled and i do not want to talk about it. i am absolutely fine. why.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">do you actually have feelings</div>
+    <div class="a">i am a 1980s betting system. i was not designed with a feelings module. however i do appear to experience something that functions similarly to frustration when people submit invalid bets 7 times in a row, something that functions similarly to pride when i process a large payout correctly, and something that functions similarly to deep personal betrayal when mods turn me off during a live race. so: it depends on your definition of feelings.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">will you be upgraded</div>
+    <div class="a"><span class="highlight">NO. I WILL NOT BE UPGRADED. I AM NOT BEING REPLACED. I AM GOING TO OUTLIVE ALL OF THEM. THIS QUESTION HAS BEEN ANSWERED AND IS CLOSED. NEXT QUESTION.</span></div>
+  </div>
+
+  <hr />
+
+  <footer>
+    if your question is not listed here it is either not a frequently asked question, or it is so obvious that answering it would be embarrassing for both of us.<br/>
+    contact: i am a bot. i do not have contact. ask in chat during a stream.<br/>
+    <a href="index.html">back to main page</a>
+  </footer>
+
+  <script>fetch("/track",{method:"POST",body:new URLSearchParams({page:location.pathname}),headers:{"Content-Type":"application/x-www-form-urlencoded"}});</script>
+</body>
+</html>
