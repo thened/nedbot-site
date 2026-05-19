@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>~*~ NedBot Support Tickets ~*~</title>
+  <title>NedBot Issue Tracker — Official Support Department</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
@@ -18,7 +18,7 @@
     marquee {
       background-color: #ff0000;
       color: #ffff00;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: bold;
       padding: 4px;
       border: 3px solid #ffffff;
@@ -34,7 +34,7 @@
 
     h2 {
       color: #00ffff;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       text-decoration: underline;
       margin: 0 0 10px;
     }
@@ -83,9 +83,7 @@
       font-size: 0.9rem;
       outline: none;
     }
-    input[type="text"]:focus, textarea:focus, select:focus {
-      border-color: #ff00ff;
-    }
+    input[type="text"]:focus, textarea:focus, select:focus { border-color: #ff00ff; }
     select option { background: #000040; }
     textarea { resize: vertical; min-height: 100px; }
 
@@ -122,11 +120,7 @@
       font-family: monospace;
     }
 
-    .tabs {
-      display: flex;
-      gap: 0;
-      margin-bottom: 0;
-    }
+    .tabs { display: flex; gap: 0; margin-bottom: 0; }
     .tab-btn {
       flex: 1;
       background: #000060;
@@ -145,20 +139,22 @@
     .tab-panel.active { display: block; }
 
     .hint { font-size: 0.8rem; color: #aaaaff; margin: 2px 0 0; }
+    .fine { font-size: 0.78rem; color: #7777aa; margin: 4px 0; line-height: 1.4; }
 
-    /* ── Ticket card (admin list) ── */
+    /* ticket card */
     .ticket-card {
       border: 2px solid #333399;
       background: #00001a;
       padding: 10px 14px;
       margin: 8px 0;
-      text-align: left;
     }
-    .ticket-card .tc-token { font-family: monospace; color: #00ffff; font-weight: bold; font-size: 1rem; }
-    .ticket-card .tc-title { color: #ffff00; font-size: 1rem; font-weight: bold; margin: 2px 0; }
-    .ticket-card .tc-meta  { font-size: 0.8rem; color: #aaaaaa; margin: 3px 0 6px; }
-    .ticket-card .tc-desc  { font-size: 0.85rem; color: #ccccff; white-space: pre-wrap; word-break: break-word; margin: 4px 0; border-left: 3px solid #333366; padding-left: 8px; }
-    .ticket-card .tc-notes { font-size: 0.8rem; color: #ffaa00; white-space: pre-wrap; border-left: 3px solid #664400; padding-left: 8px; margin-top: 4px; }
+    .tc-token { font-family: monospace; color: #00ffff; font-weight: bold; font-size: 1rem; }
+    .tc-title { color: #ffff00; font-size: 1rem; font-weight: bold; margin: 2px 0; }
+    .tc-meta  { font-size: 0.8rem; color: #aaaaaa; margin: 3px 0 6px; }
+    .tc-desc  { font-size: 0.85rem; color: #ccccff; white-space: pre-wrap; word-break: break-word;
+                margin: 4px 0; border-left: 3px solid #333366; padding-left: 8px; }
+    .tc-notes { font-size: 0.8rem; color: #ffaa00; white-space: pre-wrap;
+                border-left: 3px solid #664400; padding-left: 8px; margin-top: 4px; }
     .tc-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; align-items: center; }
     .tc-actions select { width: auto; font-size: 0.8rem; padding: 2px 4px; }
 
@@ -170,32 +166,27 @@
       border: 1px solid;
       margin-left: 6px;
     }
-    .badge-open      { color: #ffff00; border-color: #ffff00; background: #333300; }
+    .badge-open        { color: #ffff00; border-color: #ffff00; background: #333300; }
     .badge-in_progress { color: #00ffff; border-color: #00ffff; background: #003333; }
-    .badge-resolved  { color: #00ff00; border-color: #00ff00; background: #003300; }
-    .badge-closed    { color: #888888; border-color: #888888; background: #111111; }
-    .badge-wontfix   { color: #ff6600; border-color: #ff6600; background: #220d00; }
-    .badge-bug       { color: #ff4444; border-color: #ff4444; }
-    .badge-feature   { color: #44aaff; border-color: #44aaff; }
-    .badge-question  { color: #ffcc00; border-color: #ffcc00; }
-    .badge-other     { color: #aaaaaa; border-color: #aaaaaa; }
-    .badge-critical  { color: #ff0000; border-color: #ff0000; background: #1a0000; }
-    .badge-high      { color: #ff6600; border-color: #ff6600; }
-    .badge-medium    { color: #ffcc00; border-color: #ffcc00; }
-    .badge-low       { color: #888888; border-color: #888888; }
+    .badge-resolved    { color: #00ff00; border-color: #00ff00; background: #003300; }
+    .badge-closed      { color: #888888; border-color: #888888; background: #111111; }
+    .badge-wontfix     { color: #ff6600; border-color: #ff6600; background: #220d00; }
+    .badge-bug         { color: #ff4444; border-color: #ff4444; }
+    .badge-feature     { color: #44aaff; border-color: #44aaff; }
+    .badge-question    { color: #ffcc00; border-color: #ffcc00; }
+    .badge-other       { color: #aaaaaa; border-color: #aaaaaa; }
+    .badge-critical    { color: #ff0000; border-color: #ff0000; background: #1a0000; }
+    .badge-high        { color: #ff6600; border-color: #ff6600; }
+    .badge-medium      { color: #ffcc00; border-color: #ffcc00; }
+    .badge-low         { color: #888888; border-color: #888888; }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
       gap: 8px;
       margin: 10px 0;
     }
-    .stat-box {
-      border: 2px solid #333399;
-      background: #00001a;
-      padding: 8px;
-      text-align: center;
-    }
+    .stat-box { border: 2px solid #333399; background: #00001a; padding: 8px; text-align: center; }
     .stat-box .sv { font-size: 1.6rem; font-weight: bold; color: #00ffff; }
     .stat-box .sl { font-size: 0.75rem; color: #aaaaaa; }
 
@@ -205,75 +196,96 @@
 
     hr { border: 1px dashed #333399; margin: 12px 0; }
 
-    #back-link { display: block; margin: 10px auto; font-size: 0.9rem; }
-
     /* honeypot */
     .hp { display: none !important; }
   </style>
 </head>
 <body>
 
-<marquee>📋 NedBot Support System 📋 Submit bugs, feature requests, or questions! 📋 Check your ticket status below! 📋</marquee>
+<marquee scrollamount="4">📋 OFFICIAL NEDBOT ISSUE TRACKER 📋 all issues received 📋 all issues logged 📋 logging does not imply fixing 📋 fixing does not imply deploying 📋 deploying does not imply it working 📋</marquee>
 
-<h1>📋 Support Tickets</h1>
-<h2>~ Bug reports, feature requests &amp; questions ~</h2>
+<h1>📋 Issue Tracker</h1>
+<h2>~ official support department (real) ~</h2>
 
-<div class="section" style="text-align:center;padding:8px 14px">
-  <span style="color:#aaaaff;font-size:0.85rem">
-    For NedBot, nedbot.site, or NedBotsSister issues.
-    &nbsp;|&nbsp; <a href="/">← Home</a>
-  </span>
+<div class="section" style="text-align:left;padding:12px 18px">
+  <p style="margin:0 0 8px">
+    welcome to the NedBot official support department. this is a real system. your issues are logged into a real database running on real hardware in a real data centre in amsterdam or possibly frankfurt, i have not checked recently.
+  </p>
+  <p style="margin:0 0 8px">
+    <strong style="color:#ff8800;">what happens to your issue:</strong> it is received. it is assigned a reference number. it is stored. ned reviews tickets when he has time, which is sometimes never, but sometimes sooner. no timeline is guaranteed. no fix is guaranteed. the logging is guaranteed. the logging is the most reliable part of this process.
+  </p>
+  <p style="margin:0">
+    <strong style="color:#ff8800;">issues that will receive the most attention:</strong> things that are actually broken. issues where you can explain what you did and what happened. issues that include the phrase "i tried this and it did not work" followed by what you tried.<br>
+    <strong style="color:#ff8800;">issues that will receive less attention:</strong> "it's broken" with no further detail. feature requests that require ned to learn a new programming language. anything submitted more than three times. anything that is swimmernick's fault (he has his own process).
+  </p>
+  <p style="margin:8px 0 0;text-align:right"><a href="/">← home</a></p>
 </div>
 
 <div class="section" style="padding:0;overflow:hidden">
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('submit')">📝 Submit Ticket</button>
+    <button class="tab-btn active" onclick="switchTab('submit')">📝 Submit Issue</button>
     <button class="tab-btn" onclick="switchTab('lookup')">🔍 Check Status</button>
     <button class="tab-btn" onclick="switchTab('admin')">🔐 Admin</button>
   </div>
 
-  <!-- ═══════════════════════════════ SUBMIT TAB ═══════════════════════════ -->
+  <!-- ══════════════════════════════ SUBMIT TAB ═══════════════════════════ -->
   <div id="tab-submit" class="tab-panel active" style="padding:16px 18px">
-    <h3>📝 Submit a Ticket</h3>
+    <h3>📝 Submit an Issue</h3>
+    <p class="fine" style="margin-bottom:10px">
+      for bugs, feature requests, or questions about NedBot, nedbot.site, or associated NedBot-adjacent systems.
+      please do not submit issues about things that are working correctly. i know it can be hard to tell the difference.
+    </p>
     <div id="submit-result"></div>
     <div id="submit-form">
+
       <label for="f-title">Title <span class="blink">*</span></label>
-      <input type="text" id="f-title" placeholder="Short summary of the issue" maxlength="120">
+      <input type="text" id="f-title"
+        placeholder="short summary. e.g. '!bet win 5 not working' not 'BROKEN!!!!!'"
+        maxlength="120">
 
       <label for="f-category">Category <span class="blink">*</span></label>
       <select id="f-category">
-        <option value="bug">🐛 Bug — something is broken</option>
-        <option value="feature">💡 Feature Request — something I want added</option>
-        <option value="question">❓ Question — I need help with something</option>
-        <option value="other">📌 Other</option>
+        <option value="bug">🐛 Bug — something is broken and should not be</option>
+        <option value="feature">💡 Feature Request — something good that does not exist yet</option>
+        <option value="question">❓ Question — i am confused and require assistance</option>
+        <option value="other">📌 Other — none of the above apply (concerning)</option>
       </select>
 
       <label for="f-desc">Description <span class="blink">*</span></label>
-      <textarea id="f-desc" placeholder="Describe the issue in as much detail as possible. Steps to reproduce, what you expected vs what happened, etc." maxlength="4000"></textarea>
-      <div class="hint">Be as specific as possible — the more detail, the faster it gets fixed!</div>
+      <textarea id="f-desc"
+        placeholder="please describe:&#10;- what you were trying to do&#10;- what happened instead&#10;- what you expected to happen&#10;- any error messages (exact text preferred, 'it said something red' is less useful)&#10;&#10;the more detail you provide the higher chance something actually gets fixed. this is not a guarantee. it is a statistical tendency."
+        maxlength="4000"></textarea>
+      <div class="hint">minimum 10 characters. "its broken" does not meet this requirement.</div>
 
-      <label for="f-reporter">Your name / Kick username (optional)</label>
-      <input type="text" id="f-reporter" placeholder="e.g. grasscarp or anonymous" maxlength="60">
+      <label for="f-reporter">Your name / Kick username <span style="color:#888;font-weight:normal;font-size:0.85rem">(optional but helpful)</span></label>
+      <input type="text" id="f-reporter"
+        placeholder="e.g. grasscarp — leave blank to submit as 'anonymous (coward)'"
+        maxlength="60">
 
       <!-- honeypot — hidden from humans, bots fill this -->
       <div class="hp">
-        <label for="f-trap">Leave this empty</label>
+        <label for="f-trap">Leave this blank (bot trap)</label>
         <input type="text" id="f-trap" name="_trap" autocomplete="off">
       </div>
 
-      <div style="margin-top:14px;text-align:center">
-        <button onclick="submitTicket()">📤 Submit Ticket</button>
+      <div class="fine" style="margin-top:12px;border-top:1px dashed #333366;padding-top:10px">
+        by submitting this form you acknowledge that: submission does not guarantee action, that your issue will be logged under the applicable category, that ned reserves the right to read your issue and find it interesting, uninteresting, or already fixed in a version you have not refreshed yet.
+      </div>
+
+      <div style="text-align:center">
+        <button onclick="submitTicket()">📤 Submit Issue</button>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════ LOOKUP TAB ═══════════════════════════ -->
+  <!-- ══════════════════════════════ LOOKUP TAB ══════════════════════════ -->
   <div id="tab-lookup" class="tab-panel" style="padding:16px 18px">
-    <h3>🔍 Check Ticket Status</h3>
-    <p style="font-size:0.85rem;color:#aaaaff;margin-bottom:10px">
-      Enter the ticket token you received when you submitted your ticket.
+    <h3>🔍 Check Issue Status</h3>
+    <p class="fine" style="margin-bottom:10px">
+      enter the reference token you received when you submitted your issue. it looks like NED-XXXXXX.
+      if you lost it: that is on you. i cannot look up issues by description. i tried once and it did not go well.
     </p>
-    <label for="l-token">Ticket Token</label>
+    <label for="l-token">Reference Token</label>
     <input type="text" id="l-token" placeholder="NED-XXXXXX" maxlength="10"
            style="text-transform:uppercase;font-family:monospace;letter-spacing:0.1em"
            onkeydown="if(event.key==='Enter')lookupTicket()">
@@ -281,12 +293,13 @@
     <div id="lookup-result" style="margin-top:14px"></div>
   </div>
 
-  <!-- ═══════════════════════════════ ADMIN TAB ════════════════════════════ -->
+  <!-- ══════════════════════════════ ADMIN TAB ═══════════════════════════ -->
   <div id="tab-admin" class="tab-panel" style="padding:16px 18px">
     <div id="admin-login-panel">
-      <h3>🔐 Admin Login</h3>
+      <h3>🔐 Admin Access</h3>
+      <p class="fine">this section is for ned only. if you are not ned, please close this tab and reflect on how you got here.</p>
       <label for="admin-key">API Key</label>
-      <input type="password" id="admin-key" placeholder="Enter admin key"
+      <input type="password" id="admin-key" placeholder="the key. you know the key."
              onkeydown="if(event.key==='Enter')adminLogin()">
       <div style="text-align:center"><button onclick="adminLogin()">🔑 Login</button></div>
       <div id="admin-login-err"></div>
@@ -294,7 +307,7 @@
 
     <div id="admin-panel" style="display:none">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:12px">
-        <h3 style="margin:0">📋 Ticket Dashboard</h3>
+        <h3 style="margin:0">📋 Issue Dashboard</h3>
         <button class="small" onclick="adminLogout()">🚪 Logout</button>
       </div>
 
@@ -327,8 +340,9 @@
   </div>
 </div>
 
-<p style="font-size:0.75rem;color:#555599;margin-top:16px">
-  ~ NedBot Support System ~ Tickets are reviewed when ned has time ~
+<p class="fine" style="text-align:center;margin-top:14px">
+  ~ NedBot Official Issue Tracker v1.0 ~ built on real software ~ running on real electricity ~<br>
+  ~ issues are reviewed at ned's discretion ~ ned's discretion is unpredictable ~ this is by design ~
 </p>
 
 <script>
@@ -337,10 +351,9 @@ let _adminKey = '';
 
 // ── Tabs ─────────────────────────────────────────────────────────────────────
 function switchTab(name) {
-  ['submit','lookup','admin'].forEach(t => {
+  ['submit','lookup','admin'].forEach((t,i) => {
     document.getElementById('tab-'+t).classList.toggle('active', t===name);
-    const btn = document.querySelector(`.tab-btn:nth-child(${['submit','lookup','admin'].indexOf(t)+1})`);
-    if (btn) btn.classList.toggle('active', t===name);
+    document.querySelectorAll('.tab-btn')[i].classList.toggle('active', t===name);
   });
 }
 
@@ -348,57 +361,76 @@ function switchTab(name) {
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
-function badge(val, prefix) {
-  return `<span class="badge badge-${esc(val)}">${esc(val)}</span>`;
+function badge(val) {
+  return `<span class="badge badge-${esc(val)}">${esc(val.replace('_',' '))}</span>`;
 }
 function fmtDate(ts) {
   if (!ts) return '—';
   try { return new Date(ts+'Z').toLocaleString(); } catch { return ts; }
 }
 
+const STATUS_FLAVOUR = {
+  open:        '🟡 open — logged. in the queue. the queue is real.',
+  in_progress: '🔵 in progress — ned has looked at this. something is happening.',
+  resolved:    '✅ resolved — fixed, or at least ned thinks it is fixed. please verify.',
+  closed:      '⚫ closed — this ticket has been closed. closure does not imply resolution. it implies closure.',
+  wontfix:     "🚫 won't fix — this has been assessed and will not be fixed. this could be for many reasons. some of them are your fault.",
+};
+
 // ── Submit ────────────────────────────────────────────────────────────────────
 async function submitTicket() {
   const title    = document.getElementById('f-title').value.trim();
   const category = document.getElementById('f-category').value;
   const desc     = document.getElementById('f-desc').value.trim();
-  const reporter = document.getElementById('f-reporter').value.trim() || 'anonymous';
+  const reporter = document.getElementById('f-reporter').value.trim();
   const trap     = document.getElementById('f-trap').value;
   const el       = document.getElementById('submit-result');
 
   if (!title || title.length < 5) {
-    el.innerHTML = '<div class="msg-err">⚠ Title must be at least 5 characters.</div>'; return;
+    el.innerHTML = '<div class="msg-err">⚠ the title must be at least 5 characters. "bug" is not a title. it is a category. please provide a title.</div>';
+    return;
   }
   if (!desc || desc.length < 10) {
-    el.innerHTML = '<div class="msg-err">⚠ Description must be at least 10 characters.</div>'; return;
+    el.innerHTML = '<div class="msg-err">⚠ the description must be at least 10 characters. i need more than this to work with.</div>';
+    return;
   }
 
-  el.innerHTML = '<div class="msg-ok">⏳ Submitting...</div>';
+  el.innerHTML = '<div class="msg-ok">⏳ transmitting to the database in amsterdam (or frankfurt)...</div>';
   try {
     const r = await fetch(API, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ title, category, description: desc, reporter, _trap: trap })
+      body: JSON.stringify({
+        title, category, description: desc,
+        reporter: reporter || 'anonymous (coward)',
+        _trap: trap
+      })
     });
     const d = await r.json();
     if (!r.ok) {
-      el.innerHTML = `<div class="msg-err">⚠ ${esc(d.error||'Submission failed. Try again.')}</div>`;
+      const msgs = {
+        429: "you have submitted too many issues recently. the system is overwhelmed. the system is a sqlite database and is not actually overwhelmed, but i need you to slow down. please wait 30 minutes.",
+      };
+      el.innerHTML = `<div class="msg-err">⚠ ${esc(msgs[r.status] || d.error || 'submission failed. this is ironic given that you are trying to report a problem.')}</div>`;
       return;
     }
-    // Success — show token and hide form
     document.getElementById('submit-form').style.display = 'none';
     el.innerHTML = `
-      <div class="msg-ok">✅ Ticket submitted successfully!</div>
-      <p style="color:#aaaaff;font-size:0.9rem;margin:10px 0 4px">Your ticket token (save this to check status later):</p>
+      <div class="msg-ok">✅ issue received. it has been logged. the logging is confirmed.</div>
+      <p style="color:#aaaaff;font-size:0.9rem;margin:10px 0 4px">
+        your reference token (write this down. i cannot look up issues by description. i tried.):
+      </p>
       <div class="token-box">${esc(d.token)}</div>
-      <p style="color:#aaaaff;font-size:0.85rem;margin:8px 0">
-        Use this token in the <strong style="color:#ffff00">Check Status</strong> tab to track progress.
-        Ned reviews tickets when he has time — no ETA is guaranteed.
+      <p style="color:#aaaaff;font-size:0.85rem;margin:8px 0;line-height:1.5">
+        use this token in the <strong style="color:#ffff00">Check Status</strong> tab to track progress.
+        ned reviews issues when he has time. "when he has time" is a variable quantity.
+        you will not be emailed. you will not be called. check the status tab. that is what it is for.
       </p>
       <div style="text-align:center;margin-top:12px">
-        <button onclick="resetForm()">📝 Submit Another</button>
+        <button onclick="resetForm()">📝 Submit Another Issue</button>
       </div>`;
   } catch(e) {
-    el.innerHTML = `<div class="msg-err">⚠ Network error. Please try again.</div>`;
+    el.innerHTML = `<div class="msg-err">⚠ network error. this may itself be a bug worth reporting. the irony is noted.</div>`;
   }
 }
 
@@ -413,33 +445,35 @@ function resetForm() {
 async function lookupTicket() {
   const token = document.getElementById('l-token').value.trim().toUpperCase();
   const el    = document.getElementById('lookup-result');
-  if (!token) { el.innerHTML = '<div class="msg-err">⚠ Enter a ticket token.</div>'; return; }
+  if (!token) {
+    el.innerHTML = '<div class="msg-err">⚠ please enter a reference token. it starts with NED-.</div>';
+    return;
+  }
 
-  el.innerHTML = '<div class="msg-ok">⏳ Looking up...</div>';
+  el.innerHTML = '<div class="msg-ok">⏳ querying the database...</div>';
   try {
     const r = await fetch(`${API}/${encodeURIComponent(token)}`);
     const d = await r.json();
     if (!r.ok) {
-      el.innerHTML = `<div class="msg-err">⚠ ${esc(d.error||'Not found.')}</div>`; return;
+      el.innerHTML = `<div class="msg-err">⚠ ${esc(d.error||'not found.')} if you are certain the token is correct, it is possible the issue was deleted. this happens sometimes. i am sorry about this but not very sorry.</div>`;
+      return;
     }
-    const statusEmoji = {open:'🟡',in_progress:'🔵',resolved:'✅',closed:'⚫',wontfix:'🚫'}[d.status]||'❓';
+    const flavour = STATUS_FLAVOUR[d.status] || d.status;
     el.innerHTML = `
       <div class="ticket-card">
-        <div class="tc-token">${esc(d.token)} ${badge(d.status,'')} ${badge(d.category,'')} ${badge(d.priority,'')}</div>
+        <div class="tc-token">${esc(d.token)} ${badge(d.status)} ${badge(d.category)} ${badge(d.priority)}</div>
         <div class="tc-title">${esc(d.title)}</div>
         <div class="tc-meta">
-          Submitted by <strong>${esc(d.reporter)}</strong>
-          ${d.kick_user ? '(Kick: '+esc(d.kick_user)+')' : ''}
+          submitted by <strong>${esc(d.reporter)}</strong>
+          ${d.kick_user ? '(kick: '+esc(d.kick_user)+')' : ''}
           · ${fmtDate(d.created_at)}
-          ${d.updated_at && d.updated_at!==d.created_at ? '· Updated '+fmtDate(d.updated_at) : ''}
+          ${d.updated_at && d.updated_at!==d.created_at ? '· last updated '+fmtDate(d.updated_at) : ''}
         </div>
         <div class="tc-desc">${esc(d.description)}</div>
-        <div style="margin-top:10px;font-size:0.9rem">
-          Status: <strong>${statusEmoji} ${esc(d.status.replace('_',' '))}</strong>
-        </div>
+        <div style="margin-top:10px;font-size:0.9rem;color:#aaaaff">${esc(flavour)}</div>
       </div>`;
   } catch(e) {
-    el.innerHTML = `<div class="msg-err">⚠ Network error. Please try again.</div>`;
+    el.innerHTML = `<div class="msg-err">⚠ network error. try again. if it keeps failing that is also a bug you can report.</div>`;
   }
 }
 
@@ -458,20 +492,21 @@ async function lookupTicket() {
 async function adminLogin() {
   const key = document.getElementById('admin-key').value.trim();
   const err = document.getElementById('admin-login-err');
-  if (!key) { err.innerHTML = '<div class="msg-err">⚠ Enter the API key.</div>'; return; }
+  if (!key) { err.innerHTML = '<div class="msg-err">⚠ the key. you need the key.</div>'; return; }
 
-  // Validate by hitting the stats endpoint
   try {
     const r = await fetch(`${API}/stats`, { headers: {'X-Blog-Key': key} });
-    if (!r.ok) { err.innerHTML = '<div class="msg-err">⚠ Invalid key.</div>'; return; }
+    if (!r.ok) {
+      err.innerHTML = '<div class="msg-err">⚠ incorrect key. if you are not ned, please leave.</div>';
+      return;
+    }
     _adminKey = key;
     document.getElementById('admin-login-panel').style.display = 'none';
     document.getElementById('admin-panel').style.display = '';
-    const d = await r.json();
-    renderAdminStats(d);
+    renderAdminStats(await r.json());
     loadAdminTickets();
   } catch(e) {
-    err.innerHTML = '<div class="msg-err">⚠ Network error.</div>';
+    err.innerHTML = '<div class="msg-err">⚠ network error.</div>';
   }
 }
 
@@ -483,17 +518,12 @@ function adminLogout() {
 }
 
 function renderAdminStats(d) {
-  const statusOrder = ['open','in_progress','resolved','closed','wontfix'];
-  const statusLabel = {open:'Open',in_progress:'In Progress',resolved:'Resolved',closed:'Closed',wontfix:"Won't Fix"};
+  const order = ['open','in_progress','resolved','closed','wontfix'];
+  const label = {open:'Open',in_progress:'In Progress',resolved:'Resolved',closed:'Closed',wontfix:"Won't Fix"};
   const bs = d.by_status || {};
-  const cells = statusOrder.map(s =>
-    `<div class="stat-box">
-       <div class="sv">${bs[s]||0}</div>
-       <div class="sl">${statusLabel[s]||s}</div>
-     </div>`
-  ).join('');
   document.getElementById('admin-stats').innerHTML =
-    `<div class="stat-box"><div class="sv">${d.total||0}</div><div class="sl">Total</div></div>` + cells;
+    `<div class="stat-box"><div class="sv">${d.total||0}</div><div class="sl">Total</div></div>` +
+    order.map(s => `<div class="stat-box"><div class="sv">${bs[s]||0}</div><div class="sl">${label[s]}</div></div>`).join('');
 }
 
 async function loadAdminTickets() {
@@ -501,53 +531,50 @@ async function loadAdminTickets() {
   const status   = document.getElementById('filter-status').value;
   const category = document.getElementById('filter-category').value;
   const el       = document.getElementById('admin-tickets');
-  el.innerHTML   = '<div style="color:#aaaaff;font-size:0.85rem">⏳ Loading...</div>';
+  el.innerHTML   = '<div style="color:#aaaaff;font-size:0.85rem">⏳ loading...</div>';
 
-  let url = API + '?key=' + encodeURIComponent(_adminKey);
-  if (status)   url += '&status='   + encodeURIComponent(status);
-  if (category) url += '&category=' + encodeURIComponent(category);
+  let url = `${API}?key=${encodeURIComponent(_adminKey)}`;
+  if (status)   url += `&status=${encodeURIComponent(status)}`;
+  if (category) url += `&category=${encodeURIComponent(category)}`;
 
   try {
     const r = await fetch(url);
     const tickets = await r.json();
     if (!tickets.length) {
-      el.innerHTML = '<div style="color:#aaaaaa;font-size:0.85rem;padding:10px 0">No tickets found.</div>';
+      el.innerHTML = '<div style="color:#aaaaaa;font-size:0.85rem;padding:10px 0">no tickets match this filter. this is either good news or the filter is wrong.</div>';
       return;
     }
-    el.innerHTML = tickets.map(t => renderAdminTicket(t)).join('');
+    el.innerHTML = tickets.map(renderAdminTicket).join('');
 
-    // Also refresh stats
     const sr = await fetch(`${API}/stats?key=${encodeURIComponent(_adminKey)}`);
     if (sr.ok) renderAdminStats(await sr.json());
   } catch(e) {
-    el.innerHTML = '<div class="msg-err">⚠ Failed to load tickets.</div>';
+    el.innerHTML = '<div class="msg-err">⚠ failed to load tickets.</div>';
   }
 }
 
 function renderAdminTicket(t) {
-  const noteHtml = t.admin_notes
-    ? `<div class="tc-notes">📝 Notes: ${esc(t.admin_notes)}</div>` : '';
   return `
     <div class="ticket-card" id="tc-${esc(t.token)}">
-      <div class="tc-token">${esc(t.token)} ${badge(t.status,'')} ${badge(t.category,'')} ${badge(t.priority,'')}</div>
+      <div class="tc-token">${esc(t.token)} ${badge(t.status)} ${badge(t.category)} ${badge(t.priority)}</div>
       <div class="tc-title">${esc(t.title)}</div>
       <div class="tc-meta">
-        By <strong>${esc(t.reporter)}</strong>
-        ${t.kick_user ? '(Kick: '+esc(t.kick_user)+')' : ''}
+        by <strong>${esc(t.reporter)}</strong>
+        ${t.kick_user ? '(kick: '+esc(t.kick_user)+')' : ''}
         · ${fmtDate(t.created_at)}
-        ${t.updated_at && t.updated_at!==t.created_at ? '· Updated '+fmtDate(t.updated_at) : ''}
+        ${t.updated_at && t.updated_at!==t.created_at ? '· updated '+fmtDate(t.updated_at) : ''}
       </div>
       <div class="tc-desc">${esc(t.description)}</div>
-      ${noteHtml}
+      ${t.admin_notes ? `<div class="tc-notes">📝 notes: ${esc(t.admin_notes)}</div>` : ''}
       <div class="tc-actions">
-        <label style="display:inline;color:#aaaaaa;font-size:0.8rem">Status:</label>
-        <select id="sel-status-${esc(t.token)}" class="small">
+        <label style="display:inline;color:#aaaaaa;font-size:0.8rem">status:</label>
+        <select id="sel-status-${esc(t.token)}">
           ${['open','in_progress','resolved','closed','wontfix'].map(s =>
             `<option value="${s}"${s===t.status?' selected':''}>${s.replace('_',' ')}</option>`
           ).join('')}
         </select>
-        <label style="display:inline;color:#aaaaaa;font-size:0.8rem">Priority:</label>
-        <select id="sel-priority-${esc(t.token)}" class="small">
+        <label style="display:inline;color:#aaaaaa;font-size:0.8rem">priority:</label>
+        <select id="sel-priority-${esc(t.token)}">
           ${['low','medium','high','critical'].map(p =>
             `<option value="${p}"${p===t.priority?' selected':''}>${p}</option>`
           ).join('')}
@@ -556,9 +583,9 @@ function renderAdminTicket(t) {
         <button class="small danger" onclick="deleteTicket('${esc(t.token)}')">🗑 Delete</button>
       </div>
       <div style="margin-top:6px">
-        <label style="display:inline;color:#aaaaaa;font-size:0.8rem">Admin notes:</label><br>
+        <label style="display:inline;color:#aaaaaa;font-size:0.8rem">internal notes (not shown to user):</label><br>
         <textarea id="notes-${esc(t.token)}" style="min-height:50px;margin-top:3px"
-          placeholder="Internal notes (not shown to submitter)"
+          placeholder="notes to self. the user cannot see this. you can say whatever you want here."
           maxlength="2000">${esc(t.admin_notes||'')}</textarea>
       </div>
     </div>`;
@@ -578,9 +605,10 @@ async function saveTicket(token) {
       const card = document.getElementById('tc-'+token);
       if (card) {
         const flash = document.createElement('div');
-        flash.className = 'msg-ok'; flash.textContent = '✅ Saved!';
+        flash.className = 'msg-ok';
+        flash.textContent = '✅ saved. the database has been updated. the database is reliable.';
         card.prepend(flash);
-        setTimeout(() => flash.remove(), 2000);
+        setTimeout(() => flash.remove(), 2500);
       }
       loadAdminTickets();
     }
@@ -588,7 +616,7 @@ async function saveTicket(token) {
 }
 
 async function deleteTicket(token) {
-  if (!confirm(`Delete ticket ${token}? This cannot be undone.`)) return;
+  if (!confirm(`delete ticket ${token}?\n\nthis cannot be undone. the ticket will be gone. the user will not be notified. this is fine.`)) return;
   try {
     await fetch(`${API}/${encodeURIComponent(token)}`, {
       method: 'DELETE',
