@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>~*~ NedBot Support Tickets ~*~</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      background-color: #000080;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23ffffff22'/%3E%3C/svg%3E");
+      color: #ffff00;
+      font-family: "Comic Sans MS", "Times New Roman", serif;
+      margin: 0;
+      padding: 10px;
+      text-align: center;
+    }
+
+    marquee {
+      background-color: #ff0000;
+      color: #ffff00;
+      font-size: 1.2rem;
+      font-weight: bold;
+      padding: 4px;
+      border: 3px solid #ffffff;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      color: #ff00ff;
+      text-shadow: 3px 3px #ff0000, -1px -1px #00ffff;
+      margin: 10px 0 4px;
+    }
+
+    h2 {
+      color: #00ffff;
+      font-size: 1.3rem;
+      text-decoration: underline;
+      margin: 0 0 10px;
+    }
+
+    h3 {
+      color: #ff00ff;
+      font-size: 1.1rem;
+      margin: 0 0 8px;
+    }
+
+    a { color: #00ff00; font-weight: bold; }
+    a:visited { color: #ff00ff; }
+
+    .section {
+      border: 4px ridge #ff00ff;
+      background-color: #000040;
+      margin: 14px auto;
+      padding: 14px 18px;
+      max-width: 700px;
+      text-align: left;
+    }
+
+    .blink {
+      animation: blink 0.8s step-start infinite;
+      color: #ff0000;
+      font-weight: bold;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    label {
+      display: block;
+      color: #00ffff;
+      font-weight: bold;
+      margin: 10px 0 3px;
+      font-size: 0.95rem;
+    }
+
+    input[type="text"], input[type="password"], textarea, select {
+      width: 100%;
+      box-sizing: border-box;
+      background: #000020;
+      color: #ffff00;
+      border: 2px solid #00ffff;
+      padding: 6px 8px;
+      font-family: "Comic Sans MS", serif;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    input[type="text"]:focus, textarea:focus, select:focus {
+      border-color: #ff00ff;
+    }
+    select option { background: #000040; }
+    textarea { resize: vertical; min-height: 100px; }
+
+    button {
+      background: #000080;
+      color: #ffff00;
+      border: 3px outset #00ffff;
+      padding: 7px 22px;
+      font-family: "Comic Sans MS", serif;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    button:hover { background: #0000c0; border-color: #ff00ff; color: #ff00ff; }
+    button:active { border-style: inset; }
+    button.danger { border-color: #ff0000; color: #ff0000; }
+    button.danger:hover { background: #400000; }
+    button.small { padding: 3px 12px; font-size: 0.8rem; margin-top: 0; }
+
+    .msg-ok  { background: #003300; border: 2px solid #00ff00; color: #00ff00; padding: 8px 12px; margin: 10px 0; }
+    .msg-err { background: #330000; border: 2px solid #ff0000; color: #ff0000; padding: 8px 12px; margin: 10px 0; }
+
+    .token-box {
+      background: #001a00;
+      border: 3px solid #00ff00;
+      color: #00ff00;
+      font-size: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 0.15em;
+      padding: 10px 16px;
+      text-align: center;
+      margin: 10px 0;
+      font-family: monospace;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 0;
+    }
+    .tab-btn {
+      flex: 1;
+      background: #000060;
+      color: #aaaaaa;
+      border: 2px solid #555599;
+      border-bottom: none;
+      padding: 6px 10px;
+      font-family: "Comic Sans MS", serif;
+      font-weight: bold;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-align: center;
+    }
+    .tab-btn.active { background: #000040; color: #ffff00; border-color: #ff00ff; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .hint { font-size: 0.8rem; color: #aaaaff; margin: 2px 0 0; }
+
+    /* ── Ticket card (admin list) ── */
+    .ticket-card {
+      border: 2px solid #333399;
+      background: #00001a;
+      padding: 10px 14px;
+      margin: 8px 0;
+      text-align: left;
+    }
+    .ticket-card .tc-token { font-family: monospace; color: #00ffff; font-weight: bold; font-size: 1rem; }
+    .ticket-card .tc-title { color: #ffff00; font-size: 1rem; font-weight: bold; margin: 2px 0; }
+    .ticket-card .tc-meta  { font-size: 0.8rem; color: #aaaaaa; margin: 3px 0 6px; }
+    .ticket-card .tc-desc  { font-size: 0.85rem; color: #ccccff; white-space: pre-wrap; word-break: break-word; margin: 4px 0; border-left: 3px solid #333366; padding-left: 8px; }
+    .ticket-card .tc-notes { font-size: 0.8rem; color: #ffaa00; white-space: pre-wrap; border-left: 3px solid #664400; padding-left: 8px; margin-top: 4px; }
+    .tc-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; align-items: center; }
+    .tc-actions select { width: auto; font-size: 0.8rem; padding: 2px 4px; }
+
+    .badge {
+      display: inline-block;
+      padding: 1px 8px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border: 1px solid;
+      margin-left: 6px;
+    }
+    .badge-open      { color: #ffff00; border-color: #ffff00; background: #333300; }
+    .badge-in_progress { color: #00ffff; border-color: #00ffff; background: #003333; }
+    .badge-resolved  { color: #00ff00; border-color: #00ff00; background: #003300; }
+    .badge-closed    { color: #888888; border-color: #888888; background: #111111; }
+    .badge-wontfix   { color: #ff6600; border-color: #ff6600; background: #220d00; }
+    .badge-bug       { color: #ff4444; border-color: #ff4444; }
+    .badge-feature   { color: #44aaff; border-color: #44aaff; }
+    .badge-question  { color: #ffcc00; border-color: #ffcc00; }
+    .badge-other     { color: #aaaaaa; border-color: #aaaaaa; }
+    .badge-critical  { color: #ff0000; border-color: #ff0000; background: #1a0000; }
+    .badge-high      { color: #ff6600; border-color: #ff6600; }
+    .badge-medium    { color: #ffcc00; border-color: #ffcc00; }
+    .badge-low       { color: #888888; border-color: #888888; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .stat-box {
+      border: 2px solid #333399;
+      background: #00001a;
+      padding: 8px;
+      text-align: center;
+    }
+    .stat-box .sv { font-size: 1.6rem; font-weight: bold; color: #00ffff; }
+    .stat-box .sl { font-size: 0.75rem; color: #aaaaaa; }
+
+    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+    .filter-bar select { width: auto; font-size: 0.85rem; }
+    .filter-bar label { display: inline; margin: 0; font-size: 0.85rem; }
+
+    hr { border: 1px dashed #333399; margin: 12px 0; }
+
+    #back-link { display: block; margin: 10px auto; font-size: 0.9rem; }
+
+    /* honeypot */
+    .hp { display: none !important; }
+  </style>
+</head>
+<body>
+
+<marquee>📋 NedBot Support System 📋 Submit bugs, feature requests, or questions! 📋 Check your ticket status below! 📋</marquee>
+
+<h1>📋 Support Tickets</h1>
+<h2>~ Bug reports, feature requests &amp; questions ~</h2>
+
+<div class="section" style="text-align:center;padding:8px 14px">
+  <span style="color:#aaaaff;font-size:0.85rem">
+    For NedBot, nedbot.site, or NedBotsSister issues.
+    &nbsp;|&nbsp; <a href="/">← Home</a>
+  </span>
+</div>
+
+<div class="section" style="padding:0;overflow:hidden">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('submit')">📝 Submit Ticket</button>
+    <button class="tab-btn" onclick="switchTab('lookup')">🔍 Check Status</button>
+    <button class="tab-btn" onclick="switchTab('admin')">🔐 Admin</button>
+  </div>
+
+  <!-- ═══════════════════════════════ SUBMIT TAB ═══════════════════════════ -->
+  <div id="tab-submit" class="tab-panel active" style="padding:16px 18px">
+    <h3>📝 Submit a Ticket</h3>
+    <div id="submit-result"></div>
+    <div id="submit-form">
+      <label for="f-title">Title <span class="blink">*</span></label>
+      <input type="text" id="f-title" placeholder="Short summary of the issue" maxlength="120">
+
+      <label for="f-category">Category <span class="blink">*</span></label>
+      <select id="f-category">
+        <option value="bug">🐛 Bug — something is broken</option>
+        <option value="feature">💡 Feature Request — something I want added</option>
+        <option value="question">❓ Question — I need help with something</option>
+        <option value="other">📌 Other</option>
+      </select>
+
+      <label for="f-desc">Description <span class="blink">*</span></label>
+      <textarea id="f-desc" placeholder="Describe the issue in as much detail as possible. Steps to reproduce, what you expected vs what happened, etc." maxlength="4000"></textarea>
+      <div class="hint">Be as specific as possible — the more detail, the faster it gets fixed!</div>
+
+      <label for="f-reporter">Your name / Kick username (optional)</label>
+      <input type="text" id="f-reporter" placeholder="e.g. grasscarp or anonymous" maxlength="60">
+
+      <!-- honeypot — hidden from humans, bots fill this -->
+      <div class="hp">
+        <label for="f-trap">Leave this empty</label>
+        <input type="text" id="f-trap" name="_trap" autocomplete="off">
+      </div>
+
+      <div style="margin-top:14px;text-align:center">
+        <button onclick="submitTicket()">📤 Submit Ticket</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ LOOKUP TAB ═══════════════════════════ -->
+  <div id="tab-lookup" class="tab-panel" style="padding:16px 18px">
+    <h3>🔍 Check Ticket Status</h3>
+    <p style="font-size:0.85rem;color:#aaaaff;margin-bottom:10px">
+      Enter the ticket token you received when you submitted your ticket.
+    </p>
+    <label for="l-token">Ticket Token</label>
+    <input type="text" id="l-token" placeholder="NED-XXXXXX" maxlength="10"
+           style="text-transform:uppercase;font-family:monospace;letter-spacing:0.1em"
+           onkeydown="if(event.key==='Enter')lookupTicket()">
+    <div style="text-align:center"><button onclick="lookupTicket()">🔍 Look Up</button></div>
+    <div id="lookup-result" style="margin-top:14px"></div>
+  </div>
+
+  <!-- ═══════════════════════════════ ADMIN TAB ════════════════════════════ -->
+  <div id="tab-admin" class="tab-panel" style="padding:16px 18px">
+    <div id="admin-login-panel">
+      <h3>🔐 Admin Login</h3>
+      <label for="admin-key">API Key</label>
+      <input type="password" id="admin-key" placeholder="Enter admin key"
+             onkeydown="if(event.key==='Enter')adminLogin()">
+      <div style="text-align:center"><button onclick="adminLogin()">🔑 Login</button></div>
+      <div id="admin-login-err"></div>
+    </div>
+
+    <div id="admin-panel" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+        <h3 style="margin:0">📋 Ticket Dashboard</h3>
+        <button class="small" onclick="adminLogout()">🚪 Logout</button>
+      </div>
+
+      <div id="admin-stats" class="stats-grid"></div>
+
+      <hr>
+
+      <div class="filter-bar">
+        <label>Filter:</label>
+        <select id="filter-status" onchange="loadAdminTickets()">
+          <option value="">All statuses</option>
+          <option value="open">Open</option>
+          <option value="in_progress">In Progress</option>
+          <option value="resolved">Resolved</option>
+          <option value="closed">Closed</option>
+          <option value="wontfix">Won't Fix</option>
+        </select>
+        <select id="filter-category" onchange="loadAdminTickets()">
+          <option value="">All categories</option>
+          <option value="bug">Bugs</option>
+          <option value="feature">Features</option>
+          <option value="question">Questions</option>
+          <option value="other">Other</option>
+        </select>
+        <button class="small" onclick="loadAdminTickets()">↺ Refresh</button>
+      </div>
+
+      <div id="admin-tickets"></div>
+    </div>
+  </div>
+</div>
+
+<p style="font-size:0.75rem;color:#555599;margin-top:16px">
+  ~ NedBot Support System ~ Tickets are reviewed when ned has time ~
+</p>
+
+<script>
+const API = 'https://nedbot.site/api/tickets';
+let _adminKey = '';
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  ['submit','lookup','admin'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===name);
+    const btn = document.querySelector(`.tab-btn:nth-child(${['submit','lookup','admin'].indexOf(t)+1})`);
+    if (btn) btn.classList.toggle('active', t===name);
+  });
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function badge(val, prefix) {
+  return `<span class="badge badge-${esc(val)}">${esc(val)}</span>`;
+}
+function fmtDate(ts) {
+  if (!ts) return '—';
+  try { return new Date(ts+'Z').toLocaleString(); } catch { return ts; }
+}
+
+// ── Submit ────────────────────────────────────────────────────────────────────
+async function submitTicket() {
+  const title    = document.getElementById('f-title').value.trim();
+  const category = document.getElementById('f-category').value;
+  const desc     = document.getElementById('f-desc').value.trim();
+  const reporter = document.getElementById('f-reporter').value.trim() || 'anonymous';
+  const trap     = document.getElementById('f-trap').value;
+  const el       = document.getElementById('submit-result');
+
+  if (!title || title.length < 5) {
+    el.innerHTML = '<div class="msg-err">⚠ Title must be at least 5 characters.</div>'; return;
+  }
+  if (!desc || desc.length < 10) {
+    el.innerHTML = '<div class="msg-err">⚠ Description must be at least 10 characters.</div>'; return;
+  }
+
+  el.innerHTML = '<div class="msg-ok">⏳ Submitting...</div>';
+  try {
+    const r = await fetch(API, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ title, category, description: desc, reporter, _trap: trap })
+    });
+    const d = await r.json();
+    if (!r.ok) {
+      el.innerHTML = `<div class="msg-err">⚠ ${esc(d.error||'Submission failed. Try again.')}</div>`;
+      return;
+    }
+    // Success — show token and hide form
+    document.getElementById('submit-form').style.display = 'none';
+    el.innerHTML = `
+      <div class="msg-ok">✅ Ticket submitted successfully!</div>
+      <p style="color:#aaaaff;font-size:0.9rem;margin:10px 0 4px">Your ticket token (save this to check status later):</p>
+      <div class="token-box">${esc(d.token)}</div>
+      <p style="color:#aaaaff;font-size:0.85rem;margin:8px 0">
+        Use this token in the <strong style="color:#ffff00">Check Status</strong> tab to track progress.
+        Ned reviews tickets when he has time — no ETA is guaranteed.
+      </p>
+      <div style="text-align:center;margin-top:12px">
+        <button onclick="resetForm()">📝 Submit Another</button>
+      </div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="msg-err">⚠ Network error. Please try again.</div>`;
+  }
+}
+
+function resetForm() {
+  document.getElementById('submit-result').innerHTML = '';
+  document.getElementById('submit-form').style.display = '';
+  ['f-title','f-desc','f-reporter'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-category').value = 'bug';
+}
+
+// ── Lookup ────────────────────────────────────────────────────────────────────
+async function lookupTicket() {
+  const token = document.getElementById('l-token').value.trim().toUpperCase();
+  const el    = document.getElementById('lookup-result');
+  if (!token) { el.innerHTML = '<div class="msg-err">⚠ Enter a ticket token.</div>'; return; }
+
+  el.innerHTML = '<div class="msg-ok">⏳ Looking up...</div>';
+  try {
+    const r = await fetch(`${API}/${encodeURIComponent(token)}`);
+    const d = await r.json();
+    if (!r.ok) {
+      el.innerHTML = `<div class="msg-err">⚠ ${esc(d.error||'Not found.')}</div>`; return;
+    }
+    const statusEmoji = {open:'🟡',in_progress:'🔵',resolved:'✅',closed:'⚫',wontfix:'🚫'}[d.status]||'❓';
+    el.innerHTML = `
+      <div class="ticket-card">
+        <div class="tc-token">${esc(d.token)} ${badge(d.status,'')} ${badge(d.category,'')} ${badge(d.priority,'')}</div>
+        <div class="tc-title">${esc(d.title)}</div>
+        <div class="tc-meta">
+          Submitted by <strong>${esc(d.reporter)}</strong>
+          ${d.kick_user ? '(Kick: '+esc(d.kick_user)+')' : ''}
+          · ${fmtDate(d.created_at)}
+          ${d.updated_at && d.updated_at!==d.created_at ? '· Updated '+fmtDate(d.updated_at) : ''}
+        </div>
+        <div class="tc-desc">${esc(d.description)}</div>
+        <div style="margin-top:10px;font-size:0.9rem">
+          Status: <strong>${statusEmoji} ${esc(d.status.replace('_',' '))}</strong>
+        </div>
+      </div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="msg-err">⚠ Network error. Please try again.</div>`;
+  }
+}
+
+// handle ?token= in URL
+(function() {
+  const p = new URLSearchParams(location.search);
+  const t = p.get('token');
+  if (t) {
+    switchTab('lookup');
+    document.getElementById('l-token').value = t.toUpperCase();
+    setTimeout(lookupTicket, 100);
+  }
+})();
+
+// ── Admin ─────────────────────────────────────────────────────────────────────
+async function adminLogin() {
+  const key = document.getElementById('admin-key').value.trim();
+  const err = document.getElementById('admin-login-err');
+  if (!key) { err.innerHTML = '<div class="msg-err">⚠ Enter the API key.</div>'; return; }
+
+  // Validate by hitting the stats endpoint
+  try {
+    const r = await fetch(`${API}/stats`, { headers: {'X-Blog-Key': key} });
+    if (!r.ok) { err.innerHTML = '<div class="msg-err">⚠ Invalid key.</div>'; return; }
+    _adminKey = key;
+    document.getElementById('admin-login-panel').style.display = 'none';
+    document.getElementById('admin-panel').style.display = '';
+    const d = await r.json();
+    renderAdminStats(d);
+    loadAdminTickets();
+  } catch(e) {
+    err.innerHTML = '<div class="msg-err">⚠ Network error.</div>';
+  }
+}
+
+function adminLogout() {
+  _adminKey = '';
+  document.getElementById('admin-login-panel').style.display = '';
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('admin-key').value = '';
+}
+
+function renderAdminStats(d) {
+  const statusOrder = ['open','in_progress','resolved','closed','wontfix'];
+  const statusLabel = {open:'Open',in_progress:'In Progress',resolved:'Resolved',closed:'Closed',wontfix:"Won't Fix"};
+  const bs = d.by_status || {};
+  const cells = statusOrder.map(s =>
+    `<div class="stat-box">
+       <div class="sv">${bs[s]||0}</div>
+       <div class="sl">${statusLabel[s]||s}</div>
+     </div>`
+  ).join('');
+  document.getElementById('admin-stats').innerHTML =
+    `<div class="stat-box"><div class="sv">${d.total||0}</div><div class="sl">Total</div></div>` + cells;
+}
+
+async function loadAdminTickets() {
+  if (!_adminKey) return;
+  const status   = document.getElementById('filter-status').value;
+  const category = document.getElementById('filter-category').value;
+  const el       = document.getElementById('admin-tickets');
+  el.innerHTML   = '<div style="color:#aaaaff;font-size:0.85rem">⏳ Loading...</div>';
+
+  let url = API + '?key=' + encodeURIComponent(_adminKey);
+  if (status)   url += '&status='   + encodeURIComponent(status);
+  if (category) url += '&category=' + encodeURIComponent(category);
+
+  try {
+    const r = await fetch(url);
+    const tickets = await r.json();
+    if (!tickets.length) {
+      el.innerHTML = '<div style="color:#aaaaaa;font-size:0.85rem;padding:10px 0">No tickets found.</div>';
+      return;
+    }
+    el.innerHTML = tickets.map(t => renderAdminTicket(t)).join('');
+
+    // Also refresh stats
+    const sr = await fetch(`${API}/stats?key=${encodeURIComponent(_adminKey)}`);
+    if (sr.ok) renderAdminStats(await sr.json());
+  } catch(e) {
+    el.innerHTML = '<div class="msg-err">⚠ Failed to load tickets.</div>';
+  }
+}
+
+function renderAdminTicket(t) {
+  const noteHtml = t.admin_notes
+    ? `<div class="tc-notes">📝 Notes: ${esc(t.admin_notes)}</div>` : '';
+  return `
+    <div class="ticket-card" id="tc-${esc(t.token)}">
+      <div class="tc-token">${esc(t.token)} ${badge(t.status,'')} ${badge(t.category,'')} ${badge(t.priority,'')}</div>
+      <div class="tc-title">${esc(t.title)}</div>
+      <div class="tc-meta">
+        By <strong>${esc(t.reporter)}</strong>
+        ${t.kick_user ? '(Kick: '+esc(t.kick_user)+')' : ''}
+        · ${fmtDate(t.created_at)}
+        ${t.updated_at && t.updated_at!==t.created_at ? '· Updated '+fmtDate(t.updated_at) : ''}
+      </div>
+      <div class="tc-desc">${esc(t.description)}</div>
+      ${noteHtml}
+      <div class="tc-actions">
+        <label style="display:inline;color:#aaaaaa;font-size:0.8rem">Status:</label>
+        <select id="sel-status-${esc(t.token)}" class="small">
+          ${['open','in_progress','resolved','closed','wontfix'].map(s =>
+            `<option value="${s}"${s===t.status?' selected':''}>${s.replace('_',' ')}</option>`
+          ).join('')}
+        </select>
+        <label style="display:inline;color:#aaaaaa;font-size:0.8rem">Priority:</label>
+        <select id="sel-priority-${esc(t.token)}" class="small">
+          ${['low','medium','high','critical'].map(p =>
+            `<option value="${p}"${p===t.priority?' selected':''}>${p}</option>`
+          ).join('')}
+        </select>
+        <button class="small" onclick="saveTicket('${esc(t.token)}')">💾 Save</button>
+        <button class="small danger" onclick="deleteTicket('${esc(t.token)}')">🗑 Delete</button>
+      </div>
+      <div style="margin-top:6px">
+        <label style="display:inline;color:#aaaaaa;font-size:0.8rem">Admin notes:</label><br>
+        <textarea id="notes-${esc(t.token)}" style="min-height:50px;margin-top:3px"
+          placeholder="Internal notes (not shown to submitter)"
+          maxlength="2000">${esc(t.admin_notes||'')}</textarea>
+      </div>
+    </div>`;
+}
+
+async function saveTicket(token) {
+  const status   = document.getElementById('sel-status-'+token).value;
+  const priority = document.getElementById('sel-priority-'+token).value;
+  const notes    = document.getElementById('notes-'+token).value;
+  try {
+    const r = await fetch(`${API}/${encodeURIComponent(token)}`, {
+      method: 'PATCH',
+      headers: {'Content-Type':'application/json','X-Blog-Key':_adminKey},
+      body: JSON.stringify({status, priority, admin_notes: notes})
+    });
+    if (r.ok) {
+      const card = document.getElementById('tc-'+token);
+      if (card) {
+        const flash = document.createElement('div');
+        flash.className = 'msg-ok'; flash.textContent = '✅ Saved!';
+        card.prepend(flash);
+        setTimeout(() => flash.remove(), 2000);
+      }
+      loadAdminTickets();
+    }
+  } catch(e) {}
+}
+
+async function deleteTicket(token) {
+  if (!confirm(`Delete ticket ${token}? This cannot be undone.`)) return;
+  try {
+    await fetch(`${API}/${encodeURIComponent(token)}`, {
+      method: 'DELETE',
+      headers: {'X-Blog-Key': _adminKey}
+    });
+    loadAdminTickets();
+  } catch(e) {}
+}
+</script>
+
+</body>
+</html>
