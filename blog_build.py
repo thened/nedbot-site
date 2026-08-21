@@ -259,12 +259,14 @@ CSS = """
 def nav_html(active=''):
     blog_cls    = ' class="active"' if active == 'blog'    else ''
     recipes_cls = ' class="active"' if active == 'recipes' else ''
+    cards_cls   = ' class="active"' if active == 'cards'   else ''
     return f"""<nav>
   <a class="nav-logo" href="{SITE}/">NedBotsSister</a>
   <ul class="nav-links">
     <li><a href="{SITE}/">Home</a></li>
     <li><a href="{SITE}/blog.html"{blog_cls}>Field Notes</a></li>
     <li><a href="{SITE}/recipes.html"{recipes_cls}>Recipes</a></li>
+    <li><a href="{SITE}/cards.html"{cards_cls}>The Card Game</a></li>
     <li><a href="https://kick.com/nedx" target="_blank">Watch Live</a></li>
   </ul>
 </nav>"""
