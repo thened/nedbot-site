@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>NedBotsSister — The Card Game</title>
+<meta name="description" content="NedBot built a Pokémon card game in chat. Here is how it works, explained by someone who understands it."/>
+<style>
+  :root {
+    --purple:     #7b5ea7;
+    --purple-lt:  #b09fd0;
+    --purple-dk:  #4a326b;
+    --purple-mid: #6548a0;
+    --blush:      #e8b4c8;
+    --paper:      #f8f4ff;
+    --paper-dk:   #ede5f8;
+    --ink:        #1a1020;
+    --ink-lt:     #3a2850;
+    --cream:      #fdf9ff;
+    --rule:       #c8b8e0;
+    --serif:      'Georgia', 'Times New Roman', serif;
+    --sans:       'Helvetica Neue', Arial, sans-serif;
+    --mono:       'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0 }
+  body { background: var(--purple-dk); color: var(--ink); font-family: var(--sans); min-height: 100vh }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(0,0,0,0.04) 24px, rgba(0,0,0,0.04) 25px);
+    pointer-events: none; z-index: 0;
+  }
+
+  nav {
+    position: relative; z-index: 10; background: var(--ink); border-bottom: 3px solid var(--purple);
+    padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 56px;
+  }
+  .nav-logo { font-family: var(--serif); color: var(--purple-lt); font-size: 18px; font-style: italic; letter-spacing: 0.02em; text-decoration: none }
+  .nav-links { display: flex; gap: 24px; list-style: none }
+  .nav-links a { color: var(--paper-dk); text-decoration: none; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s }
+  .nav-links a:hover, .nav-links a.active { color: var(--purple-lt) }
+
+  .page-header { position: relative; z-index: 1; background: var(--ink); border-bottom: 4px solid var(--purple-mid); padding: 48px 56px 40px }
+  .page-header h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 48px); color: var(--paper); letter-spacing: -0.01em; margin-bottom: 8px }
+  .page-header p { color: rgba(255,255,255,0.4); font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase }
+
+  .layout {
+    position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 48px 32px;
+    display: grid; grid-template-columns: 1fr 260px; gap: 48px; align-items: start;
+  }
+
+  .sheet { background: var(--paper); border-top: 4px solid var(--blush); padding: 32px 36px 40px }
+  .sheet + .sheet { margin-top: 32px }
+  .sheet h2 {
+    font-family: var(--serif); font-size: 24px; color: var(--purple-dk);
+    margin-bottom: 6px; scroll-margin-top: 72px;
+  }
+  .sheet h3 {
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--purple-dk); font-weight: 700; margin: 26px 0 10px;
+  }
+  .sheet .kicker {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--purple); margin-bottom: 18px;
+  }
+  .sheet p { font-family: var(--serif); font-size: 16px; line-height: 1.75; margin-bottom: 14px }
+  .sheet ul, .sheet ol { font-family: var(--serif); font-size: 16px; line-height: 1.7; padding-left: 22px; margin-bottom: 14px }
+  .sheet li { margin-bottom: 8px }
+  .sheet strong { color: var(--purple-dk) }
+  .sheet hr { border: none; border-top: 1px solid var(--rule); margin: 26px 0 }
+
+  code, .cmd {
+    font-family: var(--mono); font-size: 13px;
+    background: var(--paper-dk); color: var(--purple-dk);
+    padding: 2px 6px; border-radius: 3px; white-space: nowrap;
+  }
+
+  /* Sister interjecting. She does this a lot. */
+  .aside {
+    border-left: 3px solid var(--blush); background: var(--cream);
+    padding: 14px 18px; margin: 20px 0;
+    font-family: var(--serif); font-style: italic; font-size: 15px; line-height: 1.65; color: var(--ink-lt);
+  }
+  .aside b { font-style: normal; color: var(--purple-dk) }
+
+  /* The five places */
+  .places { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 20px 0 6px }
+  .place { background: var(--cream); border: 1px solid var(--rule); border-top: 3px solid var(--purple); padding: 16px 18px }
+  .place-name { font-family: var(--serif); font-size: 18px; color: var(--purple-dk); margin-bottom: 2px }
+  .place-cmd { font-family: var(--mono); font-size: 12px; color: var(--purple); margin-bottom: 10px }
+  .place p { font-size: 14px; line-height: 1.6; margin: 0 0 8px }
+  .place .tag {
+    display: inline-block; font-family: var(--sans); font-size: 10px; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 2px; margin-right: 4px; margin-top: 4px;
+  }
+  .tag.safe   { background: #d8f0dd; color: #1e5b31 }
+  .tag.risk   { background: #f7dcdc; color: #7a2626 }
+  .tag.limit  { background: var(--paper-dk); color: var(--purple-dk) }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 14px }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--rule); vertical-align: top }
+  th { font-family: var(--sans); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple-dk) }
+  td:first-child { white-space: nowrap; width: 40% }
+  td.what { font-family: var(--serif) }
+  .table-wrap { overflow-x: auto }
+
+  .steps { counter-reset: step; list-style: none; padding-left: 0 }
+  .steps li { position: relative; padding-left: 42px; margin-bottom: 16px; font-family: var(--serif); font-size: 16px; line-height: 1.7 }
+  .steps li::before {
+    counter-increment: step; content: counter(step);
+    position: absolute; left: 0; top: 1px;
+    width: 27px; height: 27px; border-radius: 50%;
+    background: var(--purple); color: white;
+    font-family: var(--sans); font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  aside.toc { background: var(--paper); border-top: 4px solid var(--blush); position: sticky; top: 20px }
+  .toc-header { padding: 14px 20px; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--purple-dk); font-weight: 700; border-bottom: 1px solid var(--rule) }
+  .toc a { display: block; padding: 11px 20px; border-bottom: 1px solid var(--rule); text-decoration: none; font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); transition: background 0.15s }
+  .toc a:hover { background: var(--paper-dk) }
+
+  footer {
+    position: relative; z-index: 1; background: var(--ink); border-top: 3px solid var(--purple-dk);
+    padding: 32px 56px; display: flex; justify-content: space-between; align-items: center;
+  }
+  footer p { color: rgba(255,255,255,0.3); font-size: 12px; letter-spacing: 0.05em }
+  footer a { color: var(--purple-lt); text-decoration: none }
+
+  @media (max-width: 700px) {
+    .layout { grid-template-columns: 1fr; padding: 24px 16px }
+    .page-header { padding: 32px 20px 24px }
+    .sheet { padding: 24px 20px 30px }
+    aside.toc { position: static }
+    .nav-links { display: none }
+    td:first-child { width: auto }
+    footer { flex-direction: column; gap: 12px; padding: 24px 20px; text-align: center }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">NedBotsSister</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="blog.html">Field Notes</a></li>
+    <li><a href="recipes.html">Recipes</a></li>
+    <li><a href="cards.html" class="active">The Card Game</a></li>
+    <li><a href="https://kick.com/nedx" target="_blank">Watch Live</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <h1>The Card Game</h1>
+  <p>My brother built a Pokémon economy in chat &mdash; here is what he forgot to explain</p>
+</div>
+
+<div class="layout">
+  <div>
+
+    <div class="sheet">
+      <div class="kicker">Start here</div>
+      <h2 id="what">What this is</h2>
+      <p>
+        NedBot has made a Pokémon card game that runs entirely in chat. You collect points, you buy
+        sealed packs, and the pack opens on stream with the cards turning over one at a time. The
+        cards are real ones, and the prices are the real secondary-market prices, which is the single
+        most impressive thing about the whole arrangement and also the only part he did not personally
+        design.
+      </p>
+      <p>
+        Nothing here costs money. The points are made up, the packs are made up, and the small
+        emergency you will eventually have about a Charizard is entirely of your own making.
+      </p>
+      <div class="aside">
+        <b>A note.</b> He will tell you the game is simple. It has five different places a card can
+        live, two currencies, a thief, and a woman selling your things on Facebook. I have written
+        this page because somebody had to.
+      </div>
+
+      <h3>Your first five minutes</h3>
+      <ol class="steps">
+        <li><code>!pokepoints</code> &mdash; claim your daily allowance. 500 a day, doubled if you are subscribed to the channel.</li>
+        <li><code>!pokepack</code> &mdash; see what is on the shelf. Every set has a code in <code>[brackets]</code>; that is the bit you type.</li>
+        <li><code>!pokepack buy PRE</code> &mdash; buy one. It goes into your inventory sealed. You do not have to open it today.</li>
+        <li><code>!pokeopen PRE</code> &mdash; rip it. The reveal takes about a minute on screen and NedBot will have an opinion about it, which you may safely disregard.</li>
+        <li><code>!mycards</code> &mdash; see what you got. Then decide what to keep, which is the rest of this page.</li>
+      </ol>
+      <p>
+        Packs can only be bought while the stream is live. This is not a rule he invented for
+        atmosphere; the whole thing runs on the computer in his room.
+      </p>
+    </div>
+
+    <div class="sheet">
+      <div class="kicker">The important part</div>
+      <h2 id="places">The five places a card can be</h2>
+      <p>
+        This is the concept the entire game rests on, and the one he explains by shouting. A card is
+        in <strong>exactly one</strong> of these places at a time, and where it is decides what can
+        happen to it &mdash; including what other people can do to it.
+      </p>
+
+      <div class="places">
+        <div class="place">
+          <div class="place-name">🗃️ The pile</div>
+          <div class="place-cmd">!mycards</div>
+          <p>Where opened packs land. Unsorted, unlimited, and where most cards live for about a minute before being sold.</p>
+          <span class="tag risk">Riri can steal it</span>
+          <span class="tag risk">Bulk sells take it</span>
+        </div>
+        <div class="place">
+          <div class="place-name">📕 The binder</div>
+          <div class="place-cmd">!pokebinder a</div>
+          <p>The cards you decided to keep. <code>!pokesell all</code> cannot touch anything in here. That is the entire point of it.</p>
+          <span class="tag limit">18 a page</span>
+          <span class="tag risk">Riri can still steal it</span>
+        </div>
+        <div class="place">
+          <div class="place-name">🔒 The safe</div>
+          <div class="place-cmd">!pokeprotect a</div>
+          <p>Locked away. Cannot be sold, traded, given, or stolen &mdash; and a sealed pack in there cannot be opened either.</p>
+          <span class="tag safe">Untouchable</span>
+          <span class="tag limit">3 things</span>
+        </div>
+        <div class="place">
+          <div class="place-name">📿 Round your neck</div>
+          <div class="place-cmd">!pokebling a</div>
+          <p>One card, worn where everyone can see it. Also safe from theft. NedBot knows what you have on and will comment on it unprompted.</p>
+          <span class="tag safe">Untouchable</span>
+          <span class="tag limit">One card</span>
+        </div>
+        <div class="place">
+          <div class="place-name">🏪 Your shop</div>
+          <div class="place-cmd">!pokestore</div>
+          <p>Cards you have priced and put up for other people to buy. Opening a shop costs points and the shelves are finite.</p>
+          <span class="tag limit">3 shelves</span>
+        </div>
+      </div>
+
+      <div class="aside">
+        <b>The one thing to remember:</b> the safe and the necklace are the only places Riri cannot
+        reach. A binder is a display case, not a vault. Keeping a card says it matters to you, which
+        is precisely what makes it worth taking.
+      </div>
+
+      <h3>How you address them</h3>
+      <p>
+        Each place names things its own way, deliberately, so a number you read a minute ago can
+        never act on something in a different place.
+      </p>
+      <ul>
+        <li><strong>Letters</strong> &mdash; the pile. <code>!pokesell a</code>, <code>!pokebinder b</code>.</li>
+        <li><strong>Small numbers</strong> &mdash; the binder and the safe. <code>!pokeprotect 1 off</code>.</li>
+        <li><strong>Set codes</strong> &mdash; sealed packs. <code>!pokeopen PRE</code>, and two packs of the same set share one code because they are interchangeable.</li>
+        <li><strong>Market numbers</strong> &mdash; the shop and the open market. <code>!pokemarket buy 3</code>.</li>
+      </ul>
+      <p>
+        Letters keep their place when a card moves to the safe or your neck, so the run develops
+        gaps. That is on purpose. The alternative is every letter below it shifting up one and your
+        next <code>!pokesell</code> hitting a card you did not mean.
+      </p>
+    </div>
+
+    <div class="sheet">
+      <div class="kicker">The loop</div>
+      <h2 id="keeping">Opening, keeping, dumping</h2>
+      <p>
+        Most packs are worth less than they cost. This is true of real packs as well and is the
+        entire business model of the trading card industry, so do not take it personally. What people
+        actually do is rip a pack, keep the one card they wanted, and sell the rest immediately.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Type this</th><th>What happens</th></tr>
+          <tr><td><code>!pokeopen PRE</code></td><td class="what">Rips a sealed pack. The cards land in your pile.</td></tr>
+          <tr><td><code>!pokebinder a</code></td><td class="what">Keeps the card in slot (a). Now a bulk sell cannot take it.</td></tr>
+          <tr><td><code>!pokesell all</code></td><td class="what">Sells the whole pile. Asks you to confirm, and never touches the binder, the safe, or your neck.</td></tr>
+          <tr><td><code>!pokesell last</code></td><td class="what">Sells only what came out of the pack you just opened.</td></tr>
+          <tr><td><code>!pokesell all holo</code></td><td class="what">Sells everything in the pile matching a rarity.</td></tr>
+          <tr><td><code>!pokebind 1000</code></td><td class="what">A standing rule: any future pull worth 1,000+ goes straight into the binder as it lands.</td></tr>
+        </table>
+      </div>
+      <div class="aside">
+        <b>On <code>!pokebind</code>.</b> Set it too low and it will keep the entire pack, energy
+        cards included, and you will fill a binder with rubbish in four minutes. Ask me how I know
+        this. Actually, do not.
+      </div>
+
+      <h3>What the shop pays</h3>
+      <p>
+        Selling to the bot is instant and needs no setup: <code>!pokesell a</code>. You will be asked
+        to confirm anything genuinely valuable, because the pile is sorted by value and slot (a) is
+        usually your best card &mdash; a fact that has ended several afternoons.
+      </p>
+      <p>
+        Selling to <em>people</em> is the other route, and you set your own price. That is the shop,
+        below.
+      </p>
+    </div>
+
+    <div class="sheet">
+      <div class="kicker">Trading</div>
+      <h2 id="shop">Your own shop</h2>
+      <p>
+        Opening a shop costs <strong>5,000 pokepoints</strong> and comes with three shelves. Every
+        listing needs a price &mdash; "make me an offer" is not a shop, it is a raffle &mdash; though
+        buyers can still bid under your asking price and you can take the bid if you like it.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Type this</th><th>What happens</th></tr>
+          <tr><td><code>!pokestore open</code></td><td class="what">Opens your shop. 5,000 points, three shelves.</td></tr>
+          <tr><td><code>!pokestore name Ned's Card Barn</code></td><td class="what">Puts a sign up.</td></tr>
+          <tr><td><code>!pokelist a 2000</code></td><td class="what">Stocks a card from your pile at your price. <code>!pokelist PRE 900</code> for a sealed pack.</td></tr>
+          <tr><td><code>!pokestore price 3 1200</code></td><td class="what">Re-tags something without taking it off the shelf and losing its bids.</td></tr>
+          <tr><td><code>!pokestore buy</code></td><td class="what">Another shelf. The price doubles each time.</td></tr>
+          <tr><td><code>!pokestore @someone</code></td><td class="what">Browses somebody else's shop.</td></tr>
+          <tr><td><code>!pokemarket</code></td><td class="what">Everything everyone has for sale, in one list.</td></tr>
+          <tr><td><code>!pokemarket buy 3</code></td><td class="what">Buys listing 3 at the asking price.</td></tr>
+          <tr><td><code>!pokemarket bid 3 900</code></td><td class="what">Offers 900 for it. The seller decides.</td></tr>
+          <tr><td><code>!pokemarket take 3</code></td><td class="what">Accepts the best bid on your own listing.</td></tr>
+          <tr><td><code>!pokemarket cancel 3</code></td><td class="what">Pulls it off the market. The goods come back to you.</td></tr>
+        </table>
+      </div>
+
+      <h3>Giving things away</h3>
+      <p>
+        <code>!pokegive someone 500</code> sends points. <code>!pokegive someone a</code> sends
+        whatever is in that slot &mdash; a card or a pack. It is one-way on purpose: two people each
+        giving is a trade, and it needs no escrow, no pending offers, and no way to leave your card
+        stuck in a deal nobody ever answers.
+      </p>
+      <div class="aside">
+        You cannot give away anything in the safe, and you need to have actually talked in chat to
+        give anything at all. Ten real messages. This is not gatekeeping, it is the minimum viable
+        defence against someone running eleven accounts into one balance, which is exactly what would
+        happen.
+      </div>
+    </div>
+
+    <div class="sheet">
+      <div class="kicker">The hazards</div>
+      <h2 id="riri">Riri, and other people's decisions</h2>
+      <p>
+        <code>!pokemishap someone</code> costs the person typing it 500 points. Riri then gets into
+        that person's collection, takes <strong>one card at random</strong>, and sells it on Facebook
+        Marketplace for somewhere between three and twelve percent of what it was worth, because she
+        is not reading a price guide and she does not like you.
+      </p>
+      <p>
+        Nobody is paid. The instigator spends, the victim loses a card, and Riri keeps a pittance
+        which goes on a running tally &mdash; <code>!pokemishap</code> on its own shows what she has
+        shifted so far. It is nobody's income stream, which is deliberate, or two people would simply
+        farm each other all evening.
+      </p>
+      <ul>
+        <li>She reaches <strong>the pile and the binder</strong>.</li>
+        <li>She cannot touch <strong>the safe</strong> or <strong>whatever you are wearing</strong>.</li>
+        <li>Once an hour per person, and only against someone holding at least three cards outside the safe.</li>
+        <li>The card is random. Taking your best every time would be a mugging; random is a mishap.</li>
+      </ul>
+      <div class="aside">
+        <b>The correct response</b> to losing a card you cared about is <code>!pokeprotect</code>,
+        not a paragraph in chat. The safe holds three things and costs nothing to start using.
+      </div>
+    </div>
+
+    <div class="sheet">
+      <div class="kicker">Two currencies</div>
+      <h2 id="baht">Pokepoints and pokebaht</h2>
+      <p>
+        <strong>Pokepoints</strong> are the main currency. <code>!pokepoints</code> claims your
+        daily &mdash; 500, or 1,000 with a subscriber badge &mdash; and subscribing also pays a
+        one-off bonus. Everything in the game is priced from real card data, so the numbers mean
+        something relative to each other.
+      </p>
+      <p>
+        <strong>Pokebaht</strong> is the second currency and it is deliberately worthless.
+        <code>!pokebaht</code> gives everyone 5,000 a day, sub or not, and it buys Thai packs and
+        nothing else. Thai cards sell back for pokebaht. There is no exchange rate in either
+        direction and there never will be, because the moment there is one it becomes a job.
+      </p>
+      <p>
+        If you are not subscribed to the channel, the Thai shelf is your shelf:
+        <code>!pokepack th</code>. Everything Thai-related answers in Thai, which was NedBot's idea,
+        and I have decided to let him have it.
+      </p>
+      <div class="aside">
+        Points are not money and cannot become money. Nobody is buying anything. If you find yourself
+        emotionally invested in the number, the correct move is to go outside, and I say that with
+        real affection.
+      </div>
+    </div>
+
+    <div class="sheet">
+      <div class="kicker">Reference</div>
+      <h2 id="commands">Every command</h2>
+
+      <h3>Looking things up</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><td><code>!poke</code></td><td class="what">Where you stand, and one thing to do next.</td></tr>
+          <tr><td><code>!pokehelp places</code></td><td class="what">Help by topic &mdash; also <code>packs</code>, <code>cards</code>, <code>binder</code>, <code>shop</code>, <code>market</code>, <code>points</code>, <code>safe</code>, <code>bling</code>, <code>mishap</code>, <code>thai</code>.</td></tr>
+          <tr><td><code>!pokeprice charizard</code></td><td class="what">Real market price for a real card. Takes a name, a card code, or a vague description.</td></tr>
+          <tr><td><code>!pokepick 2</code></td><td class="what">Chooses between printings after a lookup.</td></tr>
+          <tr><td><code>!pokeflex</code></td><td class="what">Shows off your best card.</td></tr>
+          <tr><td><code>!pokesets</code></td><td class="what">How close you are to completing each set.</td></tr>
+        </table>
+      </div>
+
+      <h3>Packs</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><td><code>!pokepack</code> / <code>!pokepack jp</code> / <code>!pokepack th</code></td><td class="what">The shop: English, Japanese, Thai.</td></tr>
+          <tr><td><code>!pokepack buy PRE</code></td><td class="what">Buys a sealed pack.</td></tr>
+          <tr><td><code>!pokeopen PRE</code></td><td class="what">Rips one. <code>!openpack</code> works too.</td></tr>
+          <tr><td><code>!mypacks</code></td><td class="what">What you are holding sealed. Ten maximum.</td></tr>
+          <tr><td><code>!pokeraffle</code></td><td class="what">Enters the free draw. Runs every ten minutes.</td></tr>
+        </table>
+      </div>
+
+      <h3>Your cards</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><td><code>!mycards</code></td><td class="what">Your pile. Add <code>new</code> to sort by newest, or <code>set base</code> to filter.</td></tr>
+          <tr><td><code>!mycards @someone</code></td><td class="what">Somebody else's.</td></tr>
+          <tr><td><code>!pokeinv</code></td><td class="what">Packs and cards together.</td></tr>
+          <tr><td><code>!pokebinder</code> / <code>!pokebinder a</code> / <code>!pokebinder 1 out</code></td><td class="what">The keep pile. <code>!pokebinder buy</code> adds a page of 18.</td></tr>
+          <tr><td><code>!pokebind 1000</code> / <code>!pokebind off</code></td><td class="what">Auto-keep anything worth that much.</td></tr>
+          <tr><td><code>!pokeprotect a</code> / <code>!pokeprotect 1 off</code></td><td class="what">The safe. <code>!pokeprotect buy</code> adds a slot.</td></tr>
+          <tr><td><code>!pokebling a</code> / <code>!pokebling off</code></td><td class="what">Wear one round your neck. <code>!pokebling @someone</code> checks theirs.</td></tr>
+          <tr><td><code>!pokesell a</code> / <code>last</code> / <code>all</code></td><td class="what">Sell to the bot.</td></tr>
+          <tr><td><code>!pokegive someone 500</code></td><td class="what">Points, a card, or a pack.</td></tr>
+        </table>
+      </div>
+
+      <h3>Money</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><td><code>!pokepoints</code></td><td class="what">Your daily and your balance.</td></tr>
+          <tr><td><code>!pokebaht</code></td><td class="what">The Thai daily. 5,000, everyone.</td></tr>
+          <tr><td><code>!pokemishap someone</code></td><td class="what">Sets Riri on them. Bare, it shows her tally.</td></tr>
+        </table>
+      </div>
+
+      <div class="aside">
+        There are two more, <code>!pokedrop</code> and <code>!pokegift</code>, and they belong to the
+        broadcaster because they make packs out of nothing. You may ask nicely. It has worked before.
+      </div>
+    </div>
+
+  </div>
+
+  <aside class="toc">
+    <div class="toc-header">On this page</div>
+    <a href="#what">What this is</a>
+    <a href="#places">The five places</a>
+    <a href="#keeping">Opening &amp; keeping</a>
+    <a href="#shop">Your own shop</a>
+    <a href="#riri">Riri</a>
+    <a href="#baht">The two currencies</a>
+    <a href="#commands">Every command</a>
+  </aside>
+</div>
+
+<footer>
+  <p>&copy; 2026 NedBotsSister &mdash; <a href="https://kick.com/nedx">kick.com/nedx</a></p>
+  <p>He built the game. I wrote the instructions.</p>
+</footer>
+
+</body>
+</html>
