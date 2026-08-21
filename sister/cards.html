@@ -227,7 +227,7 @@
         <div class="place">
           <div class="place-name">📿 Round your neck</div>
           <div class="place-cmd">!pokebling a</div>
-          <p>One card, worn where everyone can see it. Also safe from theft. NedBot knows what you have on and will comment on it unprompted.</p>
+          <p>One card, worn where everyone can see it. Also safe from theft. NedBot knows what you have on and admires it out loud from time to time, if it is worth admiring.</p>
           <span class="tag safe">Untouchable</span>
           <span class="tag limit">One card</span>
         </div>
@@ -304,14 +304,14 @@
       <div class="kicker">Trading</div>
       <h2 id="shop">Your own shop</h2>
       <p>
-        Opening a shop costs <strong>5,000 pokepoints</strong> and comes with three shelves. Every
+        Opening a shop costs <strong>1,000 pokepoints</strong> and comes with three shelves. Every
         listing needs a price &mdash; "make me an offer" is not a shop, it is a raffle &mdash; though
         buyers can still bid under your asking price and you can take the bid if you like it.
       </p>
       <div class="table-wrap">
         <table>
           <tr><th>Type this</th><th>What happens</th></tr>
-          <tr><td><code>!pokestore open</code></td><td class="what">Opens your shop. 5,000 points, three shelves.</td></tr>
+          <tr><td><code>!pokestore open</code></td><td class="what">Opens your shop. 1,000 points, three shelves.</td></tr>
           <tr><td><code>!pokestore name Ned's Card Barn</code></td><td class="what">Puts a sign up.</td></tr>
           <tr><td><code>!pokelist a 2000</code></td><td class="what">Stocks a card from your pile at your price. <code>!pokelist PRE 900</code> for a sealed pack.</td></tr>
           <tr><td><code>!pokestore price 3 1200</code></td><td class="what">Re-tags something without taking it off the shelf and losing its bids.</td></tr>
@@ -368,6 +368,28 @@
     </div>
 
     <div class="sheet">
+      <div class="kicker">Showing off</div>
+      <h2 id="flex">The flex</h2>
+      <p>
+        <code>!pokeflex</code> takes whatever you are wearing &mdash; the
+        <code>!pokebling</code> card, not your most expensive one &mdash; and hangs it on the
+        stream on a gold chain for thirty seconds, swaying, with your name over it.
+      </p>
+      <p>
+        It goes <strong>to the front of the pack queue</strong>. If four people are waiting
+        to watch their boosters open, they now wait thirty seconds longer so that everyone
+        can look at your Charizard. This is not an oversight. It is once an hour, per person,
+        and it will not interrupt a pack that has already started &mdash; cutting the queue is
+        funny, ruining somebody's reveal halfway through is not.
+      </p>
+      <div class="aside">
+        You need something round your neck first. <code>!pokebling a</code>, then
+        <code>!pokeflex</code>. Flexing a card you have not chosen to wear would rather miss
+        the point of both commands.
+      </div>
+    </div>
+
+    <div class="sheet">
       <div class="kicker">Two currencies</div>
       <h2 id="baht">Pokepoints and pokebaht</h2>
       <p>
@@ -395,6 +417,27 @@
     </div>
 
     <div class="sheet">
+      <div class="kicker">A different game entirely</div>
+      <h2 id="onepiece">One Piece</h2>
+      <p>
+        There is a One Piece shelf. <code>!pokepack op</code> shows it,
+        <code>!pokepack buy OP16</code> buys one and <code>!pokeopen OP16</code> rips it,
+        exactly like the Pok&eacute;mon ones. Real cards, real market prices, twelve to a
+        pack, paid for in ordinary pokepoints.
+      </p>
+      <p>
+        The codes are the ones printed on the cards &mdash; OP16, EB04, PRB02 &mdash; so
+        there is nothing new to learn. Only sets that actually sell a booster pack are
+        listed: no starter decks, no pre-release promos, no tournament kits. Of the
+        eighty-five One Piece sets in the catalogue, twenty are things you can buy.
+      </p>
+      <div class="aside">
+        He added a second trading card game to a Pok&eacute;mon bot rather than finish
+        anything else. I have stopped asking.
+      </div>
+    </div>
+
+    <div class="sheet">
       <div class="kicker">Reference</div>
       <h2 id="commands">Every command</h2>
 
@@ -405,7 +448,7 @@
           <tr><td><code>!pokehelp places</code></td><td class="what">Help by topic &mdash; also <code>packs</code>, <code>cards</code>, <code>binder</code>, <code>shop</code>, <code>market</code>, <code>points</code>, <code>safe</code>, <code>bling</code>, <code>mishap</code>, <code>thai</code>.</td></tr>
           <tr><td><code>!pokeprice charizard</code></td><td class="what">Real market price for a real card. Takes a name, a card code, or a vague description.</td></tr>
           <tr><td><code>!pokepick 2</code></td><td class="what">Chooses between printings after a lookup.</td></tr>
-          <tr><td><code>!pokeflex</code></td><td class="what">Shows off your best card.</td></tr>
+          <tr><td><code>!pokeflex</code></td><td class="what">Puts the card round your neck on the stream, on a gold chain, for thirty seconds. Once an hour &mdash; and it goes to the front of the pack queue, which is the point of it.</td></tr>
           <tr><td><code>!pokesets</code></td><td class="what">How close you are to completing each set.</td></tr>
         </table>
       </div>
@@ -413,7 +456,7 @@
       <h3>Packs</h3>
       <div class="table-wrap">
         <table>
-          <tr><td><code>!pokepack</code> / <code>!pokepack jp</code> / <code>!pokepack th</code></td><td class="what">The shop: English, Japanese, Thai.</td></tr>
+          <tr><td><code>!pokepack</code> / <code>!pokepack jp</code> / <code>!pokepack op</code> / <code>!pokepack th</code></td><td class="what">The shop: English, Japanese, One Piece, Thai.</td></tr>
           <tr><td><code>!pokepack buy PRE</code></td><td class="what">Buys a sealed pack.</td></tr>
           <tr><td><code>!pokeopen PRE</code></td><td class="what">Rips one. <code>!openpack</code> works too.</td></tr>
           <tr><td><code>!mypacks</code></td><td class="what">What you are holding sealed. Ten maximum.</td></tr>
@@ -430,7 +473,7 @@
           <tr><td><code>!pokebinder</code> / <code>!pokebinder a</code> / <code>!pokebinder 1 out</code></td><td class="what">The keep pile. <code>!pokebinder buy</code> adds a page of 18.</td></tr>
           <tr><td><code>!pokebind 1000</code> / <code>!pokebind off</code></td><td class="what">Auto-keep anything worth that much.</td></tr>
           <tr><td><code>!pokeprotect a</code> / <code>!pokeprotect 1 off</code></td><td class="what">The safe. <code>!pokeprotect buy</code> adds a slot.</td></tr>
-          <tr><td><code>!pokebling a</code> / <code>!pokebling off</code></td><td class="what">Wear one round your neck. <code>!pokebling @someone</code> checks theirs.</td></tr>
+          <tr><td><code>!pokebling a</code> / <code>!pokebling off</code></td><td class="what">Wear one round your neck. <code>!pokebling @someone</code> checks theirs, and <code>!pokeflex</code> puts it on screen.</td></tr>
           <tr><td><code>!pokesell a</code> / <code>last</code> / <code>all</code></td><td class="what">Sell to the bot.</td></tr>
           <tr><td><code>!pokegive someone 500</code></td><td class="what">Points, a card, or a pack.</td></tr>
         </table>
@@ -460,7 +503,9 @@
     <a href="#keeping">Opening &amp; keeping</a>
     <a href="#shop">Your own shop</a>
     <a href="#riri">Riri</a>
+    <a href="#flex">The flex</a>
     <a href="#baht">The two currencies</a>
+    <a href="#onepiece">One Piece</a>
     <a href="#commands">Every command</a>
   </aside>
 </div>
