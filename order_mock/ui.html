@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NedBot Café · Mock Table Order</title>
+<style>
+  :root { --green:#8fd16a; --ink:#1d2a1a; --bg:#f4f8f0; --card:#fff; --muted:#6b7a66; --red:#c0392b; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Hiragino Sans",sans-serif; background:var(--bg); color:var(--ink); }
+  header { background:var(--green); padding:14px 16px; position:sticky; top:0; z-index:2; }
+  header h1 { margin:0; font-size:18px; }
+  header .sub { font-size:12px; opacity:.8; }
+  .mock { background:#1d2a1a; color:#fff; font-size:11px; text-align:center; padding:4px; letter-spacing:.05em; }
+  main { max-width:520px; margin:0 auto; padding:12px 12px 90px; }
+  nav { display:flex; gap:6px; margin-bottom:12px; }
+  nav button { flex:1; padding:10px; border:0; border-radius:10px; background:#e2ecda; font-weight:600; cursor:pointer; }
+  nav button.on { background:var(--ink); color:#fff; }
+  h2 { font-size:14px; color:var(--muted); margin:18px 4px 6px; text-transform:uppercase; letter-spacing:.06em; }
+  .item, .line, .order, .seat { background:var(--card); border-radius:12px; padding:12px 14px; margin-bottom:8px;
+    box-shadow:0 1px 2px rgba(0,0,0,.06); }
+  .item { display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+  .item.out { opacity:.45; cursor:not-allowed; }
+  .price { font-weight:700; }
+  .opts { margin-top:10px; }
+  .opts label { display:inline-block; margin:3px 8px 3px 0; font-size:14px; }
+  .row { display:flex; gap:8px; align-items:center; margin-top:10px; }
+  button.primary { background:var(--ink); color:#fff; border:0; border-radius:10px; padding:10px 16px; font-weight:700; cursor:pointer; }
+  button.ghost { background:none; border:1px solid #ccd; border-radius:8px; padding:4px 10px; cursor:pointer; }
+  .bar { position:fixed; left:0; right:0; bottom:0; background:var(--card); border-top:1px solid #dde; padding:12px 16px;
+    display:flex; justify-content:space-between; align-items:center; }
+  .bar[hidden] { display:none; }
+  .badge { font-size:12px; padding:2px 8px; border-radius:999px; background:#eee; }
+  .badge.received { background:#fff3c4; } .badge.preparing { background:#ffd9a8; }
+  .badge.served { background:#c9efb4; } .badge.cancelled { background:#f3c2bd; }
+  .muted { color:var(--muted); font-size:13px; }
+  .err { color:var(--red); font-size:14px; min-height:1em; }
+  a { color:inherit; }
+</style>
+</head>
+<body>
+<div class="mock">MOCK ORDER SYSTEM · FOR BOT TESTING · NOT A REAL RESTAURANT</div>
+<header><h1>NedBot Café</h1><div class="sub" id="seatName">Order from your phone</div></header>
+<main id="app"></main>
+<div class="bar" id="bar" hidden>
+  <span id="barTotal">¥0</span>
+  <button class="primary" onclick="show('cart')">View cart</button>
+</div>
+<script>
+const params = new URLSearchParams(location.search);
+let sid = params.get('s') || sessionStorage.getItem('mockSid');
+let menu = null, tab = 'menu', open = null;
+const $ = s => document.querySelector(s);
+const yen = n => '¥' + n.toLocaleString();
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+async function api(method, path, body) {
+  const r = await fetch(path, { method, headers: { 'Content-Type':'application/json', 'X-Session-Id': sid || '' },
+                                body: body ? JSON.stringify(body) : undefined });
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.message || j.error);
+  return j;
+}
+
+async function boot() {
+  if (!sid) return pickSeat();
+  sessionStorage.setItem('mockSid', sid);
+  try {
+    const s = await api('GET', '/api/session');
+    $('#seatName').textContent = s.seat.name + (s.open ? '' : ' · checked out');
+    menu = await api('GET', '/api/menu');
+    show(s.open ? 'menu' : 'orders');
+  } catch (e) { sessionStorage.removeItem('mockSid'); sid = null; pickSeat(e.message); }
+}
+
+async function pickSeat(msg) {
+  const { seats } = await api('GET', '/admin/seats');
+  $('#bar').hidden = true;
+  $('#app').innerHTML = `<p class="err">${esc(msg || '')}</p><h2>Scan a table QR (or pick one)</h2>` +
+    seats.map(s => `<div class="seat"><a href="${esc(s.qrUrl)}">${esc(s.name)}</a>
+      <div class="muted">${s.activeSession ? 'in use' : 'free'}</div></div>`).join('');
+}
+
+async function show(t) {
+  tab = t;
+  const nav = `<nav>${['menu','cart','orders'].map(x =>
+    `<button class="${x===tab?'on':''}" onclick="show('${x}')">${x[0].toUpperCase()+x.slice(1)}</button>`).join('')}</nav>
+    <p class="err" id="err"></p>`;
+  const cart = await api('GET', '/api/cart').catch(() => ({ items: [], total: 0 }));
+  $('#bar').hidden = !cart.items.length || tab === 'cart';
+  $('#barTotal').textContent = `${cart.items.length} item(s) · ${yen(cart.total)}`;
+  if (tab === 'menu') $('#app').innerHTML = nav + renderMenu();
+  if (tab === 'cart') $('#app').innerHTML = nav + renderCart(cart);
+  if (tab === 'orders') {
+    const b = await api('GET', '/api/bill');
+    $('#app').innerHTML = nav + renderOrders(b);
+  }
+}
+
+function renderMenu() {
+  return menu.categories.map(c => `<h2>${esc(c.name)}</h2>` + menu.items.filter(i => i.category === c.id).map(i => `
+    <div class="item ${i.soldOut?'out':''}" onclick="${i.soldOut?'':`toggle('${i.id}')`}">
+      <span>${esc(i.name)}${i.soldOut?' <span class="badge">sold out</span>':''}</span><span class="price">${yen(i.price)}</span>
+    </div>${open === i.id ? renderPicker(i) : ''}`).join('')).join('');
+}
+
+function renderPicker(i) {
+  return `<div class="line"><div class="opts">${i.options.map(o => `<div><b>${esc(o.name)}</b>${o.required?'':' <span class="muted">(optional)</span>'}<br>
+    ${o.choices.map((c, n) => `<label><input type="radio" name="opt-${o.id}" value="${c.id}" ${o.required && !n ? 'checked' : ''}>
+      ${esc(c.name)}${c.price ? ' +' + yen(c.price) : ''}</label>`).join('')}</div>`).join('')}</div>
+    <div class="row">Qty <select id="qty">${[...Array(10)].map((_, n) => `<option>${n+1}</option>`).join('')}</select>
+      <button class="primary" onclick="addItem('${i.id}')">Add to cart</button></div></div>`;
+}
+
+function toggle(id) { open = open === id ? null : id; show('menu'); }
+
+async function addItem(id) {
+  const item = menu.items.find(i => i.id === id), options = {};
+  for (const o of item.options) {
+    const el = document.querySelector(`input[name="opt-${o.id}"]:checked`);
+    if (el) options[o.id] = el.value;
+  }
+  try { await api('POST', '/api/cart/items', { itemId: id, qty: +$('#qty').value, options }); open = null; show('menu'); }
+  catch (e) { $('#err').textContent = e.message; }
+}
+
+function renderCart(cart) {
+  if (!cart.items.length) return '<p class="muted">Your cart is empty.</p>';
+  return cart.items.map(l => `<div class="line"><div style="display:flex;justify-content:space-between">
+      <span>${esc(l.name)} ×${l.qty}</span><span class="price">${yen(l.subtotal)}</span></div>
+      <div class="muted">${l.options.map(o => esc(o.name)).join(' · ')}</div>
+      <div class="row"><button class="ghost" onclick="del('${l.lineId}')">Remove</button></div></div>`).join('') +
+    `<div class="row" style="justify-content:space-between"><b>Total ${yen(cart.total)}</b>
+      <button class="primary" onclick="placeOrder()">Place order</button></div>`;
+}
+
+async function del(lineId) { await api('DELETE', '/api/cart/items/' + lineId); show('cart'); }
+async function placeOrder() {
+  try { await api('POST', '/api/orders'); show('orders'); } catch (e) { $('#err').textContent = e.message; }
+}
+async function cancel(id) {
+  try { await api('POST', `/api/orders/${id}/cancel`); show('orders'); } catch (e) { $('#err').textContent = e.message; }
+}
+async function checkout() {
+  if (!confirm('Finish and go to the register?')) return;
+  await api('POST', '/api/checkout'); $('#seatName').textContent += ' · checked out'; show('orders');
+}
+
+function renderOrders(b) {
+  if (!b.orders.length) return '<p class="muted">No orders yet.</p>';
+  return b.orders.slice().reverse().map(o => `<div class="order"><div style="display:flex;justify-content:space-between">
+      <b>#${esc(o.orderId)}</b><span class="badge ${o.status}">${o.status}</span></div>
+      ${o.items.map(l => `<div class="muted">${esc(l.name)} ×${l.qty}${l.options.length ? ' (' + l.options.map(x => esc(x.name)).join('/') + ')' : ''}</div>`).join('')}
+      <div class="row" style="justify-content:space-between"><span class="price">${yen(o.total)}</span>
+      ${o.status === 'received' && b.open ? `<button class="ghost" onclick="cancel('${o.orderId}')">Cancel</button>` : ''}</div></div>`).join('') +
+    `<div class="row" style="justify-content:space-between"><b>Bill ${yen(b.total)}</b>
+      <span class="muted">incl. tax ${yen(b.taxIncluded)}</span></div>` +
+    (b.open ? '<div class="row"><button class="primary" onclick="checkout()">Check out</button></div>'
+            : '<p class="muted">Checked out — please pay at the register.</p>');
+}
+
+setInterval(() => { if (sid && tab === 'orders') show('orders'); }, 5000);
+boot();
+</script>
+</body>
+</html>
