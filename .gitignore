@@ -1,3 +1,5 @@
 digitalocean
 digitalocean.pub
 .env
+tableorder/visits/
+__pycache__/
