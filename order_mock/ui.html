@@ -21,6 +21,9 @@
     box-shadow:0 1px 2px rgba(0,0,0,.06); }
   .item { display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
   .item.out { opacity:.45; cursor:not-allowed; }
+  button.item { width:100%; border:0; font:inherit; color:inherit; text-align:left; }
+  ul.list { list-style:none; padding:0; margin:0; }
+  fieldset { border:0; padding:0; margin:0 0 8px; } legend { font-weight:700; padding:0; }
   .price { font-weight:700; }
   .opts { margin-top:10px; }
   .opts label { display:inline-block; margin:3px 8px 3px 0; font-size:14px; }
@@ -85,7 +88,7 @@ async function show(t) {
   tab = t;
   const nav = `<nav>${['menu','cart','orders'].map(x =>
     `<button class="${x===tab?'on':''}" onclick="show('${x}')">${x[0].toUpperCase()+x.slice(1)}</button>`).join('')}</nav>
-    <p class="err" id="err"></p>`;
+    <p class="err" id="err" role="alert"></p>`;
   const cart = await api('GET', '/api/cart').catch(() => ({ items: [], total: 0 }));
   $('#bar').hidden = !cart.items.length || tab === 'cart';
   $('#barTotal').textContent = `${cart.items.length} item(s) · ${yen(cart.total)}`;
@@ -98,17 +101,20 @@ async function show(t) {
 }
 
 function renderMenu() {
-  return menu.categories.map(c => `<h2>${esc(c.name)}</h2>` + menu.items.filter(i => i.category === c.id).map(i => `
-    <div class="item ${i.soldOut?'out':''}" onclick="${i.soldOut?'':`toggle('${i.id}')`}">
-      <span>${esc(i.name)}${i.soldOut?' <span class="badge">sold out</span>':''}</span><span class="price">${yen(i.price)}</span>
-    </div>${open === i.id ? renderPicker(i) : ''}`).join('')).join('');
+  return menu.categories.map(c => `<section aria-label="${esc(c.name)}"><h2>${esc(c.name)}</h2><ul class="list">` +
+    menu.items.filter(i => i.category === c.id).map(i => `<li>
+      <button class="item ${i.soldOut?'out':''}" ${i.soldOut?'disabled':''} aria-expanded="${open===i.id}"
+        aria-label="${esc(i.name)}, ${yen(i.price)}${i.soldOut?', sold out':''}" onclick="toggle('${i.id}')">
+        <span>${esc(i.name)}${i.soldOut?' <span class="badge">sold out</span>':''}</span><span class="price">${yen(i.price)}</span>
+      </button>${open === i.id ? renderPicker(i) : ''}</li>`).join('') + '</ul></section>').join('');
 }
 
 function renderPicker(i) {
-  return `<div class="line"><div class="opts">${i.options.map(o => `<div><b>${esc(o.name)}</b>${o.required?'':' <span class="muted">(optional)</span>'}<br>
+  return `<div class="line" role="group" aria-label="Options for ${esc(i.name)}"><div class="opts">${i.options.map(o => `<fieldset>
+    <legend>${esc(o.name)}${o.required?'':' <span class="muted">(optional)</span>'}</legend>
     ${o.choices.map((c, n) => `<label><input type="radio" name="opt-${o.id}" value="${c.id}" ${o.required && !n ? 'checked' : ''}>
-      ${esc(c.name)}${c.price ? ' +' + yen(c.price) : ''}</label>`).join('')}</div>`).join('')}</div>
-    <div class="row">Qty <select id="qty">${[...Array(10)].map((_, n) => `<option>${n+1}</option>`).join('')}</select>
+      ${esc(c.name)}${c.price ? ' +' + yen(c.price) : ''}</label>`).join('')}</fieldset>`).join('')}</div>
+    <div class="row"><label>Qty <select id="qty">${[...Array(10)].map((_, n) => `<option>${n+1}</option>`).join('')}</select></label>
       <button class="primary" onclick="addItem('${i.id}')">Add to cart</button></div></div>`;
 }
 
@@ -126,11 +132,14 @@ async function addItem(id) {
 
 function renderCart(cart) {
   if (!cart.items.length) return '<p class="muted">Your cart is empty.</p>';
-  return cart.items.map(l => `<div class="line"><div style="display:flex;justify-content:space-between">
-      <span>${esc(l.name)} ×${l.qty}</span><span class="price">${yen(l.subtotal)}</span></div>
-      <div class="muted">${l.options.map(o => esc(o.name)).join(' · ')}</div>
-      <div class="row"><button class="ghost" onclick="del('${l.lineId}')">Remove</button></div></div>`).join('') +
-    `<div class="row" style="justify-content:space-between"><b>Total ${yen(cart.total)}</b>
+  return '<ul class="list" aria-label="Cart items">' + cart.items.map(l => {
+    const opts = l.options.map(o => o.name).join(' · ');
+    return `<li class="line" aria-label="${esc(l.name)} ×${l.qty}${opts ? ', ' + esc(opts) : ''}, ${yen(l.subtotal)}">
+      <div style="display:flex;justify-content:space-between"><span>${esc(l.name)} ×${l.qty}</span><span class="price">${yen(l.subtotal)}</span></div>
+      <div class="muted">${esc(opts)}</div>
+      <div class="row"><button class="ghost" aria-label="Remove ${esc(l.name)}" onclick="del('${l.lineId}')">Remove</button></div></li>`;
+  }).join('') + `</ul><div class="row" style="justify-content:space-between">
+      <b role="status" aria-label="Cart total ${yen(cart.total)}">Total ${yen(cart.total)}</b>
       <button class="primary" onclick="placeOrder()">Place order</button></div>`;
 }
 
@@ -148,12 +157,15 @@ async function checkout() {
 
 function renderOrders(b) {
   if (!b.orders.length) return '<p class="muted">No orders yet.</p>';
-  return b.orders.slice().reverse().map(o => `<div class="order"><div style="display:flex;justify-content:space-between">
-      <b>#${esc(o.orderId)}</b><span class="badge ${o.status}">${o.status}</span></div>
-      ${o.items.map(l => `<div class="muted">${esc(l.name)} ×${l.qty}${l.options.length ? ' (' + l.options.map(x => esc(x.name)).join('/') + ')' : ''}</div>`).join('')}
+  const lineText = l => `${l.name} ×${l.qty}${l.options.length ? ' (' + l.options.map(x => x.name).join('/') + ')' : ''}`;
+  return '<ul class="list" aria-label="Orders">' + b.orders.slice().reverse().map(o => `<li class="order"
+      aria-label="Order ${esc(o.orderId)}, ${o.status}, ${yen(o.total)}: ${esc(o.items.map(lineText).join(', '))}">
+      <div style="display:flex;justify-content:space-between"><b>#${esc(o.orderId)}</b><span class="badge ${o.status}">${o.status}</span></div>
+      ${o.items.map(l => `<div class="muted">${esc(lineText(l))}</div>`).join('')}
       <div class="row" style="justify-content:space-between"><span class="price">${yen(o.total)}</span>
-      ${o.status === 'received' && b.open ? `<button class="ghost" onclick="cancel('${o.orderId}')">Cancel</button>` : ''}</div></div>`).join('') +
-    `<div class="row" style="justify-content:space-between"><b>Bill ${yen(b.total)}</b>
+      ${o.status === 'received' && b.open ? `<button class="ghost" onclick="cancel('${o.orderId}')">Cancel</button>` : ''}</div></li>`).join('') +
+    `</ul><div class="row" style="justify-content:space-between">
+      <b role="status" aria-label="Bill total ${yen(b.total)}, tax ${yen(b.taxIncluded)}">Bill ${yen(b.total)}</b>
       <span class="muted">incl. tax ${yen(b.taxIncluded)}</span></div>` +
     (b.open ? '<div class="row"><button class="primary" onclick="checkout()">Check out</button></div>'
             : '<p class="muted">Checked out — please pay at the register.</p>');

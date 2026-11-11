@@ -1,0 +1,65 @@
+# Airレジ オーダー (Recruit) — "ご注文、スマホから" table QR cards.
+# DRAFT. Only the first screens have been seen (2026-11-11, no table opened):
+#   terms screen  「同意してはじめる」  ->  headcount screen 「N 名」 + 「人数を確定して、注文へ進む」
+# Everything after that is a best guess and will be corrected from the first real capture
+# (network.jsonl + screenshots). Ordering/paying steps are guarded by the runner regardless.
+system: airregi-order
+name: Airレジ オーダー (Recruit)
+match:
+  hosts: ["spo.order.airregi.jp"]
+place:
+  # Seen on the launch screen: POST https://api.beta.spo.order.airregi.jp/api/beta/store {"rs": "<store id>"}
+  id_from_request: {url_regex: "/api/beta/store", body_key: rs}
+verified:
+  open: "partly: terms + headcount screens seen 2026-11-11; button roles unconfirmed"
+  menu: unverified
+  add_item: unverified
+  cart: unverified
+  submit: unverified
+  bill: unverified
+
+ops:
+  open:
+    - goto: "{qr_url}"
+    - click?:
+        - {role: button, name: 同意してはじめる}
+        - {text: 同意してはじめる, exact: true}
+      if: agree
+    - click:
+        - {role: button, name_regex: "^\\s*{guests_num}\\s*名"}
+        - {text: "{guests_num}"}
+      if: guests
+    - click:
+        - {role: button, name: 人数を確定して、注文へ進む}
+        - {text: 人数を確定して、注文へ進む}
+      if: guests
+
+  menu:
+    # Guess: one long scrolling page of items. If this reads nothing, the runner falls back to
+    # the menu found in the site's own JSON (network.jsonl).
+    - scroll_until_end: true
+    - read?:
+        into: items
+        each: [{role: button, name_regex: "[\\d,]+\\s*円|¥\\s*[\\d,]+"}, {role: link, name_regex: "[\\d,]+\\s*円|¥\\s*[\\d,]+"}]
+        parse: "^(?P<name>.+?)\\s*(?:¥\\s*(?P<price>[\\d,]+)|(?P<price2>[\\d,]+)\\s*円)"
+
+  add_item:
+    - click: [{role: button, name_regex: "^{item}"}, {role: link, name_regex: "^{item}"}, {text: "{item}"}]
+    - choose: {each: options, target: [{role: radio, name_regex: "^{choice}"}, {role: checkbox, name_regex: "^{choice}"}]}
+    - click: [{role: button, name_regex: "カートに(追加|入れる)"}, {role: button, name_regex: "追加"}]
+
+  cart:
+    - click: [{role: button, name_regex: "カート"}, {role: link, name_regex: "カート"}]
+    - read?:
+        into: lines
+        each: {role: listitem}
+        from: text
+        parse: "^(?P<name>.+?)\\s+(?:×|x)?\\s*(?P<qty>\\d+)\\s*(?:点|個)?.*?(?P<subtotal>[\\d,]+)\\s*円"
+    - read_one?: {into: total, target: {text: 合計}, from: text, parse: "(?P<total>[\\d,]+)\\s*円"}
+
+  submit:
+    - click!: [{role: button, name_regex: "注文(する|を確定|確定)"}]
+
+  bill:
+    - click: [{role: button, name_regex: "注文履歴|会計"}, {role: link, name_regex: "注文履歴"}]
+    - read_one?: {into: total, target: {text: 合計}, from: text, parse: "(?P<total>[\\d,]+)\\s*円"}

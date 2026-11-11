@@ -1,0 +1,62 @@
+# Recipe for the local mock (order_mock/). Fully verified: use it to test the runner and the bot.
+system: nedbot-mock
+name: NedBot mock table order
+match:
+  hosts: ["127.0.0.1:8890", "localhost:8890"]
+site_error: {role: alert}          # where the site shows errors (sold out, bad option, ...)
+verified:
+  open: verified 2026-11-11
+  menu: verified 2026-11-11
+  add_item: verified 2026-11-11
+  cart: verified 2026-11-11
+  submit: verified 2026-11-11
+  bill: verified 2026-11-11
+
+ops:
+  open:
+    - goto: "{qr_url}"
+    - expect: {role: button, name: Menu}
+
+  _place_name:
+    - read_one: {into: place, target: {role: banner}, from: text, parse: "^(?P<name>.+?) Table"}
+
+  menu:
+    - click: {role: button, name: Menu}
+    - read:
+        into: items
+        within: {role: region}
+        group_field: category
+        each: {role: button, name_regex: ", ¥[\\d,]+"}
+        parse: "^(?P<name>.+?), ¥(?P<price>[\\d,]+)(?P<soldOut>, sold out)?$"
+
+  add_item:
+    - click: {role: button, name: Menu}
+    - click: {role: button, name_regex: "^{item}, ¥"}
+    - choose: {each: options, target: {role: radio, name_regex: "^{choice}( \\+|$)"}}
+    - select: {target: {role: combobox, name: Qty}, value: "{qty}"}
+    - click: {role: button, name: Add to cart}
+
+  cart:
+    - click: {role: button, name: Cart}
+    - read?:
+        into: lines
+        within: {role: list, name: Cart items}
+        group_field: null
+        each: {role: listitem}
+        parse: "^(?P<name>.+?) ×(?P<qty>\\d+)(?:, (?P<options>.+?))?, ¥(?P<subtotal>[\\d,]+)$"
+    - read_one?: {into: total, target: {role: status, name_regex: "^Cart total"}, parse: "¥(?P<total>[\\d,]+)"}
+
+  submit:
+    - click: {role: button, name: Cart}
+    - click!: {role: button, name: Place order}
+    - expect: {role: list, name: Orders}
+
+  bill:
+    - click: {role: button, name: Orders}
+    - read?:
+        into: orders
+        within: {role: list, name: Orders}
+        group_field: null
+        each: {role: listitem}
+        parse: "^Order (?P<orderId>\\S+), (?P<status>\\w+), ¥(?P<total>[\\d,]+): (?P<items>.+)$"
+    - read_one?: {into: total, target: {role: status, name_regex: "^Bill total"}, parse: "¥(?P<total>[\\d,]+)"}

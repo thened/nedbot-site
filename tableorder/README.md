@@ -13,10 +13,62 @@ pulls out the menu, and keeps a ledger of your orders and bills.
 - Captures go in `tableorder/visits/`, which is gitignored because it holds your table
   token and cookies. Never commit it.
 
+## Recipes: the screens as an API
+
+Until these places have APIs, what you can see and tap *is* the API. A **recipe**
+(`recipes/<system>.yaml`) writes down how to do each operation on one ordering system.
+The operations are `open`, `menu`, `add_item`, `cart`, `submit` and `bill`. Steps target
+the page's **accessibility tree** (roles and accessible names, the same structure a screen
+reader uses), so it's automation as accessibility, not pixel-scraping.
+
+```
+python tableorder/recipe.py open "<qr url>" --label "cafe name" --agree --guests 1
+python tableorder/recipe.py menu                      # reads the menu and updates your knowledge store
+python tableorder/recipe.py add "Cafe Latte" --qty 2 --opt Iced --opt Large
+python tableorder/recipe.py cart
+python tableorder/recipe.py submit                    # prints the cart and asks for your OK
+python tableorder/recipe.py submit --confirm-real-order
+python tableorder/recipe.py bill
+python tableorder/recipe.py paid 1900 --note "split with A"
+python tableorder/recipe.py places                    # every place, its system, menu size, last visit
+python tableorder/recipe.py recipes                   # which operations are verified per system
+```
+
+For the bot, the same operations are available from Python:
+
+```python
+from recipe import RecipeClient, NeedsConfirmation
+with RecipeClient.open_table(qr_url, label="cafe", guests=1, agree=True) as c:
+    c.menu(); c.add("Cafe Latte", 2, ["Iced"])
+    try: c.submit()
+    except NeedsConfirmation as e: ask_human(e.summary)   # then c.submit(confirm=True)
+```
+
+**Safety is built into the runner:** a step marked `!`, or any click whose name looks
+like ordering or paying, never runs without confirmation, even if a recipe is wrong.
+When a step can't find what it expects, it stops, saves a screenshot, and tells you the
+recipe needs updating.
+
+| recipe | status |
+|---|---|
+| `nedbot-mock` | fully verified against `order_mock` |
+| `airregi-order` | draft: terms and headcount screens seen; the rest is finished from the first real capture |
+
+## Knowledge store: places you've been
+
+Each `open`/`menu`/`submit`/`paid` updates `visits/knowledge/`:
+
+- `places/<slug>.json`: the place, its ordering system, visits, the menu with **price history**
+  (items that change price, sell out, or disappear), and orders and payments
+- `notes/<slug>.md`: a Markdown note with YAML front matter (`type: place`,
+  `ordering_system`, `price_range`, `total_spent`, tags) for Obsidian, Logseq or similar
+
+Set `TABLEORDER_NOTES=/path/to/vault/Places` to write the notes straight into your vault.
+
 ## Setup (PC)
 
 ```
-pip install playwright
+pip install playwright pyyaml
 python -m playwright install chromium
 ```
 

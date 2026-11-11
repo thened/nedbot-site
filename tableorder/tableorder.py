@@ -36,6 +36,8 @@ GUARDED = re.compile(r"注文(する|を確定|確定|を送信|送信)|送信�
 # ── storage ───────────────────────────────────────────────────────────────────
 
 def visit_dir(name):
+    if name == "last":
+        return latest_visit()
     d = ROOT / name
     if not d.is_dir():
         sys.exit(f"No visit '{name}'. Try: tableorder.py visits")
@@ -156,15 +158,27 @@ def click_text(page, text, nth=0):
 
 # ── commands ──────────────────────────────────────────────────────────────────
 
-def cmd_open(a):
-    q = parse_qs(urlparse(a.url).query)
-    stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M")
-    slug = re.sub(r"[^\w-]+", "-", a.label or "visit")
-    name = f"{stamp}-{slug}"
-    d = ROOT / name
+def new_visit(url, label=None):
+    q = parse_qs(urlparse(url).query)
+    stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    slug = re.sub(r"[^\w-]+", "-", label or "visit")
+    d = ROOT / f"{stamp}-{slug}"
     d.mkdir(parents=True, exist_ok=True)
-    meta(d, {"label": a.label, "qrUrl": a.url, "seatToken": (q.get("t") or [None])[0],
+    meta(d, {"label": label, "qrUrl": url, "seatToken": (q.get("t") or [None])[0],
              "openedAt": datetime.datetime.now().isoformat(timespec="seconds")})
+    return d
+
+
+def latest_visit():
+    ds = sorted(p for p in ROOT.iterdir() if p.is_dir() and (p / "visit.json").exists()) if ROOT.exists() else []
+    if not ds:
+        sys.exit("No visits yet.")
+    return ds[-1]
+
+
+def cmd_open(a):
+    d = new_visit(a.url, a.label)
+    name = d.name
     with Session(d) as s:
         s.goto(a.url)
         body = s.text()
@@ -268,6 +282,18 @@ def fmt_opts(it):
 
 def cmd_menu(a):
     d = visit_dir(a.visit)
+    items = extract_menu(d)
+    if not items:
+        print("No item-like data in captured API responses yet. Open the menu pages with `step` "
+              "(click each category, scroll) and run `menu` again. Last page text is in last_page.txt.")
+        return 1
+    for it in items:
+        print(f"¥{it['price']:>6,}  {it['name']}" + ("  [sold out]" if it["soldOut"] else "") + fmt_opts(it))
+    print(f"\n{len(items)} items -> {d / 'menu.json'}")
+
+
+def extract_menu(d):
+    """Menu items found in captured JSON responses; also writes menu.json."""
     items, seen = [], set()
     entries = [e for e in read_jsonl(d / "network.jsonl") if e["method"] == "GET"]
     def with_items(pat):
@@ -286,13 +312,7 @@ def cmd_menu(a):
     menu = {"capturedAt": datetime.datetime.now().isoformat(timespec="seconds"),
             "label": meta(d).get("label"), "items": items}
     (d / "menu.json").write_text(json.dumps(menu, ensure_ascii=False, indent=2), "utf-8")
-    if not items:
-        print("No item-like data in captured API responses yet. Open the menu pages with `step` "
-              "(click each category, scroll) and run `menu` again. Last page text is in last_page.txt.")
-        return 1
-    for it in items:
-        print(f"¥{it['price']:>6,}  {it['name']}" + ("  [sold out]" if it["soldOut"] else "") + fmt_opts(it))
-    print(f"\n{len(items)} items -> {d / 'menu.json'}")
+    return items
 
 
 def cmd_ledger(a):
@@ -302,7 +322,7 @@ def cmd_ledger(a):
         append_jsonl(LEDGER, {"t": datetime.datetime.now().isoformat(timespec="seconds"), "visit": visit,
                               "label": m.get("label"), "total": int(total), "note": note})
     rows = read_jsonl(LEDGER)
-    for d in sorted(p for p in ROOT.iterdir() if p.is_dir()) if ROOT.exists() else []:
+    for d in sorted(p for p in ROOT.iterdir() if p.is_dir() and (p / "visit.json").exists()) if ROOT.exists() else []:
         orders = [e for e in read_jsonl(d / "network.jsonl")
                   if e["method"] in ("POST", "PUT") and re.search(r"order|cart|bill|check|account|payment", e["url"], re.I)]
         confirms = read_jsonl(d / "actions.jsonl")
@@ -321,7 +341,7 @@ def cmd_ledger(a):
 def cmd_visits(a):
     if not ROOT.exists():
         print("No visits yet."); return
-    for d in sorted(p for p in ROOT.iterdir() if p.is_dir()):
+    for d in sorted(p for p in ROOT.iterdir() if p.is_dir() and (p / "visit.json").exists()):
         m = meta(d)
         n = len(read_jsonl(d / "network.jsonl"))
         print(f"{d.name:<32} {m.get('label') or '':<16} guests={m.get('guests', '-')}  {n} requests")
