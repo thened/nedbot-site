@@ -16,7 +16,7 @@ Flow (same shape as a real table QR):
 
 All state is in memory and resets on restart.  See order_mock/README.md.
 """
-import json, os, re, time, uuid, threading
+import json, os, re, sys, time, uuid, threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
@@ -28,6 +28,13 @@ TABLES    = int(os.environ.get("ORDER_MOCK_TABLES", "8"))
 STEP_SECS = float(os.environ.get("ORDER_MOCK_STEP_SECS", "20"))
 MAX_QTY   = 10
 UI_FILE   = Path(__file__).with_name("ui.html")
+
+try:  # the agent protocol (table-agent/0.1) needs `pip install cryptography`; the rest is stdlib
+    sys.path.insert(0, str(Path(__file__).parent))
+    import agent
+except ImportError as _e:
+    agent = None
+    print(f" (agent protocol disabled: {_e})")
 
 # Stable, fake seat tokens (uuid5) so test scripts can hard-code them.
 NS = uuid.UUID("6e656462-6f74-2d6d-6f63-6b2d63616665")
@@ -160,7 +167,26 @@ def get_session(handler, allow_closed=False):
     return s
 
 
+def place_order(s, lines, via=None):
+    """Shared by the phone UI and the agent protocol. `via` labels agent orders on the ticket."""
+    order_seq[0] += 1
+    order = {"orderId": f"{s['seat']['seatId']}-{order_seq[0]:04d}", "items": list(lines),
+             "total": sum(l["subtotal"] for l in lines), "placedAt": now(), "status": "received"}
+    if via:
+        order["via"] = via
+    s["orders"].append(order)
+    tag = f"  via {via['agent']} (agent, {via['principal'][:8]}…)" if via else ""
+    print(f"  >> KITCHEN  {s['seat']['name']}  #{order['orderId']}  "
+          + ", ".join(f"{l['name']} x{l['qty']}" for l in order["items"]) + tag)
+    return order
+
+
 def route(h, method, path):
+    if agent is not None:
+        r = agent.route(h, method, path, sys.modules[__name__])
+        if r is not agent.NOT_MINE:
+            return r
+
     if method == "GET" and path in ("/", "/order"):
         return h.send_file(UI_FILE, "text/html; charset=utf-8")
 
@@ -248,13 +274,8 @@ def route(h, method, path):
         s = get_session(h)
         if not s["cart"]:
             raise ApiError(409, "empty_cart", "Cart is empty")
-        order_seq[0] += 1
-        order = {"orderId": f"{s['seat']['seatId']}-{order_seq[0]:04d}",
-                 "items": s["cart"], "total": sum(l["subtotal"] for l in s["cart"]),
-                 "placedAt": now(), "status": "received"}
-        s["orders"].append(order); s["cart"] = []
-        print(f"  >> KITCHEN  {s['seat']['name']}  #{order['orderId']}  "
-              + ", ".join(f"{l['name']} x{l['qty']}" for l in order["items"]))
+        order = place_order(s, s["cart"])
+        s["cart"] = []
         return order_view(order)
 
     if method == "GET" and path == "/api/orders":
@@ -278,6 +299,8 @@ def route(h, method, path):
         s = get_session(h)
         s["open"] = False
         seat_session.pop(s["seat"]["seatId"], None)
+        if agent is not None:
+            agent.on_checkout(s)
         return {**bill_view(s), "message": "Please pay at the register. Thank you!"}
 
     raise ApiError(404, "not_found", f"No route for {method} {path}")
@@ -289,6 +312,8 @@ class Handler(BaseHTTPRequestHandler):
     def _dispatch(self, method):
         u = urlparse(self.path)
         self.query = parse_qs(u.query)
+        n = int(self.headers.get("Content-Length") or 0)
+        self.raw_body = self.rfile.read(n) if n else b""
         try:
             with lock:
                 result = route(self, method, u.path.rstrip("/") or "/")
@@ -296,8 +321,11 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_json(200, result)
         except ApiError as e:
             self.send_json(e.status, {"error": e.code, "message": e.message})
-        except Exception as e:  # keep the server alive for the bot
-            self.send_json(500, {"error": "server_error", "message": str(e)})
+        except Exception as e:
+            if agent is not None and isinstance(e, agent.TapError):
+                return self.send_json(e.status, {"type": "tap.error", "error": e.code, "code": e.code,
+                                                 "message": e.message})
+            self.send_json(500, {"error": "server_error", "message": str(e)})  # keep the server alive
 
     def do_GET(self):     self._dispatch("GET")
     def do_POST(self):    self._dispatch("POST")
@@ -310,14 +338,14 @@ class Handler(BaseHTTPRequestHandler):
     def _cors(self):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Session-Id")
+        self.send_header("Access-Control-Allow-Headers",
+                         "Content-Type, X-Session-Id, Authorization, X-TAP-Ts, X-TAP-Nonce, X-TAP-Sig")
 
     def json_body(self):
-        n = int(self.headers.get("Content-Length") or 0)
-        if not n:
+        if not self.raw_body:
             return {}
         try:
-            body = json.loads(self.rfile.read(n))
+            body = json.loads(self.raw_body)
         except json.JSONDecodeError:
             raise ApiError(400, "bad_json", "Body must be JSON")
         if not isinstance(body, dict):

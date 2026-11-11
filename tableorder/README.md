@@ -13,6 +13,47 @@ pulls out the menu, and keeps a ledger of your orders and bills.
 - Captures go in `tableorder/visits/`, which is gitignored because it holds your table
   token and cookies. Never commit it.
 
+## Native: when the shop has its own agent
+
+If the QR's site serves `/.well-known/table-agent`, the bot skips screen-reading and
+talks to the shop's agent directly over the **Table Agent Protocol** (draft
+`table-agent/0.1`, spec in [`PROTOCOL.md`](PROTOCOL.md)). The handshake is where trust is
+established:
+
+1. **Is this really the shop?** On a first visit you're shown the shop name and a key
+   fingerprint to confirm (`--trust-shop`). After that the key is pinned, and a changed key
+   stops everything.
+2. **Is the bot really at the table?** The table must already be opened by a person, and the
+   bot only gets in with a 6-digit code shown on that person's phone (Bots tab), which also
+   shows who's asking, what it wants, and its spending limit.
+3. **What may it do?** It gets a signed permission for that one visit: listed actions only,
+   a spending cap, and an end at checkout. The phone can revoke it at any time.
+4. **Every order:** a signed quote, then your OK, then a signed receipt for exactly that
+   quote. Receipts go straight into your ledger and place notes.
+
+```
+python tableorder/native.py connect "<qr url>" --label cafe --guests 1 [--trust-shop]
+python tableorder/native.py pair 819023                 # code from the table's phone
+python tableorder/native.py menu
+python tableorder/native.py add "Cafe Latte" --qty 2 --opt iced --opt large
+python tableorder/native.py submit                      # shows the signed quote
+python tableorder/native.py submit --confirm-real-order # orders exactly that quote
+python tableorder/native.py bill | transcript | paid 1900
+python tableorder/native.py identity --descriptor-url https://nedbot.site/.well-known/table-agent-client.json
+```
+
+`native.connect_any(qr_url, ...)` picks the native protocol when the shop offers it and
+the screen recipe otherwise. Both return clients with the same `menu`, `add`, `cart`,
+`submit` and `bill` calls, so the bot doesn't care which it gets.
+
+Your bot's signing key and pseudonym secret are created on first use in
+`visits/identity/` (gitignored). Back that folder up, because the key is how shops
+recognise your bot.
+
+`python tableorder/test_protocol.py` runs 36 end-to-end checks against the mock: the
+handshake, ordering, limits, revocation, a shop key change, and attacks (stolen token,
+replay, tampered body, foreign key, forged receipt).
+
 ## Recipes: the screens as an API
 
 Until these places have APIs, what you can see and tap *is* the API. A **recipe**
@@ -68,7 +109,7 @@ Set `TABLEORDER_NOTES=/path/to/vault/Places` to write the notes straight into yo
 ## Setup (PC)
 
 ```
-pip install playwright pyyaml
+pip install playwright pyyaml cryptography
 python -m playwright install chromium
 ```
 

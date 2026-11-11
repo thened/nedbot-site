@@ -3,3 +3,4 @@ digitalocean.pub
 .env
 tableorder/visits/
 __pycache__/
+order_mock/.shop_key.pem

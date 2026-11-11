@@ -33,6 +33,9 @@
   .bar { position:fixed; left:0; right:0; bottom:0; background:var(--card); border-top:1px solid #dde; padding:12px 16px;
     display:flex; justify-content:space-between; align-items:center; }
   .bar[hidden] { display:none; }
+  .code { font-size:32px; font-weight:800; letter-spacing:.15em; margin:8px 0; font-variant-numeric:tabular-nums; }
+  #agentNotice { max-width:520px; margin:0 auto; padding:0 12px; }
+  .notice { margin:10px 0 0; background:#fff3c4; border-radius:10px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; }
   .badge { font-size:12px; padding:2px 8px; border-radius:999px; background:#eee; }
   .badge.received { background:#fff3c4; } .badge.preparing { background:#ffd9a8; }
   .badge.served { background:#c9efb4; } .badge.cancelled { background:#f3c2bd; }
@@ -44,6 +47,7 @@
 <body>
 <div class="mock">MOCK ORDER SYSTEM · FOR BOT TESTING · NOT A REAL RESTAURANT</div>
 <header><h1>NedBot Café</h1><div class="sub" id="seatName">Order from your phone</div></header>
+<div id="agentNotice" role="status" aria-live="polite"></div>
 <main id="app"></main>
 <div class="bar" id="bar" hidden>
   <span id="barTotal">¥0</span>
@@ -85,8 +89,9 @@ async function pickSeat(msg) {
 }
 
 async function show(t) {
-  tab = t;
-  const nav = `<nav>${['menu','cart','orders'].map(x =>
+  tab = t; pollAgents();
+  const ag = await api('GET', '/api/agents').catch(() => null);
+  const nav = `<nav>${['menu','cart','orders','bots'].map(x =>
     `<button class="${x===tab?'on':''}" onclick="show('${x}')">${x[0].toUpperCase()+x.slice(1)}</button>`).join('')}</nav>
     <p class="err" id="err" role="alert"></p>`;
   const cart = await api('GET', '/api/cart').catch(() => ({ items: [], total: 0 }));
@@ -94,6 +99,7 @@ async function show(t) {
   $('#barTotal').textContent = `${cart.items.length} item(s) · ${yen(cart.total)}`;
   if (tab === 'menu') $('#app').innerHTML = nav + renderMenu();
   if (tab === 'cart') $('#app').innerHTML = nav + renderCart(cart);
+  if (tab === 'bots') $('#app').innerHTML = nav + renderBots(ag);
   if (tab === 'orders') {
     const b = await api('GET', '/api/bill');
     $('#app').innerHTML = nav + renderOrders(b);
@@ -161,6 +167,7 @@ function renderOrders(b) {
   return '<ul class="list" aria-label="Orders">' + b.orders.slice().reverse().map(o => `<li class="order"
       aria-label="Order ${esc(o.orderId)}, ${o.status}, ${yen(o.total)}: ${esc(o.items.map(lineText).join(', '))}">
       <div style="display:flex;justify-content:space-between"><b>#${esc(o.orderId)}</b><span class="badge ${o.status}">${o.status}</span></div>
+      ${o.via ? `<div class="muted">🤖 via ${esc(o.via.agent)}</div>` : ''}
       ${o.items.map(l => `<div class="muted">${esc(lineText(l))}</div>`).join('')}
       <div class="row" style="justify-content:space-between"><span class="price">${yen(o.total)}</span>
       ${o.status === 'received' && b.open ? `<button class="ghost" onclick="cancel('${o.orderId}')">Cancel</button>` : ''}</div></li>`).join('') +
@@ -171,7 +178,38 @@ function renderOrders(b) {
             : '<p class="muted">Checked out — please pay at the register.</p>');
 }
 
-setInterval(() => { if (sid && tab === 'orders') show('orders'); }, 5000);
+function renderBots(ag) {
+  if (!ag) return '<p class="muted">Agent connections are unavailable.</p>';
+  if (!ag.agentsAllowed) return '<p class="muted">This shop is not accepting bots right now.</p>';
+  let h = '<h2>Connect a bot</h2>';
+  h += ag.pending.length ? '<ul class="list" aria-label="Pairing requests">' + ag.pending.map(p => `<li class="line"
+      aria-label="${esc(p.agent)} wants to connect, pairing code ${p.code}">
+      <b>${esc(p.agent)}</b> wants to connect <span class="muted">(key ${esc(p.fingerprint)}, id ${esc(p.principal.slice(0, 8))}…)</span>
+      <div class="muted">Asks for: ${p.scopes.map(esc).join(', ')} · limit ${yen(p.spendLimit)}</div>
+      <div class="code" aria-label="Pairing code">${p.code.slice(0,3)} ${p.code.slice(3)}</div>
+      <div class="muted">Tell this code to your bot only if it's yours. Expires ${esc(new Date(p.expiresAt).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}))}.</div>
+      <div class="row"><button class="ghost" onclick="revoke('${p.handshakeId}')">Deny</button></div></li>`).join('') + '</ul>'
+    : '<p class="muted">No bot is asking to connect. When one says hello to this table, its pairing code shows up here.</p>';
+  h += '<h2>Connected bots</h2>';
+  h += ag.grants.length ? '<ul class="list" aria-label="Connected bots">' + ag.grants.map(g => `<li class="line"
+      aria-label="${esc(g.agent)}, ${g.status}, spent ${yen(g.spent)} of ${yen(g.spendLimit)}">
+      <b>${esc(g.agent)}</b> <span class="badge ${g.status === 'active' ? 'served' : 'cancelled'}">${esc(g.status)}</span>
+      <div class="muted">key ${esc(g.fingerprint)} · ${g.scopes.map(esc).join(', ')}</div>
+      <div class="muted">Ordered ${yen(g.spent)} of ${yen(g.spendLimit)} limit</div>
+      ${g.status === 'active' ? `<div class="row"><button class="ghost" onclick="revoke('${g.grantId}')">Revoke</button></div>` : ''}
+    </li>`).join('') + '</ul>' : '<p class="muted">None.</p>';
+  return h;
+}
+async function revoke(id) { await api('POST', `/api/agents/${id}/revoke`); show('bots'); }
+
+async function pollAgents() {
+  if (!sid) return;
+  const ag = await api('GET', '/api/agents').catch(() => null);
+  const p = ag && ag.pending[0];
+  $('#agentNotice').innerHTML = p && tab !== 'bots' ? `<p class="notice">🤖 ${esc(p.agent)} wants to connect to this table.
+    <button class="ghost" onclick="show('bots')">See code</button></p>` : '';
+}
+setInterval(() => { if (sid && (tab === 'orders' || tab === 'bots')) show(tab); pollAgents(); }, 3000);
 boot();
 </script>
 </body>

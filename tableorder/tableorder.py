@@ -162,8 +162,11 @@ def new_visit(url, label=None):
     q = parse_qs(urlparse(url).query)
     stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     slug = re.sub(r"[^\w-]+", "-", label or "visit")
-    d = ROOT / f"{stamp}-{slug}"
-    d.mkdir(parents=True, exist_ok=True)
+    d, n = ROOT / f"{stamp}-{slug}", 1
+    while d.exists():
+        n += 1
+        d = ROOT / f"{stamp}-{slug}-{n}"
+    d.mkdir(parents=True)
     meta(d, {"label": label, "qrUrl": url, "seatToken": (q.get("t") or [None])[0],
              "openedAt": datetime.datetime.now().isoformat(timespec="seconds")})
     return d

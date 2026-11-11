@@ -29,6 +29,18 @@ phone-style page. Kitchen tickets print in the server console.
 
 Seat tokens are fixed (uuid5), so test scripts can hard-code them.
 
+## Shop agent (Table Agent Protocol)
+
+With `pip install cryptography`, the mock also acts as a shop **with its own agent**. It
+serves `/.well-known/table-agent` and the `/agent/*` endpoints from
+[`tableorder/PROTOCOL.md`](../tableorder/PROTOCOL.md). Bots pair using a code shown on the
+phone page's **Bots** tab. That tab also lists connected bots with a Revoke button, and
+agent orders appear on the bill and the kitchen ticket labelled "via NedBot/0.1". The
+shop's signing key is kept in `order_mock/.shop_key.pem` (gitignored; override with
+`ORDER_MOCK_SHOP_KEY`). Policy is set with `ORDER_MOCK_AGENTS=off`,
+`ORDER_MOCK_AGENT_MAX_SPEND` and `ORDER_MOCK_AGENT_MAX_ORDERS`. Without `cryptography`,
+everything else still runs and the agent endpoints are simply absent.
+
 ## From the bot (Python)
 
 ```python
